@@ -1,13 +1,25 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { Search } from "lucide-react";
 import { useState } from "react";
-
-const NOT_READY_MESSAGE = "아직 준비중입니다.";
+import { useAuth } from "@/lib/auth";
 
 export function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, status, logout } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
+  const [q, setQ] = useState("");
+  // 홈 빼고는 헤더 검색창 항상 노출 (검색결과·상세·로그인 등 모든 곳에서 다시 검색 가능)
+  const showSearch = pathname !== "/" && pathname !== null;
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = q.trim();
+    if (!trimmed) return;
+    router.push(`/search?q=${encodeURIComponent(trimmed)}`);
+  };
 
   return (
     <header className="fixed top-0 w-full px-6 py-4 flex justify-between items-center z-50 bg-white/90 backdrop-blur-sm border-b border-transparent">
@@ -17,41 +29,60 @@ export function Header() {
             className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600"
             aria-hidden
           >
-            szsh.ai
+            szsh.kr
           </span>
           <span
             className="absolute inset-0 bg-clip-text text-transparent bg-[length:200%_100%] bg-[linear-gradient(90deg,transparent_0%,transparent_35%,rgba(255,255,255,0.45)_50%,transparent_65%,transparent_100%)] animate-text-shine"
             aria-hidden
           >
-            szsh.ai
+            szsh.kr
           </span>
-          <span className="sr-only">szsh.ai</span>
+          <span className="sr-only">szsh.kr</span>
         </span>
       </Link>
 
-      <div className="flex items-center gap-4">
-        <button
-          type="button"
-          className="hidden md:block text-sm font-medium text-gray-600 hover:text-black transition-colors"
-          onClick={() => alert(NOT_READY_MESSAGE)}
+      {showSearch && (
+        <form
+          onSubmit={handleSearch}
+          className="hidden md:flex flex-1 max-w-md mx-8 relative"
         >
-          Log in
-        </button>
-        <button
-          type="button"
-          className="px-4 py-2 text-sm font-medium bg-black text-white rounded-full hover:bg-gray-800 transition-colors"
-          onClick={() => alert(NOT_READY_MESSAGE)}
-        >
-          Sign up
-        </button>
-        <button
-          type="button"
-          className="md:hidden p-1 text-gray-600"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          aria-label={isMenuOpen ? "메뉴 닫기" : "메뉴 열기"}
-        >
-          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+            <Search size={16} />
+          </div>
+          <input
+            type="text"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="다른 기업 검색..."
+            className="w-full bg-gray-50 border-none rounded-full py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-blue-100 transition-all outline-none"
+          />
+        </form>
+      )}
+
+      <div className="flex items-center gap-3">
+        {status === "loading" ? (
+          <span className="text-sm text-gray-400">…</span>
+        ) : user ? (
+          <>
+            <span className="text-sm font-medium text-gray-700 max-w-[120px] sm:max-w-[200px] truncate">
+              {user.nickname}
+            </span>
+            <button
+              type="button"
+              onClick={() => logout()}
+              className="px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-black transition-colors"
+            >
+              로그아웃
+            </button>
+          </>
+        ) : (
+          <Link
+            href="/login"
+            className="px-4 py-2 text-sm font-medium border border-gray-200 rounded-full hover:bg-gray-50 transition-colors"
+          >
+            로그인
+          </Link>
+        )}
       </div>
     </header>
   );

@@ -1,7 +1,24 @@
 import { Wallet } from "lucide-react";
-import { netPayData } from "../data";
 
-export function NetPayCard() {
+type NetPayItem = {
+  gross: string;
+  net: string;
+};
+
+type NetPayCardProps = {
+  items: NetPayItem[];
+};
+
+export function NetPayCard({ items }: NetPayCardProps) {
+  if (items.length === 0) {
+    return (
+      <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+        <h3 className="text-lg font-bold text-[#1a1a1a] mb-4">실수령액 미리보기</h3>
+        <p className="text-sm text-gray-400 text-center py-8">데이터가 없습니다.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-all duration-300 relative overflow-hidden">
       <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-blue-50/50 to-transparent rounded-bl-full -mr-16 -mt-16 pointer-events-none" />
@@ -17,7 +34,7 @@ export function NetPayCard() {
       </div>
 
       <div className="grid grid-cols-2 gap-x-8 gap-y-4 relative">
-        {netPayData.map((data) => (
+        {items.map((data) => (
           <div
             key={data.gross}
             className="flex justify-between items-center py-2 border-b border-gray-50"

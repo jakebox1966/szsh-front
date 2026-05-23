@@ -1,5 +1,7 @@
 export { InsightSection } from "./InsightSection";
-export { SalaryRankingCard } from "./SalaryRankingCard";
 export { NetPayCard } from "./NetPayCard";
 export { EmployeeGrowthCard } from "./EmployeeGrowthCard";
-export { RegionalTopCard } from "./RegionalTopCard";
+export { GrowthSalaryScatterCard } from "./GrowthSalaryScatterCard";
+export { SpotlightCard } from "./SpotlightCard";
+export { IndustryCompareCard } from "./IndustryCompareCard";
+export { CompanyOfDayCard } from "./CompanyOfDayCard";

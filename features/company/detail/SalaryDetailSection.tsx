@@ -1,11 +1,20 @@
-import { DollarSign } from "lucide-react";
+import { DollarSign, ArrowDown } from "lucide-react";
+import { SourceBadge } from "../components";
+import { estimatePayroll } from "@/lib/payroll";
+import { formatKRW } from "@/lib/format";
 import type { CompanySalary } from "../data";
 
 type SalaryDetailSectionProps = {
   salary: CompanySalary;
 };
 
+function formatWon(n: number): string {
+  return `${n.toLocaleString("ko-KR")}원`;
+}
+
 export function SalaryDetailSection({ salary }: SalaryDetailSectionProps) {
+  const gross = salary.avgMonthlyRaw;
+
   return (
     <div className="bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-sm">
       <div className="flex items-center justify-between mb-6">
@@ -13,44 +22,96 @@ export function SalaryDetailSection({ salary }: SalaryDetailSectionProps) {
           <DollarSign className="text-gray-400" size={20} />
           연봉 상세 분석
         </h2>
-        <span className="bg-green-50 text-green-700 text-xs font-bold px-2 py-1 rounded-md border border-green-100">
-          {salary.rank}
-        </span>
+        {gross && <SourceBadge source={salary.source} />}
       </div>
 
-      <div className="mb-8 p-5 bg-gray-50 rounded-2xl flex flex-col sm:flex-row items-center justify-center gap-4 text-center">
-        <div>
-          <p className="text-sm text-gray-500 mb-1">월 예상 실수령액</p>
-          <p className="text-3xl font-bold text-gray-900">
-            약 376만원(326만원)
-            <span className="text-base font-normal text-gray-400 ml-1">/ 세전(세후)</span>
-          </p>
+      {!gross ? (
+        <p className="text-sm text-gray-400 text-center py-12">
+          평균 급여 데이터가 없습니다.
+        </p>
+      ) : (
+        <SalaryBreakdown gross={gross} />
+      )}
+
+      <p className="text-xs text-right text-gray-400 mt-4">
+        * 4대보험 + 간이세액표 근사치 (단신·부양가족 1인 가정). 성과급/비과세 미반영.
+      </p>
+    </div>
+  );
+}
+
+function SalaryBreakdown({ gross }: { gross: number }) {
+  const pay = estimatePayroll(gross);
+  const netRate = ((pay.net / gross) * 100).toFixed(1);
+
+  const deductions: { label: string; value: number }[] = [
+    { label: "국민연금 (4.5%)", value: pay.nationalPension },
+    { label: "건강보험 (3.545%)", value: pay.healthInsurance },
+    { label: "장기요양 (12.95%)", value: pay.longTermCare },
+    { label: "고용보험 (0.9%)", value: pay.employment },
+    { label: "소득세", value: pay.incomeTax },
+    { label: "지방소득세", value: pay.localTax },
+  ];
+
+  return (
+    <div className="space-y-3">
+      {/* 세전 */}
+      <div className="p-5 bg-gradient-to-br from-blue-50 to-blue-50/40 rounded-2xl text-center">
+        <p className="text-xs text-blue-600 font-semibold mb-1">월 평균 급여 (세전)</p>
+        <p className="text-3xl font-bold text-gray-900">{formatKRW(gross)}</p>
+        <p className="text-xs text-gray-400 mt-1">
+          연 환산 약 {formatKRW(gross * 12)}
+        </p>
+      </div>
+
+      {/* 화살표 */}
+      <div className="flex justify-center">
+        <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center">
+          <ArrowDown size={16} className="text-gray-400" />
         </div>
       </div>
 
-      <div className="space-y-4">
-        <p className="text-sm font-semibold text-gray-600 mb-2">직급/연차별 예상 연봉 구간</p>
-        {salary.structure.map((item, idx) => (
-          <div key={idx} className="relative">
-            <div className="flex justify-between text-xs text-gray-500 mb-1">
-              <span className="font-medium text-gray-700 w-32">{item.label}</span>
-              <span className="text-right">{item.avg}만원</span>
-            </div>
-            <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden flex items-center">
-              <div style={{ width: `${(item.min / 20000) * 100}%` }} />
-              <div
-                className="h-full bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full relative group cursor-pointer"
-                style={{ width: `${((item.max - item.min) / 20000) * 100}%` }}
-              >
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap z-10">
-                  {item.min}~{item.max}만원
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-        <p className="text-xs text-right text-gray-400 mt-2">
-          * 자체 AI 알고리즘 추정치 (성과급 제외)
+      {/* 공제 내역 */}
+      <div className="p-4 bg-gray-50 rounded-2xl">
+        <p className="text-xs font-semibold text-gray-500 mb-3 px-1">
+          공제 내역 (월 기준)
+        </p>
+        <ul className="space-y-1.5">
+          {deductions.map((d) => (
+            <li
+              key={d.label}
+              className="flex items-center justify-between text-sm px-1"
+            >
+              <span className="text-gray-600">{d.label}</span>
+              <span className="font-medium text-gray-700 tabular-nums">
+                − {formatWon(d.value)}
+              </span>
+            </li>
+          ))}
+          <li className="flex items-center justify-between text-sm px-1 pt-2 mt-2 border-t border-gray-200">
+            <span className="font-semibold text-gray-700">총 공제액</span>
+            <span className="font-bold text-gray-900 tabular-nums">
+              − {formatWon(pay.totalDeduction)}
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      {/* 화살표 */}
+      <div className="flex justify-center">
+        <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center">
+          <ArrowDown size={16} className="text-gray-400" />
+        </div>
+      </div>
+
+      {/* 세후 */}
+      <div className="p-5 bg-gradient-to-br from-emerald-50 to-emerald-50/40 rounded-2xl text-center">
+        <p className="text-xs text-emerald-700 font-semibold mb-1">
+          월 예상 실수령액 (세후)
+        </p>
+        <p className="text-3xl font-bold text-gray-900">약 {formatKRW(pay.net)}</p>
+        <p className="text-xs text-emerald-700 mt-1 font-medium">
+          세전 대비 {netRate}% 수령
         </p>
       </div>
     </div>

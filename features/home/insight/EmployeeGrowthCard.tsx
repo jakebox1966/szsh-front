@@ -1,15 +1,33 @@
 import { Users } from "lucide-react";
-import { employeeGrowth } from "../data";
 
-export function EmployeeGrowthCard() {
+type EmployeeGrowthItem = {
+  name: string;
+  count: string;
+  growth: string;
+};
+
+type EmployeeGrowthCardProps = {
+  items: EmployeeGrowthItem[];
+};
+
+export function EmployeeGrowthCard({ items }: EmployeeGrowthCardProps) {
+  if (items.length === 0) {
+    return (
+      <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+        <h3 className="font-bold text-[#1a1a1a] mb-4">인원 급상승</h3>
+        <p className="text-sm text-gray-400 text-center py-4">데이터가 없습니다.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-all duration-300">
       <div className="flex items-center gap-2 mb-4">
         <Users size={18} className="text-blue-500" />
-        <h3 className="font-bold text-[#1a1a1a]">인원 급상승 🚀</h3>
+        <h3 className="font-bold text-[#1a1a1a]">인원 급상승</h3>
       </div>
       <div className="space-y-3">
-        {employeeGrowth.map((company) => (
+        {items.map((company) => (
           <div
             key={company.name}
             className="flex justify-between items-center"

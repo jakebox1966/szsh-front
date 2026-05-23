@@ -10,15 +10,24 @@ export function CompanyHeaderSection({ info }: CompanyHeaderSectionProps) {
     <div className="bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-sm mb-6 animate-fade-in">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 bg-[#FAE100] rounded-2xl flex items-center justify-center text-[#3C1E1E] text-2xl font-bold shadow-sm">
-            {info.logo}
-          </div>
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 flex items-center gap-2">
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 flex items-center gap-2 flex-wrap">
               {info.name}
-              <span className="text-xs font-medium text-gray-500 border border-gray-200 px-2 py-0.5 rounded-full mt-1">
-                {info.engName}
-              </span>
+              {info.engName && (
+                <span className="text-xs font-medium text-gray-500 border border-gray-200 px-2 py-0.5 rounded-full mt-1">
+                  {info.engName}
+                </span>
+              )}
+              {info.isListed === true && (
+                <span className="text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full mt-1">
+                  상장
+                </span>
+              )}
+              {info.isListed === false && (
+                <span className="text-xs font-medium text-gray-600 bg-gray-50 border border-gray-200 px-2 py-0.5 rounded-full mt-1">
+                  비상장
+                </span>
+              )}
             </h1>
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-500 mt-2">
               <span className="flex items-center gap-1">
@@ -29,20 +38,22 @@ export function CompanyHeaderSection({ info }: CompanyHeaderSectionProps) {
             </div>
           </div>
         </div>
-        <div className="flex gap-2">
-          <a
-            href={`https://${info.website}`}
-            target="_blank"
-            rel="noreferrer"
-            className="p-2.5 bg-gray-50 hover:bg-gray-100 rounded-full text-gray-600 transition-colors"
-          >
-            <Globe size={18} />
-          </a>
-        </div>
+        {info.website && (
+          <div className="flex gap-2">
+            <a
+              href={`https://${info.website}`}
+              target="_blank"
+              rel="noreferrer"
+              className="p-2.5 bg-gray-50 hover:bg-gray-100 rounded-full text-gray-600 transition-colors"
+            >
+              <Globe size={18} />
+            </a>
+          </div>
+        )}
       </div>
 
       <div className="flex flex-wrap gap-2 mb-4">
-        {info.tags.map((tag) => (
+        {(info.tags ?? []).map((tag) => (
           <span
             key={tag}
             className="px-3 py-1 bg-gray-50 text-gray-600 text-xs font-medium rounded-lg border border-gray-100"

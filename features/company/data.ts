@@ -7,11 +7,13 @@ export type CompanyInfo = {
   address: string;
   website: string;
   tags: string[];
+  isListed?: boolean;
 };
 
 export type CompanySummary = {
   avgSalary: string;
-  startSalary: string;
+  avgSalaryOfficial?: string;
+  avgSalaryCapped?: boolean;
   totalEmployees: string;
   turnoverRate: string;
   revenue: string;
@@ -20,45 +22,47 @@ export type CompanySummary = {
 export type CompanyComment = {
   id: number;
   user: string;
+  userId: number;          // 작성자 식별. -1 은 optimistic 임시 (서버 응답 전)
   content: string;
   time: string;
-};
-
-export type SalaryStructureItem = {
-  label: string;
-  min: number;
-  max: number;
-  avg: number;
+  edited: boolean;
 };
 
 export type CompanySalary = {
-  avgMonthly: string;
-  rank: string;
-  structure: SalaryStructureItem[];
+  avgMonthly: string;          // 포맷된 월 평균급여 ("980만원")
+  avgMonthlyRaw: number | null; // 원 단위 raw (실수령액 계산용)
+  source: "DART" | "NPS";       // DART 공시 / NPS 추정
 };
 
 export type HRTrendItem = {
-  month: string;
+  month: string;            // "YYYY-MM"
   in: number;
   out: number;
+  subscribers?: number;     // 월별 인원수 (라인차트용)
 };
 
 export type CompanyHR = {
   current: number;
   incoming: number;
   outgoing: number;
+  // KPI 카드 (이미지 디자인)
+  latestMonth?: string;     // "2026-03"
+  monthlyHeadcount?: number;
+  monthlyIn?: number;
+  monthlyOut?: number;
+  annualTurnover?: number;  // %
   trends: HRTrendItem[];
 };
 
 export type FinanceMetricItem = {
-  current: string;
-  growth: string;
+  current: number;        // 원
+  growth: string;         // 포맷된 % 문자열 (예: "+14.2%")
 };
 
 export type FinanceHistoryItem = {
   year: string;
-  rev: number;
-  profit: number;
+  rev: number;            // 원
+  profit: number;         // 원
 };
 
 export type CompanyFinance = {
@@ -74,7 +78,7 @@ export type CompanyData = {
   sampleComments: CompanyComment[];
   salary: CompanySalary;
   hr: CompanyHR;
-  finance: CompanyFinance;
+  finance: CompanyFinance | null;
 };
 
 /** 샘플: 카카오 (모든 slug에서 동일 데이터 사용 가능, 추후 slug별 매핑) */
@@ -91,26 +95,19 @@ export const kakaoCompanyData: CompanyData = {
   },
   summary: {
     avgSalary: "1억 3,900만원",
-    startSalary: "5,200만원",
     totalEmployees: "3,980명",
     turnoverRate: "8.2%",
     revenue: "8조 1,058억",
   },
   sampleComments: [
-    { id: 1, user: "익명1", content: "카카오 개발직군 초봉이 생각보다 높네요! 복지도 궁금합니다.", time: "2시간 전" },
-    { id: 2, user: "익명2", content: "판교 오피스 근무 환경이 정말 좋다던데 부럽네요 ㅎㅎ", time: "5시간 전" },
-    { id: 3, user: "익명3", content: "최근에 인력 이동이 좀 있는 것 같은데, 분위기가 어떤지 궁금해요.", time: "1일 전" },
+    { id: 1, user: "익명1", userId: -1, content: "카카오 개발직군 초봉이 생각보다 높네요! 복지도 궁금합니다.", time: "2시간 전", edited: false },
+    { id: 2, user: "익명2", userId: -1, content: "판교 오피스 근무 환경이 정말 좋다던데 부럽네요 ㅎㅎ", time: "5시간 전", edited: false },
+    { id: 3, user: "익명3", userId: -1, content: "최근에 인력 이동이 좀 있는 것 같은데, 분위기가 어떤지 궁금해요.", time: "1일 전", edited: false },
   ],
   salary: {
-    avgMonthly: "980만원",
-    rank: "Top 1%",
-    structure: [
-      { label: "신입/사원 (1~3년)", min: 4500, max: 6000, avg: 5200 },
-      { label: "대리/주임 (4~7년)", min: 5800, max: 7500, avg: 6600 },
-      { label: "과장/선임 (8~11년)", min: 7200, max: 9500, avg: 8400 },
-      { label: "차장/책임 (12~15년)", min: 9000, max: 12000, avg: 10500 },
-      { label: "부장/수석 (16년~)", min: 11000, max: 18000, avg: 14500 },
-    ],
+    avgMonthly: "1,158만원",
+    avgMonthlyRaw: 11_580_000,
+    source: "DART",
   },
   hr: {
     current: 3980,
@@ -126,13 +123,14 @@ export const kakaoCompanyData: CompanyData = {
     ],
   },
   finance: {
-    revenue: { current: "8조 1,058억", growth: "+14.2%" },
-    operatingProfit: { current: "5,019억", growth: "-10.9%" },
-    netProfit: { current: "1조 2,100억", growth: "+3.5%" },
+    // 단위: 원
+    revenue: { current: 8_105_800_000_000, growth: "+14.2%" },
+    operatingProfit: { current: 501_900_000_000, growth: "-10.9%" },
+    netProfit: { current: 1_210_000_000_000, growth: "+3.5%" },
     history: [
-      { year: "2021", rev: 6.1, profit: 0.6 },
-      { year: "2022", rev: 7.1, profit: 0.5 },
-      { year: "2023", rev: 8.1, profit: 0.5 },
+      { year: "2021", rev: 6_100_000_000_000, profit: 600_000_000_000 },
+      { year: "2022", rev: 7_100_000_000_000, profit: 500_000_000_000 },
+      { year: "2023", rev: 8_100_000_000_000, profit: 500_000_000_000 },
     ],
   },
 };

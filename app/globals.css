@@ -56,15 +56,15 @@
   scrollbar-width: none;
 }
 
+/*
+ * fade-in: opacity 만 애니메이션.
+ * 주의: `transform: translateY(...)` 를 끝 상태에 유지하면 (forwards) 해당 요소가
+ * 새 stacking context 를 만들어 자식 (예: 검색 드롭다운) 의 z-index 가 외부 형제 위로
+ * 못 올라오는 부작용 발생. fade-in 시각효과는 opacity 만으로 충분.
+ */
 @keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 .animate-fade-in {
   animation: fade-in 0.6s ease-out forwards;
@@ -81,6 +81,45 @@
 .animate-text-shine {
   background-size: 200% 100%;
   animation: text-shine 4s linear infinite;
+}
+
+/*
+ * Dialog 모달 진입/종료 애니메이션.
+ * 주의: Tailwind v4 는 `translate-x-[-50%]` 를 `translate: ...` 속성으로 출력함.
+ * 여기서 `transform: translate(...)` 를 또 쓰면 두 속성이 중복 적용되어 모달이 왼쪽 위로 밀려남.
+ * → 위치는 Tailwind translate 에 위임, 여기서는 opacity·scale 만 애니메이션.
+ *
+ * 진입: 350ms ease-out-quint (천천히 도착하는 느낌). 살짝 더 작은 scale 에서 시작해 부드럽게 확장
+ * 종료: 200ms ease-in-cubic (빠르게 사라짐 — 사용자 인지 시간 줄이기)
+ */
+@keyframes dialog-content-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes dialog-content-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+.dialog-content-anim {
+  will-change: transform, opacity;
+}
+.dialog-content-anim[data-state="open"] {
+  animation: dialog-content-in 350ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.dialog-content-anim[data-state="closed"] {
+  animation: dialog-content-out 200ms cubic-bezier(0.4, 0, 1, 1) forwards;
 }
 
 :root {
