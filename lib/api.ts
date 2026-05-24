@@ -1,4 +1,11 @@
-export const API_BASE_URL =
+/**
+ * 모든 데이터 호출은 Next.js BFF 프록시 (/api/*, /auth/me 등) 를 거치므로 상대 경로로 호출.
+ * 백엔드 도메인은 브라우저에 노출되지 않음.
+ *
+ * OAUTH_BASE_URL 은 OAuth 로그인 시작(buildLoginUrl) 에만 사용됨 — 브라우저가
+ * 직접 백엔드 OAuth 엔드포인트로 이동해야 하기 때문.
+ */
+export const OAUTH_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export class ApiError extends Error {
@@ -15,8 +22,7 @@ export async function apiFetch<T>(
   path: string,
   options?: RequestInit,
 ): Promise<T> {
-  const url = `${API_BASE_URL}${path}`;
-  const res = await fetch(url, {
+  const res = await fetch(path, {
     credentials: "include",
     ...options,
     headers: {

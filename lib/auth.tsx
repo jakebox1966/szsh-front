@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
-import { API_BASE_URL } from "./api";
+import { OAUTH_BASE_URL } from "./api";
 
 export type AuthUser = {
   id: number;
@@ -21,7 +21,7 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 async function fetchMe(): Promise<AuthUser | null> {
-  const res = await fetch(`${API_BASE_URL}/auth/me`, {
+  const res = await fetch("/auth/me", {
     credentials: "include",
     cache: "no-store",
   });
@@ -46,7 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = useCallback(async () => {
     try {
-      await fetch(`${API_BASE_URL}/auth/logout`, {
+      await fetch("/auth/logout", {
         method: "POST",
         credentials: "include",
       });
@@ -78,5 +78,5 @@ export function buildLoginUrl(
   next: string = "/",
 ): string {
   const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/";
-  return `${API_BASE_URL}/auth/${provider}/login?next=${encodeURIComponent(safeNext)}`;
+  return `${OAUTH_BASE_URL}/auth/${provider}/login?next=${encodeURIComponent(safeNext)}`;
 }
