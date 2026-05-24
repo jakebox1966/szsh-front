@@ -1,5 +1,8 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Building2, ChevronRight } from "lucide-react";
+import { Building2, ChevronLeft, ChevronRight } from "lucide-react";
 import type { ApiCompanyOfDay } from "@/lib/api-types";
 import { formatKRWCompact, formatPercent } from "@/lib/format";
 
@@ -26,6 +29,28 @@ function Bar({ value, max, color, label }: { value: number; max: number; color: 
 }
 
 export function CompanyOfDayCard({ data }: Props) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const update = () => {
+      // 4px 여유 — 서브픽셀 잔차로 무한 토글되는 거 방지
+      setCanScrollLeft(el.scrollLeft > 4);
+      setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+    };
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener("scroll", update);
+      ro.disconnect();
+    };
+  }, [data.history]);
+
   if (data.history.length === 0) return null;
 
   // 절대값 max로 막대 스케일 정규화 (매출 vs 영업이익 같은 축)
@@ -89,33 +114,46 @@ export function CompanyOfDayCard({ data }: Props) {
         </div>
       </div>
 
-      {/* 표 */}
-      <div className="bg-gray-50 rounded-xl p-3">
-        <div className="grid grid-cols-[52px_repeat(5,1fr)] gap-x-1 text-[11px] whitespace-nowrap">
-          <div className="text-gray-400">구분</div>
-          {data.history.map((h) => (
-            <div key={h.year} className={`text-right ${h.year === latestYear ? "font-bold text-gray-900" : "text-gray-400"}`}>
-              {h.year}
-            </div>
-          ))}
-          <div className="text-gray-500 pt-1.5">매출액</div>
-          {data.history.map((h) => (
-            <div
-              key={h.year}
-              className={`text-right pt-1.5 tabular-nums ${h.year === latestYear ? "font-bold text-indigo-700" : "text-gray-700"}`}
-            >
-              {h.revenue ? formatKRWCompact(h.revenue) : "—"}
-            </div>
-          ))}
-          <div className="text-gray-500 pt-1">영업이익</div>
-          {data.history.map((h) => (
-            <div
-              key={h.year}
-              className={`text-right pt-1 tabular-nums ${h.year === latestYear ? "font-bold text-indigo-700" : "text-gray-700"}`}
-            >
-              {h.operatingProfit != null ? formatKRWCompact(h.operatingProfit) : "—"}
-            </div>
-          ))}
+      {/* 표 (가로 스크롤, 모바일에서 좌/우 스크롤 가능 방향으로만 힌트 화살표 노출) */}
+      <div className="relative">
+        <div ref={scrollRef} className="bg-gray-50 rounded-xl p-3 overflow-x-auto">
+          <div className="grid grid-cols-[auto_repeat(5,auto)] gap-x-5 text-[11px] whitespace-nowrap min-w-max">
+            <div className="text-gray-400">구분</div>
+            {data.history.map((h) => (
+              <div key={h.year} className={`text-right ${h.year === latestYear ? "font-bold text-gray-900" : "text-gray-400"}`}>
+                {h.year}
+              </div>
+            ))}
+            <div className="text-gray-500 pt-1.5">매출액</div>
+            {data.history.map((h) => (
+              <div
+                key={h.year}
+                className={`text-right pt-1.5 tabular-nums ${h.year === latestYear ? "font-bold text-indigo-700" : "text-gray-700"}`}
+              >
+                {h.revenue ? formatKRWCompact(h.revenue) : "—"}
+              </div>
+            ))}
+            <div className="text-gray-500 pt-1">영업이익</div>
+            {data.history.map((h) => (
+              <div
+                key={h.year}
+                className={`text-right pt-1 tabular-nums ${h.year === latestYear ? "font-bold text-indigo-700" : "text-gray-700"}`}
+              >
+                {h.operatingProfit != null ? formatKRWCompact(h.operatingProfit) : "—"}
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* 스크롤 힌트: 모바일에서만 노출. 스크롤 가능한 방향으로만 보이며 부드럽게 페이드. pointer-events-none */}
+        <div
+          className={`pointer-events-none absolute top-0 left-0 h-full w-10 rounded-l-xl bg-gradient-to-r from-gray-50 via-gray-50/80 to-transparent flex items-center justify-start pl-1.5 md:hidden transition-opacity duration-200 ${canScrollLeft ? "opacity-100" : "opacity-0"}`}
+        >
+          <ChevronLeft size={16} className="text-gray-400/70" />
+        </div>
+        <div
+          className={`pointer-events-none absolute top-0 right-0 h-full w-10 rounded-r-xl bg-gradient-to-l from-gray-50 via-gray-50/80 to-transparent flex items-center justify-end pr-1.5 md:hidden transition-opacity duration-200 ${canScrollRight ? "opacity-100" : "opacity-0"}`}
+        >
+          <ChevronRight size={16} className="text-gray-400/70" />
         </div>
       </div>
 
