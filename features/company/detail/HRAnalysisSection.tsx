@@ -116,7 +116,7 @@ export function HRAnalysisSection({ hr, turnoverRate }: HRAnalysisSectionProps) 
       {data.length > 0 ? (
         <div className="w-full h-72">
           <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart data={data} margin={{ top: 10, right: 20, bottom: 0, left: 0 }}>
+            <ComposedChart data={data} margin={{ top: 45, right: 20, bottom: 0, left: 0 }}>
               <CartesianGrid stroke="#f1f5f9" vertical={false} />
               <XAxis
                 dataKey="month"
@@ -126,7 +126,7 @@ export function HRAnalysisSection({ hr, turnoverRate }: HRAnalysisSectionProps) 
               />
               <YAxis
                 yAxisId="left"
-                label={{ value: "근무 인원수", angle: 0, position: "insideTopLeft", fontSize: 11, fill: "#9ca3af", dy: -10 }}
+                label={{ value: "근무 인원수", angle: 0, position: "insideTopLeft", fontSize: 11, fill: "#9ca3af", dy: -32 }}
                 tick={{ fontSize: 11, fill: "#9ca3af" }}
                 tickLine={false}
                 axisLine={false}
@@ -134,7 +134,7 @@ export function HRAnalysisSection({ hr, turnoverRate }: HRAnalysisSectionProps) 
               <YAxis
                 yAxisId="right"
                 orientation="right"
-                label={{ value: "입/퇴사자", angle: 0, position: "insideTopRight", fontSize: 11, fill: "#9ca3af", dy: -10 }}
+                label={{ value: "입/퇴사자", angle: 0, position: "insideTopRight", fontSize: 11, fill: "#9ca3af", dy: -32 }}
                 tick={{ fontSize: 11, fill: "#9ca3af" }}
                 tickLine={false}
                 axisLine={false}

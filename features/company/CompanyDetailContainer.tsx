@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { kakaoCompanyData } from "./data";
 import type { CompanyData, CompanyComment } from "./data";
+import { RevealOnView } from "@/components/ui/RevealOnView";
 import { apiFetch } from "@/lib/api";
 import { mapCompanyDetail, mapCompanyComment } from "@/lib/api-mappers";
 import type { ApiCompanyDetail, ApiCompanyComment } from "@/lib/api-types";
@@ -195,26 +196,38 @@ export function CompanyDetailContainer({ slug }: CompanyDetailContainerProps) {
           </div>
         )}
 
-        <CompanyHeaderSection info={info} />
+        <RevealOnView>
+          <CompanyHeaderSection info={info} />
+        </RevealOnView>
 
-        <CompanySaySection
-          comments={sampleComments}
-          comment={comment}
-          onCommentChange={setComment}
-          onSubmitComment={handleSubmitComment}
-          submitting={submitting}
-          submitError={submitError}
-          currentUserId={user?.id ?? null}
-          onEditComment={handleEditComment}
-          onDeleteComment={handleDeleteComment}
-        />
+        <RevealOnView delay={80}>
+          <CompanySaySection
+            comments={sampleComments}
+            comment={comment}
+            onCommentChange={setComment}
+            onSubmitComment={handleSubmitComment}
+            submitting={submitting}
+            submitError={submitError}
+            currentUserId={user?.id ?? null}
+            onEditComment={handleEditComment}
+            onDeleteComment={handleDeleteComment}
+          />
+        </RevealOnView>
 
-        <SummaryCardsSection summary={summary} />
+        <RevealOnView>
+          <SummaryCardsSection summary={summary} />
+        </RevealOnView>
 
         <div className="flex flex-col gap-6">
-          <SalaryDetailSection salary={salary} />
-          <HRAnalysisSection hr={hr} turnoverRate={summary.turnoverRate} />
-          <FinanceSection finance={finance} />
+          <RevealOnView>
+            <SalaryDetailSection salary={salary} />
+          </RevealOnView>
+          <RevealOnView>
+            <HRAnalysisSection hr={hr} turnoverRate={summary.turnoverRate} />
+          </RevealOnView>
+          <RevealOnView>
+            <FinanceSection finance={finance} />
+          </RevealOnView>
         </div>
       </main>
     </div>

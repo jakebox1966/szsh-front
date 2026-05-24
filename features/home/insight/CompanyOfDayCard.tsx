@@ -91,7 +91,7 @@ export function CompanyOfDayCard({ data }: Props) {
 
       {/* 표 */}
       <div className="bg-gray-50 rounded-xl p-3">
-        <div className="grid grid-cols-[60px_repeat(5,1fr)] gap-x-1 text-[11px]">
+        <div className="grid grid-cols-[52px_repeat(5,1fr)] gap-x-1 text-[11px] whitespace-nowrap">
           <div className="text-gray-400">구분</div>
           {data.history.map((h) => (
             <div key={h.year} className={`text-right ${h.year === latestYear ? "font-bold text-gray-900" : "text-gray-400"}`}>

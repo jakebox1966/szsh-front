@@ -151,14 +151,14 @@ export function HeroSection({
         <span>세전세후 AI-Powered Insights</span>
       </div>
 
-      <h1 className="text-4xl md:text-5xl font-medium mb-8 leading-tight text-[#1a1a1a] tracking-tight">
-        무엇을 도와드릴까요?
+      <h1 className="text-4xl md:text-5xl font-semibold mb-8 leading-tight text-[#1a1a1a] tracking-[-0.03em]">
+        AI로 만나는 기업 리포트
       </h1>
 
       <div className="relative group w-full max-w-2xl mx-auto mb-8" ref={wrapperRef}>
-        <div className="relative bg-white rounded-[2rem] shadow-[0_2px_12px_rgba(0,0,0,0.08)] border border-gray-200 p-2 flex items-center transition-all duration-300 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] hover:border-gray-300">
-          <div className="pl-4 pr-3 text-gray-400">
-            <Search size={22} strokeWidth={2} />
+        <div className="relative bg-white rounded-full md:rounded-[2rem] shadow-[0_2px_12px_rgba(0,0,0,0.08)] border border-gray-200 p-1.5 md:p-2 flex items-center transition-all duration-300 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] hover:border-gray-300">
+          <div className="pl-3 pr-2 md:pl-4 md:pr-3 text-gray-400 shrink-0">
+            <Search className="w-[18px] h-[18px] md:w-[22px] md:h-[22px]" strokeWidth={2} />
           </div>
           <input
             type="text"
@@ -169,16 +169,17 @@ export function HeroSection({
             }}
             onFocus={() => setOpen(true)}
             onKeyDown={handleKeyDown}
-            placeholder="기업명을 검색해보세요 (예: 삼성전자, 카카오)"
-            className="flex-1 bg-transparent border-none outline-none py-3 text-lg text-gray-800 placeholder-gray-400 font-medium"
+            placeholder="기업명을 검색해보세요"
+            className="flex-1 min-w-0 bg-transparent border-none outline-none py-2 md:py-3 text-sm md:text-lg text-gray-800 placeholder-gray-400 font-medium"
           />
           <button
             type="button"
-            className="p-3 bg-blue-600 rounded-full hover:bg-blue-700 transition-colors text-white shadow-md disabled:opacity-50"
+            className="p-2 md:p-3 bg-blue-600 rounded-full hover:bg-blue-700 transition-colors text-white shadow-sm md:shadow-md disabled:opacity-50 shrink-0"
             onClick={submitSearch}
             disabled={!query.trim()}
+            aria-label="검색"
           >
-            <ArrowRight size={20} />
+            <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
           </button>
         </div>
 
@@ -231,7 +232,6 @@ export function HeroSection({
         <div className="flex flex-nowrap justify-start md:justify-center gap-2 min-w-max px-2">
           {tags.map((tag) => {
             const Icon = tag.icon;
-            const isActive = modalTag?.id === tag.id;
             // 모달 열린 동안 트리거 비활성화 (이중 클릭 / 다른 계산기 동시 호출 방지)
             const isDisabled = !!modalTag;
             return (
@@ -240,18 +240,7 @@ export function HeroSection({
                 type="button"
                 onClick={() => openModal(tag)}
                 disabled={isDisabled}
-                aria-pressed={isActive}
-                className={`
-                  flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border whitespace-nowrap
-                  disabled:cursor-not-allowed
-                  ${
-                    isActive
-                      ? "bg-[#1a1a1a] border-[#1a1a1a] text-white shadow-sm"
-                      : isDisabled
-                        ? "bg-gray-50 border-gray-100 text-gray-400 opacity-60"
-                        : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300"
-                  }
-                `}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium border whitespace-nowrap bg-white border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:border-gray-200"
               >
                 <Icon size={14} />
                 {tag.label}

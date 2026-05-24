@@ -10,6 +10,7 @@ import type {
   ApiCompanyOfDay,
 } from "@/lib/api-types";
 import { employeeGrowth as fallbackEmployeeGrowth } from "../data";
+import { RevealOnView } from "@/components/ui/RevealOnView";
 import { SpotlightCard } from "./SpotlightCard";
 import { IndustryCompareCard } from "./IndustryCompareCard";
 import { CompanyOfDayCard } from "./CompanyOfDayCard";
@@ -100,19 +101,27 @@ export function InsightSection() {
     <div className="w-full max-w-2xl flex flex-col gap-8">
       {/* 구좌 1: 1일 1컴퍼니 */}
       {displayData.companyOfDay && (
-        <CompanyOfDayCard data={displayData.companyOfDay} />
+        <RevealOnView>
+          <CompanyOfDayCard data={displayData.companyOfDay} />
+        </RevealOnView>
       )}
       {/* 구좌 2: 기업실적 트렌드 (산업군 1위 회사들 5년 추이) */}
       {displayData.compare && displayData.compare.items.length > 0 && (
-        <IndustryCompareCard data={displayData.compare} />
+        <RevealOnView>
+          <IndustryCompareCard data={displayData.compare} />
+        </RevealOnView>
       )}
       {/* 구좌 3: 매출 TOP (산업군 로테이션) */}
       {displayData.spotlightRevenue && displayData.spotlightRevenue.items.length > 0 && (
-        <SpotlightCard data={displayData.spotlightRevenue} />
+        <RevealOnView>
+          <SpotlightCard data={displayData.spotlightRevenue} />
+        </RevealOnView>
       )}
       {/* 구좌 4: 평균연봉 TOP (산업군 로테이션) */}
       {displayData.spotlightSalary && displayData.spotlightSalary.items.length > 0 && (
-        <SpotlightCard data={displayData.spotlightSalary} />
+        <RevealOnView>
+          <SpotlightCard data={displayData.spotlightSalary} />
+        </RevealOnView>
       )}
     </div>
   );
