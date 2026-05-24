@@ -25,7 +25,6 @@ async function fetchMe(): Promise<AuthUser | null> {
     credentials: "include",
     cache: "no-store",
   });
-  if (res.status === 401) return null;
   if (!res.ok) throw new Error(`/auth/me failed: ${res.status}`);
   return res.json();
 }
