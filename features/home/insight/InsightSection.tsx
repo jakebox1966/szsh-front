@@ -2,21 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api";
-import { mapEmployeeGrowth } from "@/lib/api-mappers";
 import type {
-  ApiEmployeeGrowthItem,
   ApiSpotlight,
   ApiIndustryCompare,
   ApiCompanyOfDay,
 } from "@/lib/api-types";
-import { employeeGrowth as fallbackEmployeeGrowth } from "../data";
 import { RevealOnView } from "@/components/ui/RevealOnView";
 import { SpotlightCard } from "./SpotlightCard";
 import { IndustryCompareCard } from "./IndustryCompareCard";
 import { CompanyOfDayCard } from "./CompanyOfDayCard";
 
 type HomeData = {
-  employeeGrowth: { name: string; count: string; growth: string }[];
   companyOfDay: ApiCompanyOfDay | null;
   compare: ApiIndustryCompare | null;
   spotlightRevenue: ApiSpotlight | null;
@@ -37,8 +33,7 @@ export function InsightSection() {
         //  2) compare        → /industry-compare (오늘 분야 1위~N위 5년 추이)
         //  3) spotlightRevenue → /spotlight?metric=revenue (오늘 분야 매출 TOP 10)
         //  4) spotlightSalary  → /spotlight?metric=salary (오늘 분야 평균연봉 TOP 10)
-        const [growthRes, codRes, compareRes, revRes, salRes] = await Promise.allSettled([
-          apiFetch<ApiEmployeeGrowthItem[]>("/api/home/employee-growth"),
+        const [codRes, compareRes, revRes, salRes] = await Promise.allSettled([
           apiFetch<ApiCompanyOfDay>("/api/home/company-of-day"),
           apiFetch<ApiIndustryCompare>("/api/home/industry-compare"),
           apiFetch<ApiSpotlight>("/api/home/spotlight?metric=revenue&limit=5"),
@@ -48,10 +43,6 @@ export function InsightSection() {
         if (cancelled) return;
 
         setData({
-          employeeGrowth:
-            growthRes.status === "fulfilled"
-              ? mapEmployeeGrowth(growthRes.value)
-              : [...fallbackEmployeeGrowth],
           companyOfDay: codRes.status === "fulfilled" ? codRes.value : null,
           compare: compareRes.status === "fulfilled" ? compareRes.value : null,
           spotlightRevenue: revRes.status === "fulfilled" ? revRes.value : null,
@@ -60,7 +51,6 @@ export function InsightSection() {
       } catch {
         if (cancelled) return;
         setData({
-          employeeGrowth: [...fallbackEmployeeGrowth],
           companyOfDay: null,
           compare: null,
           spotlightRevenue: null,

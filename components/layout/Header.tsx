@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Search } from "lucide-react";
-import { useState } from "react";
-import { useAuth } from "@/lib/auth";
+import { Search, ChevronDown, LogOut } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { useAuth, type AuthUser } from "@/lib/auth";
 
 export function Header() {
   const { user, status, logout } = useAuth();
@@ -63,18 +64,7 @@ export function Header() {
         {status === "loading" ? (
           <span className="text-sm text-gray-400">…</span>
         ) : user ? (
-          <>
-            <span className="text-sm font-medium text-gray-700 max-w-[120px] sm:max-w-[200px] truncate">
-              {user.nickname}
-            </span>
-            <button
-              type="button"
-              onClick={() => logout()}
-              className="px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-black transition-colors"
-            >
-              로그아웃
-            </button>
-          </>
+          <UserMenu user={user} onLogout={logout} />
         ) : (
           <Link
             href="/login"
@@ -85,5 +75,127 @@ export function Header() {
         )}
       </div>
     </header>
+  );
+}
+
+function UserMenu({
+  user,
+  onLogout,
+}: {
+  user: AuthUser;
+  onLogout: () => Promise<void> | void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handleClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", handleClick);
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+      document.removeEventListener("keydown", handleKey);
+    };
+  }, [open]);
+
+  const initial = user.nickname.trim().charAt(0) || "?";
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors"
+      >
+        <Avatar user={user} initial={initial} />
+        <span className="text-sm font-medium text-gray-800 max-w-[100px] sm:max-w-[160px] truncate">
+          {user.nickname}
+        </span>
+        <ChevronDown
+          size={14}
+          className={`text-gray-400 transition-transform ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+
+      {open && (
+        <div
+          role="menu"
+          className="absolute right-0 mt-2 w-60 rounded-2xl border border-gray-100 bg-white shadow-lg overflow-hidden"
+        >
+          {/* 프로필 헤더 */}
+          <div className="flex items-center gap-3 p-4 bg-gradient-to-br from-blue-50/60 to-indigo-50/40">
+            <Avatar user={user} initial={initial} size="lg" />
+            <div className="min-w-0 flex-1">
+              <div className="text-sm font-semibold text-gray-900 truncate">
+                {user.nickname}
+              </div>
+              {user.email && (
+                <div className="text-xs text-gray-500 truncate mt-0.5">
+                  {user.email}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* 액션 — 추후 마이페이지/설정 추가 시 여기에 */}
+          <div className="py-1">
+            <button
+              type="button"
+              role="menuitem"
+              onClick={() => {
+                setOpen(false);
+                onLogout();
+              }}
+              className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+            >
+              <LogOut size={15} className="text-gray-400" />
+              로그아웃
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Avatar({
+  user,
+  initial,
+  size = "sm",
+}: {
+  user: AuthUser;
+  initial: string;
+  size?: "sm" | "lg";
+}) {
+  const dim = size === "lg" ? 40 : 28;
+  if (user.profile_image) {
+    return (
+      <Image
+        src={user.profile_image}
+        alt={user.nickname}
+        width={dim}
+        height={dim}
+        className={`rounded-full object-cover ${size === "lg" ? "w-10 h-10" : "w-7 h-7"}`}
+        unoptimized
+      />
+    );
+  }
+  return (
+    <div
+      className={`flex items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-bold ${
+        size === "lg" ? "w-10 h-10 text-base" : "w-7 h-7 text-xs"
+      }`}
+      aria-hidden
+    >
+      {initial}
+    </div>
   );
 }

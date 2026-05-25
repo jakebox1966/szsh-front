@@ -32,36 +32,37 @@ export default async function Image() {
           flexDirection: "column",
           justifyContent: "space-between",
           padding: "80px",
+          // 사이트 브랜드 톤: blue-600 → indigo-600 그라데이션을 옅게 배경에 깔기
           background:
-            "linear-gradient(135deg, #ffffff 0%, #f0f4ff 60%, #e0e7ff 100%)",
+            "linear-gradient(135deg, #ffffff 0%, #eff6ff 55%, #e0e7ff 100%)",
           fontFamily: "Pretendard",
           color: "#1a1a1a",
           position: "relative",
         }}
       >
-        {/* 우상단 장식 — 옅은 블루 원형 */}
+        {/* 우상단 장식 — 브랜드 그라데이션 글로우 */}
         <div
           style={{
             position: "absolute",
-            top: "-160px",
-            right: "-160px",
-            width: "520px",
-            height: "520px",
+            top: "-180px",
+            right: "-180px",
+            width: "560px",
+            height: "560px",
             borderRadius: "50%",
             background:
-              "radial-gradient(circle at 35% 35%, rgba(99,102,241,0.18), rgba(99,102,241,0))",
+              "radial-gradient(circle at 35% 35%, rgba(37,99,235,0.22), rgba(79,70,229,0.08), rgba(79,70,229,0))",
             display: "flex",
           }}
         />
 
-        {/* 상단 워드마크 */}
+        {/* 상단 워드마크 — 사이트 헤더와 동일한 blue-600 → indigo-600 */}
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <div
             style={{
               width: "56px",
               height: "56px",
               borderRadius: "16px",
-              background: "linear-gradient(135deg, #6366f1, #4f46e5)",
+              background: "linear-gradient(135deg, #2563eb, #4f46e5)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -77,6 +78,7 @@ export default async function Image() {
             style={{
               fontSize: "36px",
               fontWeight: 700,
+              // Satori 는 background-clip:text 미지원이라 단일 컬러로 표현. 중간점인 indigo-600 채택.
               color: "#4f46e5",
               letterSpacing: "-0.03em",
             }}
@@ -127,7 +129,7 @@ export default async function Image() {
             <Tag>국민연금</Tag>
             <Tag>AI 분석</Tag>
           </div>
-          <div style={{ color: "#4f46e5", fontWeight: 700, fontSize: "26px" }}>
+          <div style={{ color: "#2563eb", fontWeight: 700, fontSize: "26px" }}>
             szsh.kr
           </div>
         </div>
