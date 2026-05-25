@@ -1,15 +1,16 @@
-import { Globe, Sparkles, Briefcase, MapPin } from "lucide-react";
+import { Globe, Briefcase, MapPin } from "lucide-react";
 import type { CompanyInfo } from "../data";
 
 type CompanyHeaderSectionProps = {
   info: CompanyInfo;
+  children?: React.ReactNode;   // 카드 하단에 끼울 추가 콘텐츠 (예: KeySignalsSection)
 };
 
-export function CompanyHeaderSection({ info }: CompanyHeaderSectionProps) {
+export function CompanyHeaderSection({ info, children }: CompanyHeaderSectionProps) {
   return (
     <div className="bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-sm mb-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-        <div className="flex items-center gap-4">
+      <div className="flex justify-between items-start md:items-center gap-4 mb-6">
+        <div className="flex items-center gap-4 min-w-0 flex-1">
           <div>
             <h1 className="text-2xl md:text-3xl font-bold text-gray-900 flex items-center gap-2 flex-wrap">
               {info.name}
@@ -28,6 +29,11 @@ export function CompanyHeaderSection({ info }: CompanyHeaderSectionProps) {
                   비상장
                 </span>
               )}
+              {info.industryGroup && (
+                <span className="text-xs font-medium text-indigo-700 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-full mt-1">
+                  {info.industryGroup.label}
+                </span>
+              )}
             </h1>
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-500 mt-2">
               <span className="flex items-center gap-1">
@@ -39,16 +45,15 @@ export function CompanyHeaderSection({ info }: CompanyHeaderSectionProps) {
           </div>
         </div>
         {info.website && (
-          <div className="flex gap-2">
-            <a
-              href={`https://${info.website}`}
-              target="_blank"
-              rel="noreferrer"
-              className="p-2.5 bg-gray-50 hover:bg-gray-100 rounded-full text-gray-600 transition-colors"
-            >
-              <Globe size={18} />
-            </a>
-          </div>
+          <a
+            href={`https://${info.website}`}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center justify-center w-10 h-10 bg-gray-50 hover:bg-gray-100 rounded-full text-gray-600 transition-colors shrink-0"
+            aria-label="회사 홈페이지"
+          >
+            <Globe size={18} />
+          </a>
         )}
       </div>
 
@@ -66,15 +71,7 @@ export function CompanyHeaderSection({ info }: CompanyHeaderSectionProps) {
         </span>
       </div>
 
-      <div className="bg-blue-50/50 border border-blue-100 rounded-xl p-4 flex gap-3">
-        <Sparkles className="text-blue-600 flex-shrink-0 mt-0.5" size={18} />
-        <div className="text-sm text-gray-700 leading-relaxed">
-          <span className="font-bold text-blue-800">AI 요약:</span> 동종 업계 대비{" "}
-          <span className="font-semibold text-gray-900">상위 1% 수준의 연봉</span>을 제공하며, 최근
-          3년간 매출액이 지속적으로 성장 중입니다. 다만, 최근 1년 기준 영업이익률은 소폭 감소
-          추세이나 재무 건전성은 양호합니다. 개발 직군 기준 입사 선호도가 매우 높은 기업입니다.
-        </div>
-      </div>
+      {children}
     </div>
   );
 }

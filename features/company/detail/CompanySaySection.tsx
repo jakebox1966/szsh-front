@@ -49,7 +49,11 @@ export function CompanySaySection({
         </div>
         <button
           type="button"
-          className="text-[10px] text-gray-400 flex items-center hover:text-gray-600 transition-colors"
+          className={`text-[10px] text-gray-400 flex items-center hover:text-gray-600 transition-colors ${
+            isLoggedIn ? "" : "blur-[3px] select-none pointer-events-none"
+          }`}
+          aria-hidden={!isLoggedIn}
+          tabIndex={isLoggedIn ? 0 : -1}
         >
           전체보기 <ChevronRight size={10} />
         </button>

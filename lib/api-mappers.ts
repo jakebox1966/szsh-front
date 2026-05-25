@@ -38,6 +38,7 @@ function mapCompanyInfo(api: ApiCompanyInfo): CompanyInfo {
     engName: api.engName ?? api.eng_name ?? "",
     logo: api.logo ?? "",
     industry: api.industry ?? "",
+    industryGroup: api.industryGroup ?? null,
     history: api.history ?? "",
     address: api.address ?? "",
     website: api.website ?? "",

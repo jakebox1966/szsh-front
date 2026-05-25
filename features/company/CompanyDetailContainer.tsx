@@ -15,6 +15,7 @@ import {
   SalaryDetailSection,
   HRAnalysisSection,
   FinanceSection,
+  KeySignalsSection,
 } from "./detail";
 
 type CompanyDetailContainerProps = {
@@ -197,7 +198,9 @@ export function CompanyDetailContainer({ slug }: CompanyDetailContainerProps) {
         )}
 
         <RevealOnView>
-          <CompanyHeaderSection info={info} />
+          <CompanyHeaderSection info={info}>
+            <KeySignalsSection companyData={companyData} />
+          </CompanyHeaderSection>
         </RevealOnView>
 
         <RevealOnView delay={80}>

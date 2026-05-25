@@ -24,12 +24,18 @@ export type ApiCompanyListItem = {
 // ── Company detail API response types ──
 // Fields may arrive as snake_case or camelCase depending on backend config.
 
+export type ApiIndustryGroup = {
+  key: string;
+  label: string;
+};
+
 export type ApiCompanyInfo = {
   name: string;
   eng_name?: string;
   engName?: string;
   logo: string;
   industry: string;
+  industryGroup?: ApiIndustryGroup | null;
   history: string;
   address: string;
   website: string;

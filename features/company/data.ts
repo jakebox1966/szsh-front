@@ -1,8 +1,14 @@
+export type IndustryGroup = {
+  key: string;
+  label: string;
+};
+
 export type CompanyInfo = {
   name: string;
   engName: string;
   logo: string;
   industry: string;
+  industryGroup?: IndustryGroup | null;
   history: string;
   address: string;
   website: string;
