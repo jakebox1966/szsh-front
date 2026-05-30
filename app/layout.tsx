@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 const SITE_URL = "https://szsh.kr";
-const SITE_NAME = "szsh.kr";
+const SITE_NAME = "szsh";
 const SITE_DESCRIPTION =
   "기업정보, 연봉, 실수령액, 전세·주담대·DSR 계산 등 세전세후 인사이트를 한곳에서.";
 
@@ -27,8 +27,15 @@ export const metadata: Metadata = {
   description: SITE_DESCRIPTION,
   applicationName: SITE_NAME,
   keywords: [
-    "세전세후", "연봉 실수령액", "기업정보", "DART", "국민연금",
-    "전세계산기", "주담대 계산기", "DSR 계산기", "평균연봉",
+    "세전세후",
+    "연봉 실수령액",
+    "기업정보",
+    "DART",
+    "국민연금",
+    "전세계산기",
+    "주담대 계산기",
+    "DSR 계산기",
+    "평균연봉",
   ],
   authors: [{ name: "szsh.kr" }],
   creator: "szsh.kr",
