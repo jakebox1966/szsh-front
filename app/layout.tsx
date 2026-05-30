@@ -55,6 +55,47 @@ export const metadata: Metadata = {
   alternates: {
     canonical: SITE_URL,
   },
+  // Search Console / 네이버 서치어드바이저에서 받은 코드 채우면 자동 메타 주입.
+  // 환경변수로 빼서 .env 로 관리 — 키 노출돼도 사이트 소유 인증 외에는 의미 없음.
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+    other: {
+      "naver-site-verification":
+        process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION || "",
+    },
+  },
+};
+
+// 구조화 데이터(JSON-LD) — 구글이 사이트 정보를 풍부하게 인식하도록.
+// SoftwareApplication + WebSite 두 가지를 합쳐 sitelinks search box 후보로도 등록.
+const ORG_JSON_LD = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${SITE_URL}#organization`,
+      name: SITE_NAME,
+      url: SITE_URL,
+      logo: `${SITE_URL}/icon.png`,
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}#website`,
+      name: SITE_NAME,
+      url: SITE_URL,
+      description: SITE_DESCRIPTION,
+      inLanguage: "ko-KR",
+      publisher: { "@id": `${SITE_URL}#organization` },
+      potentialAction: {
+        "@type": "SearchAction",
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
+        },
+        "query-input": "required name=search_term_string",
+      },
+    },
+  ],
 };
 
 export default function RootLayout({
@@ -64,6 +105,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSON_LD) }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
