@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { GoogleAnalytics } from "@next/third-parties/google";
 import { AuthProvider } from "@/lib/auth";
 import "./globals.css";
 
@@ -117,6 +116,30 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head>
+        {/*
+          GA gtag.js — `<head>` 에 직접 삽입해서 React 하이드레이션 보다 먼저
+          로드/실행되게 함. afterInteractive Script 컴포넌트를 쓰면 OAuth 콜백
+          직후 발사되는 login/sign_up 이벤트가 gtag 준비 전에 호출돼 누락됨.
+        */}
+        {GA_ID && (
+          <>
+            <script
+              async
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+            />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  window.gtag = gtag;
+                  gtag('js', new Date());
+                  gtag('config', '${GA_ID}');
+                `,
+              }}
+            />
+          </>
+        )}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSON_LD) }}
@@ -127,7 +150,6 @@ export default function RootLayout({
       >
         <AuthProvider>{children}</AuthProvider>
       </body>
-      {GA_ID && <GoogleAnalytics gaId={GA_ID} />}
     </html>
   );
 }
