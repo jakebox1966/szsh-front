@@ -54,13 +54,17 @@ export function trackEvent<K extends keyof EventMap>(
   params: EventMap[K],
 ): void {
   if (typeof window === "undefined") return;
-  // gtag.js 가 아직 로드 안 됐어도 stub 함수를 미리 깔아두면 호출이 dataLayer 에
-  // 쌓이고, gtag.js 가 나중에 로드되면서 큐에 쌓인 이벤트들을 자동 소비함.
-  // AuthProvider 의 OAuth 콜백 후 useEffect 같은 매우 이른 시점에서도 손실 없음.
+  // gtag.js 가 아직 로드 안 됐어도 stub 을 깔아두면 dataLayer 에 큐잉되고,
+  // gtag.js 가 나중에 로드되면서 자동 처리됨.
+  //
+  // 단 gtag.js 는 dataLayer 의 각 entry 를 *arguments-like 객체* 형태로만 인식.
+  // 따라서 plain Array (`[...]`) 가 아닌 `arguments` 객체 그대로 push 해야 함.
   if (!window.gtag) {
     window.dataLayer = window.dataLayer ?? [];
-    window.gtag = function gtag(...args: unknown[]) {
-      window.dataLayer!.push(args);
+    // function 키워드로 정의해서 `arguments` 사용 가능. 화살표 함수는 X.
+    window.gtag = function gtag() {
+      // eslint-disable-next-line prefer-rest-params
+      (window.dataLayer as unknown[]).push(arguments);
     } as GtagFn;
   }
   window.gtag("event", name, params);
