@@ -62,7 +62,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [refresh]);
 
   // OAuth 콜백 직후 백엔드가 ?login=google&new=1 등 쿼리를 붙여서 리다이렉트해줌.
-  // 한 번 읽어서 GA 이벤트 발사 후 URL 정리 (history.replaceState — 페이지 리로드 X).
+  // URL 정리는 즉시, GA 이벤트는 gtag.js config 가 끝난 뒤(load 이벤트) 발사 —
+  // 그 전에 보내면 measurement ID 가 아직 설정 안 돼서 silent drop 됨.
   useEffect(() => {
     if (typeof window === "undefined") return;
     const url = new URL(window.location.href);
@@ -70,12 +71,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (provider !== "google" && provider !== "kakao") return;
 
     const isNew = url.searchParams.get("new") === "1";
-    trackEvent(isNew ? "sign_up" : "login", { method: provider });
 
+    // 1) URL 즉시 정리 (사용자 노출 시간 최소화)
     url.searchParams.delete("login");
     url.searchParams.delete("new");
-    const cleaned = url.pathname + (url.searchParams.toString() ? `?${url.searchParams.toString()}` : "") + url.hash;
+    const cleaned =
+      url.pathname +
+      (url.searchParams.toString() ? `?${url.searchParams.toString()}` : "") +
+      url.hash;
     window.history.replaceState(null, "", cleaned);
+
+    // 2) GA 이벤트는 페이지 load 완료 후 (gtag.js config 처리 끝) 발사
+    const fire = () =>
+      trackEvent(isNew ? "sign_up" : "login", { method: provider });
+    if (document.readyState === "complete") {
+      fire();
+    } else {
+      window.addEventListener("load", fire, { once: true });
+    }
   }, []);
 
   return (
