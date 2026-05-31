@@ -7,21 +7,21 @@
  *
  * 사용:
  *   trackEvent("login", { method: "google" });
- *   trackEvent("comment_submit", { page_path: "company_detail", company_name: "주식회사 카카오" });
+ *   trackEvent("comment_submit", { from_path: "company_detail", company_name: "주식회사 카카오" });
  */
 
 type EventMap = {
-  sign_up_start: { page_path: "gnb_login" | "comment_login" };
+  sign_up_start: { from_path: "gnb_login" | "comment_login" };
   sign_up: { method: "kakao" | "google" };
   login: { method: "kakao" | "google" };
   search_enter: {
-    page_path: "home" | "company_detail" | "search_results";
+    from_path: "home" | "company_detail" | "search_results";
     keyword: string;
     click_type: "keyword_matching" | "search_result_page";
   };
   search_results: { keyword: string; results_count: number };
   company_detail: {
-    page_path:
+    from_path:
       | "keyword_matching"
       | "search_result_page"
       | "home_1day_1company"
@@ -32,7 +32,7 @@ type EventMap = {
       | "other";
     company_name: string;
   };
-  comment_submit: { page_path: "company_detail"; company_name: string };
+  comment_submit: { from_path: "company_detail"; company_name: string };
   comment_edit: { company_name: string };
   comment_delete: { company_name: string };
 };

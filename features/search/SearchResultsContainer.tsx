@@ -95,7 +95,7 @@ export function SearchResultsContainer({ query }: SearchResultsContainerProps) {
               href={`/company/${item.slug}`}
               onClick={() =>
                 trackEvent("company_detail", {
-                  page_path: "search_result_page",
+                  from_path: "search_result_page",
                   company_name: item.name,
                 })
               }

@@ -100,7 +100,7 @@ export function CompanyDetailContainer({ slug }: CompanyDetailContainerProps) {
         body: JSON.stringify({ content: trimmed }),
       });
       trackEvent("comment_submit", {
-        page_path: "company_detail",
+        from_path: "company_detail",
         company_name: companyData.info.name,
       });
       await refreshComments();

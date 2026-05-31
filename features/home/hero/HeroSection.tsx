@@ -114,7 +114,7 @@ export function HeroSection({
     const trimmed = query.trim();
     if (!trimmed) return;
     trackEvent("search_enter", {
-      page_path: "home",
+      from_path: "home",
       keyword: trimmed,
       click_type: "search_result_page",
     });
@@ -125,12 +125,12 @@ export function HeroSection({
   // 자동완성에서 회사 직접 선택 (검색 결과 페이지 안 거치는 분기)
   const goToCompany = (slug: string, name?: string) => {
     trackEvent("search_enter", {
-      page_path: "home",
+      from_path: "home",
       keyword: query.trim(),
       click_type: "keyword_matching",
     });
     trackEvent("company_detail", {
-      page_path: "keyword_matching",
+      from_path: "keyword_matching",
       company_name: name ?? slug,
     });
     setOpen(false);

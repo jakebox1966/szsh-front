@@ -53,7 +53,7 @@ function renderMetricValue(item: ApiSpotlight["items"][number], metric: ApiSpotl
 export function SpotlightCard({ data }: SpotlightCardProps) {
   const empty = data.items.length === 0;
   const rankStart = data.rankStart ?? 1;     // 페이지 로테이션 (1 또는 6)
-  // GA page_path 매핑 — 매출/평균연봉 외 metric 은 home_field_revenue 로 fallback
+  // GA from_path 매핑 — 매출/평균연봉 외 metric 은 home_field_revenue 로 fallback
   const trackingPath: "home_field_revenue" | "home_field_salary" =
     data.metric === "salary" ? "home_field_salary" : "home_field_revenue";
 
@@ -81,7 +81,7 @@ export function SpotlightCard({ data }: SpotlightCardProps) {
               href={`/company/${item.slug}`}
               onClick={() =>
                 trackEvent("company_detail", {
-                  page_path: trackingPath,
+                  from_path: trackingPath,
                   company_name: item.name,
                 })
               }

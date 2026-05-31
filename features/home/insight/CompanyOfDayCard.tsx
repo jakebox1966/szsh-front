@@ -71,7 +71,7 @@ export function CompanyOfDayCard({ data }: Props) {
           href={`/company/${data.slug}`}
           onClick={() =>
             trackEvent("company_detail", {
-              page_path: "home_1day_1company",
+              from_path: "home_1day_1company",
               company_name: data.name,
             })
           }

@@ -28,7 +28,7 @@ function CompanyBlock({ company }: { company: ApiCompareCompany }) {
       href={`/company/${company.slug}`}
       onClick={() =>
         trackEvent("company_detail", {
-          page_path: "home_industry",
+          from_path: "home_industry",
           company_name: company.name,
         })
       }
