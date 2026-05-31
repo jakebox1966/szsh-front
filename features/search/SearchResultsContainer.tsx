@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Building2, Search } from "lucide-react";
 import { apiFetch } from "@/lib/api";
+import { trackEvent } from "@/lib/analytics";
 import type { ApiCompanyListItem } from "@/lib/api-types";
 
 type SearchResultsContainerProps = {
@@ -23,7 +24,13 @@ export function SearchResultsContainer({ query }: SearchResultsContainerProps) {
         const data = await apiFetch<ApiCompanyListItem[]>(
           `/api/companies?q=${encodeURIComponent(query)}`,
         );
-        if (!cancelled) setResults(data);
+        if (!cancelled) {
+          setResults(data);
+          trackEvent("search_results", {
+            keyword: query,
+            results_count: data.length,
+          });
+        }
       } catch {
         if (!cancelled) setResults([]);
       } finally {
@@ -86,6 +93,12 @@ export function SearchResultsContainer({ query }: SearchResultsContainerProps) {
             <Link
               key={item.slug}
               href={`/company/${item.slug}`}
+              onClick={() =>
+                trackEvent("company_detail", {
+                  page_path: "search_result_page",
+                  company_name: item.name,
+                })
+              }
               className="flex items-center gap-4 p-4 bg-white rounded-2xl border border-gray-100 hover:border-gray-300 hover:shadow-sm transition-all"
             >
               <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-50 text-gray-500 shrink-0">

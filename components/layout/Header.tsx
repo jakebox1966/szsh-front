@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Search, ChevronDown, LogOut } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useAuth, type AuthUser } from "@/lib/auth";
+import { trackEvent } from "@/lib/analytics";
 
 export function Header() {
   const { user, status, logout } = useAuth();
@@ -19,6 +20,14 @@ export function Header() {
     e.preventDefault();
     const trimmed = q.trim();
     if (!trimmed) return;
+    // 헤더 검색창은 home 외 모든 페이지에서 노출. 현재 경로에 따라 page_path 분기.
+    const path: "company_detail" | "search_results" =
+      pathname?.startsWith("/company/") ? "company_detail" : "search_results";
+    trackEvent("search_enter", {
+      page_path: path,
+      keyword: trimmed,
+      click_type: "search_result_page",
+    });
     router.push(`/search?q=${encodeURIComponent(trimmed)}`);
   };
 
@@ -68,6 +77,7 @@ export function Header() {
         ) : (
           <Link
             href="/login"
+            onClick={() => trackEvent("sign_up_start", { page_path: "gnb_login" })}
             className="px-4 py-2 text-sm font-medium border border-gray-200 rounded-full hover:bg-gray-50 transition-colors"
           >
             로그인

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { MessageSquare, Send, ChevronRight, Clock, MoreHorizontal, Check, X, Lock } from "lucide-react";
 import type { CompanyComment } from "../data";
+import { trackEvent } from "@/lib/analytics";
 
 type CompanySaySectionProps = {
   comments: CompanyComment[];
@@ -124,6 +125,9 @@ export function CompanySaySection({
               </p>
               <Link
                 href={`/login?next=${encodeURIComponent(pathname)}`}
+                onClick={() =>
+                  trackEvent("sign_up_start", { page_path: "comment_login" })
+                }
                 className="inline-flex items-center gap-1 px-4 py-1.5 rounded-full bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700 transition-colors shadow-sm"
               >
                 로그인 →

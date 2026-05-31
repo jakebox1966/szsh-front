@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import type { ApiSpotlight } from "@/lib/api-types";
 import { formatKRW, formatPercent } from "@/lib/format";
+import { trackEvent } from "@/lib/analytics";
 
 type SpotlightCardProps = {
   data: ApiSpotlight;
@@ -50,6 +53,9 @@ function renderMetricValue(item: ApiSpotlight["items"][number], metric: ApiSpotl
 export function SpotlightCard({ data }: SpotlightCardProps) {
   const empty = data.items.length === 0;
   const rankStart = data.rankStart ?? 1;     // 페이지 로테이션 (1 또는 6)
+  // GA page_path 매핑 — 매출/평균연봉 외 metric 은 home_field_revenue 로 fallback
+  const trackingPath: "home_field_revenue" | "home_field_salary" =
+    data.metric === "salary" ? "home_field_salary" : "home_field_revenue";
 
   return (
     <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-all duration-300">
@@ -73,6 +79,12 @@ export function SpotlightCard({ data }: SpotlightCardProps) {
             <Link
               key={item.slug}
               href={`/company/${item.slug}`}
+              onClick={() =>
+                trackEvent("company_detail", {
+                  page_path: trackingPath,
+                  company_name: item.name,
+                })
+              }
               className="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50/80 transition-colors cursor-pointer group"
             >
               <div className="flex items-center gap-4 min-w-0">

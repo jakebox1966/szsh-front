@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Building2, ChevronLeft, ChevronRight } from "lucide-react";
 import type { ApiCompanyOfDay } from "@/lib/api-types";
 import { formatKRWCompact, formatPercent } from "@/lib/format";
+import { trackEvent } from "@/lib/analytics";
 
 type Props = {
   data: ApiCompanyOfDay;
@@ -68,6 +69,12 @@ export function CompanyOfDayCard({ data }: Props) {
         </span>
         <Link
           href={`/company/${data.slug}`}
+          onClick={() =>
+            trackEvent("company_detail", {
+              page_path: "home_1day_1company",
+              company_name: data.name,
+            })
+          }
           className="text-xs font-medium text-gray-500 hover:text-gray-900 flex items-center gap-0.5"
         >
           더보기 <ChevronRight size={14} />

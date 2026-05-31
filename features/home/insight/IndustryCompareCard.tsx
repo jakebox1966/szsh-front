@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import type { ApiIndustryCompare, ApiCompareCompany, ApiCompareHistoryItem } from "@/lib/api-types";
 import { formatKRWCompact } from "@/lib/format";
+import { trackEvent } from "@/lib/analytics";
 
 type Props = {
   data: ApiIndustryCompare;
@@ -23,6 +26,12 @@ function CompanyBlock({ company }: { company: ApiCompareCompany }) {
   return (
     <Link
       href={`/company/${company.slug}`}
+      onClick={() =>
+        trackEvent("company_detail", {
+          page_path: "home_industry",
+          company_name: company.name,
+        })
+      }
       className="block p-4 rounded-xl hover:bg-gray-50/80 transition-colors cursor-pointer border border-gray-100"
     >
       <div className="font-semibold text-gray-900 mb-3 truncate">{company.name}</div>

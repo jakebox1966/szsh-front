@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { apiFetch } from "@/lib/api";
+import { trackEvent } from "@/lib/analytics";
 import type { ApiCompanyListItem } from "@/lib/api-types";
 import type { HomeTag } from "../data";
 import {
@@ -112,11 +113,26 @@ export function HeroSection({
   const submitSearch = () => {
     const trimmed = query.trim();
     if (!trimmed) return;
+    trackEvent("search_enter", {
+      page_path: "home",
+      keyword: trimmed,
+      click_type: "search_result_page",
+    });
     setOpen(false);
     router.push(`/search?q=${encodeURIComponent(trimmed)}`);
   };
 
-  const goToCompany = (slug: string) => {
+  // 자동완성에서 회사 직접 선택 (검색 결과 페이지 안 거치는 분기)
+  const goToCompany = (slug: string, name?: string) => {
+    trackEvent("search_enter", {
+      page_path: "home",
+      keyword: query.trim(),
+      click_type: "keyword_matching",
+    });
+    trackEvent("company_detail", {
+      page_path: "keyword_matching",
+      company_name: name ?? slug,
+    });
     setOpen(false);
     router.push(`/company/${slug}`);
   };
@@ -131,7 +147,8 @@ export function HeroSection({
     } else if (e.key === "Enter") {
       e.preventDefault();
       if (activeIndex >= 0 && results[activeIndex]) {
-        goToCompany(results[activeIndex].slug);
+        const r = results[activeIndex];
+        goToCompany(r.slug, r.name);
       } else {
         submitSearch();
       }
@@ -191,7 +208,7 @@ export function HeroSection({
                   <button
                     type="button"
                     onMouseEnter={() => setActiveIndex(idx)}
-                    onClick={() => goToCompany(item.slug)}
+                    onClick={() => goToCompany(item.slug, item.name)}
                     className={`w-full flex items-center gap-3 px-4 py-2.5 transition-colors ${
                       idx === activeIndex
                         ? "bg-gray-50"

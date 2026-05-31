@@ -5,6 +5,7 @@ import { kakaoCompanyData } from "./data";
 import type { CompanyData, CompanyComment } from "./data";
 import { RevealOnView } from "@/components/ui/RevealOnView";
 import { apiFetch } from "@/lib/api";
+import { trackEvent } from "@/lib/analytics";
 import { mapCompanyDetail, mapCompanyComment } from "@/lib/api-mappers";
 import type { ApiCompanyDetail, ApiCompanyComment } from "@/lib/api-types";
 import { useAuth } from "@/lib/auth";
@@ -98,6 +99,10 @@ export function CompanyDetailContainer({ slug }: CompanyDetailContainerProps) {
         method: "POST",
         body: JSON.stringify({ content: trimmed }),
       });
+      trackEvent("comment_submit", {
+        page_path: "company_detail",
+        company_name: companyData.info.name,
+      });
       await refreshComments();
     } catch {
       setCompanyData((prev) => ({
@@ -131,6 +136,7 @@ export function CompanyDetailContainer({ slug }: CompanyDetailContainerProps) {
           method: "PUT",
           body: JSON.stringify({ content: trimmed }),
         });
+        trackEvent("comment_edit", { company_name: companyData.info.name });
         await refreshComments();
       } catch {
         setCompanyData((prev) => ({ ...prev, sampleComments: prevSnapshot }));
@@ -150,6 +156,7 @@ export function CompanyDetailContainer({ slug }: CompanyDetailContainerProps) {
         await apiFetch(`/api/companies/${slug}/comments/${commentId}`, {
           method: "DELETE",
         });
+        trackEvent("comment_delete", { company_name: companyData.info.name });
       } catch {
         setCompanyData((prev) => ({ ...prev, sampleComments: prevSnapshot }));
       }
