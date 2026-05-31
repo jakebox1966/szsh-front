@@ -37,15 +37,15 @@ type EventMap = {
   comment_delete: { company_name: string };
 };
 
-type GtagFn = (
-  command: "event",
-  eventName: string,
-  params: Record<string, unknown>,
-) => void;
+// 실제 gtag.js 의 시그니처는 (...args) — overload 가 많아서 가변으로 처리.
+type GtagFn = (...args: unknown[]) => void;
 
 declare global {
   interface Window {
     gtag?: GtagFn;
+    // gtag.js 가 처리하는 큐. gtag() 가 아직 정의 안 됐어도 여기 push 해두면
+    // 나중에 gtag.js 가 로드되면서 자동으로 소비함.
+    dataLayer?: unknown[];
   }
 }
 
@@ -54,6 +54,14 @@ export function trackEvent<K extends keyof EventMap>(
   params: EventMap[K],
 ): void {
   if (typeof window === "undefined") return;
-  if (!window.gtag) return;
+  // gtag.js 가 아직 로드 안 됐어도 stub 함수를 미리 깔아두면 호출이 dataLayer 에
+  // 쌓이고, gtag.js 가 나중에 로드되면서 큐에 쌓인 이벤트들을 자동 소비함.
+  // AuthProvider 의 OAuth 콜백 후 useEffect 같은 매우 이른 시점에서도 손실 없음.
+  if (!window.gtag) {
+    window.dataLayer = window.dataLayer ?? [];
+    window.gtag = function gtag(...args: unknown[]) {
+      window.dataLayer!.push(args);
+    } as GtagFn;
+  }
   window.gtag("event", name, params);
 }
