@@ -62,8 +62,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [refresh]);
 
   // OAuth 콜백 직후 백엔드가 ?login=google&new=1 등 쿼리를 붙여서 리다이렉트해줌.
-  // URL 정리는 즉시, GA 이벤트는 gtag.js config 가 끝난 뒤(load 이벤트) 발사 —
-  // 그 전에 보내면 measurement ID 가 아직 설정 안 돼서 silent drop 됨.
+  // URL 정리는 즉시, GA 이벤트는 gtag.js 의 'config' 명령이 dataLayer 에 들어온
+  // 뒤 발사 — 그 전에 보내면 measurement ID 미설정 상태라 silent drop 됨.
   useEffect(() => {
     if (typeof window === "undefined") return;
     const url = new URL(window.location.href);
@@ -81,14 +81,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       url.hash;
     window.history.replaceState(null, "", cleaned);
 
-    // 2) GA 이벤트는 페이지 load 완료 후 (gtag.js config 처리 끝) 발사
+    // 2) gtag.js 의 config 명령이 dataLayer 에 등장할 때까지 polling 후 발사.
+    //    readyState 'complete' 만으로는 gtag.js 가 아직 로드 안 된 케이스가 있음
+    //    (캐시 hit 시 readyState 가 이미 complete 인데 gtag 는 아직 stub).
     const fire = () =>
       trackEvent(isNew ? "sign_up" : "login", { method: provider });
-    if (document.readyState === "complete") {
-      fire();
-    } else {
-      window.addEventListener("load", fire, { once: true });
-    }
+
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    const start = Date.now();
+    const tryFire = () => {
+      const configReady = (window.dataLayer || []).some(
+        (e) => e && typeof e === "object" && (e as Record<string, unknown>)[0] === "config",
+      );
+      if (configReady) {
+        fire();
+      } else if (Date.now() - start > 5000) {
+        // 5초 넘으면 그냥 발사 (실패해도 더 기다리는 게 무의미)
+        fire();
+      } else {
+        timeoutId = setTimeout(tryFire, 100);
+      }
+    };
+    tryFire();
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, []);
 
   return (
