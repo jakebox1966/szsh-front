@@ -83,7 +83,7 @@ export function CompanyDetailContainer({ slug }: CompanyDetailContainerProps) {
     const tempComment: CompanyComment = {
       id: Date.now(),
       user: user?.nickname ?? "나",
-      userId: user?.id ?? -1,
+      userPublicId: user?.public_id ?? "",
       content: trimmed,
       time: "방금 전",
       edited: false,
@@ -218,7 +218,7 @@ export function CompanyDetailContainer({ slug }: CompanyDetailContainerProps) {
             onSubmitComment={handleSubmitComment}
             submitting={submitting}
             submitError={submitError}
-            currentUserId={user?.id ?? null}
+            currentUserPublicId={user?.public_id ?? null}
             onEditComment={handleEditComment}
             onDeleteComment={handleDeleteComment}
           />

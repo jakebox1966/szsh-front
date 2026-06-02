@@ -2,10 +2,10 @@
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { OAUTH_BASE_URL } from "./api";
-import { trackEvent } from "./analytics";
+import { trackEvent, setUserId } from "./analytics";
 
 export type AuthUser = {
-  id: number;
+  public_id: string;
   nickname: string;
   email: string | null;
   profile_image: string | null;
@@ -39,6 +39,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const me = await fetchMe();
       setUser(me);
       setStatus(me ? "authenticated" : "unauthenticated");
+      // 재방문(이미 로그인된 세션)에서도 이후 모든 GA 이벤트에 user_id 부착.
+      if (me?.public_id) setUserId(me.public_id);
     } catch {
       setUser(null);
       setStatus("unauthenticated");
@@ -69,11 +71,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const provider = url.searchParams.get("login");
     if (provider !== "google" && provider !== "kakao") return;
 
+    // sign_up/login 이벤트 발사 전에 user_id 부터 세팅 → 이 이벤트부터 user_id 포함.
+    const uid = url.searchParams.get("uid");
+    if (uid) setUserId(uid);
+
     const isNew = url.searchParams.get("new") === "1";
     trackEvent(isNew ? "sign_up" : "login", { method: provider });
 
     url.searchParams.delete("login");
     url.searchParams.delete("new");
+    url.searchParams.delete("uid");
     const cleaned =
       url.pathname +
       (url.searchParams.toString() ? `?${url.searchParams.toString()}` : "") +

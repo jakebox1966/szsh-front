@@ -145,7 +145,7 @@ export function mapCompanyComment(api: ApiCompanyComment): CompanyComment {
   return {
     id: api.id,
     user: api.user ?? "익명",
-    userId: api.userId,
+    userPublicId: api.userPublicId ?? "",
     content: api.content ?? "",
     time: api.time ?? formatTimeAgo(api.createdAt ?? api.created_at ?? ""),
     edited: api.edited ?? false,

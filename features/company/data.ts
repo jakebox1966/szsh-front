@@ -28,7 +28,7 @@ export type CompanySummary = {
 export type CompanyComment = {
   id: number;
   user: string;
-  userId: number;          // 작성자 식별. -1 은 optimistic 임시 (서버 응답 전)
+  userPublicId: string;    // 작성자 식별(nanoid). "" 은 optimistic 임시 (서버 응답 전)
   content: string;
   time: string;
   edited: boolean;
@@ -106,9 +106,9 @@ export const kakaoCompanyData: CompanyData = {
     revenue: "8조 1,058억",
   },
   sampleComments: [
-    { id: 1, user: "익명1", userId: -1, content: "카카오 개발직군 초봉이 생각보다 높네요! 복지도 궁금합니다.", time: "2시간 전", edited: false },
-    { id: 2, user: "익명2", userId: -1, content: "판교 오피스 근무 환경이 정말 좋다던데 부럽네요 ㅎㅎ", time: "5시간 전", edited: false },
-    { id: 3, user: "익명3", userId: -1, content: "최근에 인력 이동이 좀 있는 것 같은데, 분위기가 어떤지 궁금해요.", time: "1일 전", edited: false },
+    { id: 1, user: "익명1", userPublicId: "", content: "카카오 개발직군 초봉이 생각보다 높네요! 복지도 궁금합니다.", time: "2시간 전", edited: false },
+    { id: 2, user: "익명2", userPublicId: "", content: "판교 오피스 근무 환경이 정말 좋다던데 부럽네요 ㅎㅎ", time: "5시간 전", edited: false },
+    { id: 3, user: "익명3", userPublicId: "", content: "최근에 인력 이동이 좀 있는 것 같은데, 분위기가 어떤지 궁금해요.", time: "1일 전", edited: false },
   ],
   salary: {
     avgMonthly: "1,158만원",

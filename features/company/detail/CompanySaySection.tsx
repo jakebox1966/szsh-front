@@ -14,7 +14,7 @@ type CompanySaySectionProps = {
   onSubmitComment?: () => void;
   submitting?: boolean;
   submitError?: string | null;
-  currentUserId: number | null;
+  currentUserPublicId: string | null;
   onEditComment: (commentId: number, nextContent: string) => Promise<void> | void;
   onDeleteComment: (commentId: number) => Promise<void> | void;
 };
@@ -26,11 +26,11 @@ export function CompanySaySection({
   onSubmitComment,
   submitting = false,
   submitError = null,
-  currentUserId,
+  currentUserPublicId,
   onEditComment,
   onDeleteComment,
 }: CompanySaySectionProps) {
-  const isLoggedIn = currentUserId !== null;
+  const isLoggedIn = currentUserPublicId !== null;
   const canSubmit = isLoggedIn && comment.trim().length >= 2 && !submitting;
   const pathname = usePathname() || "/";
 
@@ -79,7 +79,7 @@ export function CompanySaySection({
                 <CommentRow
                   key={c.id}
                   comment={c}
-                  isOwner={isLoggedIn && c.userId === currentUserId}
+                  isOwner={isLoggedIn && c.userPublicId === currentUserPublicId}
                   onEdit={onEditComment}
                   onDelete={onDeleteComment}
                 />

@@ -49,16 +49,12 @@ declare global {
   }
 }
 
-export function trackEvent<K extends keyof EventMap>(
-  name: K,
-  params: EventMap[K],
-): void {
-  if (typeof window === "undefined") return;
-  // gtag.js 가 아직 로드 안 됐어도 stub 을 깔아두면 dataLayer 에 큐잉되고,
-  // gtag.js 가 나중에 로드되면서 자동 처리됨.
-  //
-  // 단 gtag.js 는 dataLayer 의 각 entry 를 *arguments-like 객체* 형태로만 인식.
-  // 따라서 plain Array (`[...]`) 가 아닌 `arguments` 객체 그대로 push 해야 함.
+// gtag.js 가 아직 로드 안 됐어도 stub 을 깔아두면 dataLayer 에 큐잉되고,
+// gtag.js 가 나중에 로드되면서 자동 처리됨.
+//
+// 단 gtag.js 는 dataLayer 의 각 entry 를 *arguments-like 객체* 형태로만 인식.
+// 따라서 plain Array (`[...]`) 가 아닌 `arguments` 객체 그대로 push 해야 함.
+function ensureGtag(): void {
   if (!window.gtag) {
     window.dataLayer = window.dataLayer ?? [];
     // function 키워드로 정의해서 `arguments` 사용 가능. 화살표 함수는 X.
@@ -67,5 +63,23 @@ export function trackEvent<K extends keyof EventMap>(
       (window.dataLayer as unknown[]).push(arguments);
     } as GtagFn;
   }
-  window.gtag("event", name, params);
+}
+
+export function trackEvent<K extends keyof EventMap>(
+  name: K,
+  params: EventMap[K],
+): void {
+  if (typeof window === "undefined") return;
+  ensureGtag();
+  window.gtag!("event", name, params);
+}
+
+/**
+ * GA4 user_id 세팅. 한 번 호출하면 이후 모든 이벤트에 user_id 가 자동 부착됨.
+ * value 는 우리 DB 의 public_id(nanoid) — 추측 불가·비PII 라 GA 전송에 안전.
+ */
+export function setUserId(publicId: string): void {
+  if (typeof window === "undefined" || !publicId) return;
+  ensureGtag();
+  window.gtag!("set", { user_id: publicId });
 }

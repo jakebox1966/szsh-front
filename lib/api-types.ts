@@ -107,7 +107,7 @@ export type ApiCompanyFinance = {
 export type ApiCompanyComment = {
   id: number;
   user: string;
-  userId: number;
+  userPublicId: string;
   content: string;
   edited?: boolean;
   time?: string;
