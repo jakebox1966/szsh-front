@@ -21,6 +21,14 @@ import {
   DsrCalculator,
 } from "@/features/calculators";
 
+// 계산기 탭 id → GA4 진입 이벤트 이름. 이 4개에 한해 진입 이벤트 발사.
+const CALCULATOR_ENTRY_EVENTS = {
+  salary_table: "salary_calculate",
+  jeonse: "jeonse_calculate",
+  mortgage: "mortgage_calculate",
+  dsr: "dsr_calculate",
+} as const;
+
 const CALCULATOR_DESCRIPTIONS: Record<string, string> = {
   salary_table: "연봉 기준 월 실수령액과 4대보험·세금 공제 내역을 계산합니다.",
   jeonse: "보증금·소득·보증기관 조건으로 전세자금대출 한도와 월 부담을 계산합니다.",
@@ -108,6 +116,10 @@ export function HeroSection({
   const openModal = (tag: HomeTag) => {
     setModalTag(tag);
     onTagChange(tag.label);
+    // 계산기 진입 이벤트 (로그인 시 user_id 자동 부착). 계산기 탭이 아니면 발사 안 함.
+    const entryEvent =
+      CALCULATOR_ENTRY_EVENTS[tag.id as keyof typeof CALCULATOR_ENTRY_EVENTS];
+    if (entryEvent) trackEvent(entryEvent, {});
   };
 
   const submitSearch = () => {

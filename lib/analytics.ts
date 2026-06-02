@@ -35,6 +35,11 @@ type EventMap = {
   comment_submit: { from_path: "company_detail"; company_name: string };
   comment_edit: { company_name: string };
   comment_delete: { company_name: string };
+  // 계산기 진입 (탭 열림 시점). 파라미터 없음 — 로그인 시 user_id 는 전역 set 으로 자동 부착.
+  salary_calculate: Record<string, never>;
+  jeonse_calculate: Record<string, never>;
+  mortgage_calculate: Record<string, never>;
+  dsr_calculate: Record<string, never>;
 };
 
 // 실제 gtag.js 의 시그니처는 (...args) — overload 가 많아서 가변으로 처리.
