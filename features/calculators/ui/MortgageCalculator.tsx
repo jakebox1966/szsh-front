@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { formatKRW } from "@/lib/format";
 import { calculateMortgage } from "../logic/mortgage";
 import {
@@ -17,7 +17,11 @@ import {
   ResultCard,
   BreakdownRow,
   SegmentedControl,
+  CalculateButton,
+  ResultPlaceholder,
+  WonText,
 } from "./shared";
+import { useDeferredResult } from "./useDeferredResult";
 
 export function MortgageCalculator() {
   const [housePrice, setHousePrice] = useState(0);
@@ -29,30 +33,29 @@ export function MortgageCalculator() {
   const [termYears, setTermYears] = useState(DEFAULT_LOAN_TERM_YEARS);
   const [interestRate, setInterestRate] = useState(DEFAULT_MORTGAGE_RATE);
 
-  const result = useMemo(
-    () =>
-      calculateMortgage({
-        housePrice,
-        region,
-        firstHome: firstHome === "first",
-        annualIncome,
-        existingAnnualDebt,
-        termYears,
-        interestRate,
-      }),
-    [housePrice, region, firstHome, annualIncome, existingAnnualDebt, termYears, interestRate],
+  const { result, calculated, calculate } = useDeferredResult(
+    {
+      housePrice,
+      region,
+      firstHome: firstHome === "first",
+      annualIncome,
+      existingAnnualDebt,
+      termYears,
+      interestRate,
+    },
+    calculateMortgage,
   );
 
   return (
     <div className="flex flex-col gap-5">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <Field label="주택 가격">
+        <Field label="주택 가격" aside={<WonText won={housePrice} />}>
           <ManwonInput value={housePrice} onChange={setHousePrice} placeholder="주택가격 입력" />
         </Field>
-        <Field label="연소득 (세전)">
+        <Field label="연소득 (세전)" aside={<WonText won={annualIncome} />}>
           <ManwonInput value={annualIncome} onChange={setAnnualIncome} placeholder="연소득 입력" />
         </Field>
-        <Field label="기존 대출 연간 원리금" hint="없으면 0">
+        <Field label="기존 대출 연간 원리금" hint="없으면 0" aside={<WonText won={existingAnnualDebt} />}>
           <ManwonInput
             value={existingAnnualDebt}
             onChange={setExistingAnnualDebt}
@@ -104,35 +107,47 @@ export function MortgageCalculator() {
         </Field>
       </div>
 
-      <ResultCard
-        title="대출 가능액"
-        primaryValue={formatKRW(result.maxLoanAmount)}
-        primaryLabel={`월 ${formatKRW(result.monthlyPayment)}`}
-        highlight="blue"
-      >
-        <div className="grid grid-cols-2 gap-x-3 gap-y-1 pt-2 border-t border-blue-100/50">
-          <BreakdownRow
-            label={`LTV ${(result.appliedLTV * 100).toFixed(0)}%`}
-            value={result.maxByLTV}
-          />
-          <BreakdownRow
-            label={`DTI ${(result.appliedDTI * 100).toFixed(0)}%`}
-            value={result.maxByDTI}
-          />
-          {result.maxByFirstHomeCap != null && (
-            <BreakdownRow label="생애최초 한도 (6억)" value={result.maxByFirstHomeCap} />
-          )}
-        </div>
-      </ResultCard>
+      <CalculateButton
+        onClick={calculate}
+        disabled={housePrice <= 0 || annualIncome <= 0}
+        label={calculated ? "다시 계산하기" : "계산하기"}
+      />
 
-      <div className="rounded-2xl border border-gray-100 bg-white p-4">
-        <div className="text-xs font-medium text-gray-500 mb-2">상환 요약 ({termYears}년 원리금균등)</div>
-        <div className="space-y-0.5 text-xs">
-          <BreakdownRow label="월 상환액" value={result.monthlyPayment} highlight />
-          <BreakdownRow label="총 상환액" value={result.totalPayment} />
-          <BreakdownRow label="총 이자" value={result.totalInterest} />
-        </div>
-      </div>
+      {result ? (
+        <>
+          <ResultCard
+            title="대출 가능액"
+            primaryValue={formatKRW(result.maxLoanAmount)}
+            primaryLabel={`월 ${formatKRW(result.monthlyPayment)}`}
+            highlight="blue"
+          >
+            <div className="grid grid-cols-2 gap-x-3 gap-y-1 pt-2 border-t border-blue-100/50">
+              <BreakdownRow
+                label={`LTV ${(result.appliedLTV * 100).toFixed(0)}%`}
+                value={result.maxByLTV}
+              />
+              <BreakdownRow
+                label={`DTI ${(result.appliedDTI * 100).toFixed(0)}%`}
+                value={result.maxByDTI}
+              />
+              {result.maxByFirstHomeCap != null && (
+                <BreakdownRow label="생애최초 한도 (6억)" value={result.maxByFirstHomeCap} />
+              )}
+            </div>
+          </ResultCard>
+
+          <div className="rounded-2xl border border-gray-100 bg-white p-4">
+            <div className="text-xs font-medium text-gray-500 mb-2">상환 요약 ({termYears}년 원리금균등)</div>
+            <div className="space-y-0.5 text-xs">
+              <BreakdownRow label="월 상환액" value={result.monthlyPayment} highlight />
+              <BreakdownRow label="총 상환액" value={result.totalPayment} />
+              <BreakdownRow label="총 이자" value={result.totalInterest} />
+            </div>
+          </div>
+        </>
+      ) : (
+        <ResultPlaceholder message="주택 가격과 연소득을 입력하고 계산하기를 눌러주세요" />
+      )}
 
       <p className="text-[11px] text-gray-400 leading-relaxed">
         * LTV·DTI는 정부 정책 기준 한도이며, 은행 자체 심사기준·신용도에 따라 실제 한도가 달라질 수 있습니다. DSR 한도도 추가로 확인 필요합니다.

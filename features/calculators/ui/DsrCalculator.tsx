@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Plus, X } from "lucide-react";
 import { formatKRW } from "@/lib/format";
 import { calculateDsr, type ExistingLoan } from "../logic/dsr";
@@ -12,7 +12,11 @@ import {
   ResultCard,
   BreakdownRow,
   SegmentedControl,
+  CalculateButton,
+  ResultPlaceholder,
+  WonText,
 } from "./shared";
+import { useDeferredResult } from "./useDeferredResult";
 
 type Row = ExistingLoan & { id: number };
 
@@ -39,35 +43,24 @@ export function DsrCalculator() {
   const [newLoanYears, setNewLoanYears] = useState(0);
   const [newLoanType, setNewLoanType] = useState<LoanType>("mortgage");
 
-  const result = useMemo(
-    () =>
-      calculateDsr({
-        annualIncome,
-        existingLoans: loans,
-        newLoan:
-          hasNewLoan === "yes"
-            ? {
-                type: newLoanType,
-                amount: newLoanAmount,
-                rate: newLoanRate,
-                termYears: newLoanYears,
-                isVariableRate: true,
-              }
-            : null,
-        isNonBank: isNonBank === "non_bank",
-        isMetro: region === "metro",
-      }),
-    [
+  const { result, calculated, calculate } = useDeferredResult(
+    {
       annualIncome,
-      loans,
-      hasNewLoan,
-      newLoanAmount,
-      newLoanRate,
-      newLoanYears,
-      newLoanType,
-      isNonBank,
-      region,
-    ],
+      existingLoans: loans,
+      newLoan:
+        hasNewLoan === "yes"
+          ? {
+              type: newLoanType,
+              amount: newLoanAmount,
+              rate: newLoanRate,
+              termYears: newLoanYears,
+              isVariableRate: true,
+            }
+          : null,
+      isNonBank: isNonBank === "non_bank",
+      isMetro: region === "metro",
+    },
+    calculateDsr,
   );
 
   const updateRow = (id: number, patch: Partial<Row>) =>
@@ -80,7 +73,7 @@ export function DsrCalculator() {
   return (
     <div className="flex flex-col gap-5">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <Field label="연소득 (세전)">
+        <Field label="연소득 (세전)" aside={<WonText won={annualIncome} />}>
           <ManwonInput value={annualIncome} onChange={setAnnualIncome} placeholder="연소득 입력" />
         </Field>
         <Field label="대출 기관">
@@ -138,7 +131,7 @@ export function DsrCalculator() {
                 </Field>
               </div>
               <div className="col-span-6 sm:col-span-3">
-                <Field label="잔액">
+                <Field label="잔액" aside={<WonText won={row.balance} />}>
                   <ManwonInput
                     value={row.balance}
                     onChange={(v) => updateRow(row.id, { balance: v })}
@@ -209,7 +202,7 @@ export function DsrCalculator() {
                 ))}
               </select>
             </Field>
-            <Field label="금액">
+            <Field label="금액" aside={<WonText won={newLoanAmount} />}>
               <ManwonInput
                 value={newLoanAmount}
                 onChange={setNewLoanAmount}
@@ -237,35 +230,47 @@ export function DsrCalculator() {
         )}
       </div>
 
-      <ResultCard
-        title="DSR 결과"
-        primaryValue={pct(result.totalDsr)}
-        primaryLabel={`한도 ${pct(result.limit)}`}
-        highlight={result.withinLimit ? "emerald" : "rose"}
-      >
-        <div className="grid grid-cols-2 gap-x-3 gap-y-1 pt-2 border-t border-current/10">
-          <BreakdownRow label="현재 DSR" value={pct(result.currentDsr)} />
-          <BreakdownRow
-            label={result.withinLimit ? "잔여 여력" : "초과"}
-            value={result.withinLimit ? result.remainingCapacity : `-${formatKRW(-result.remainingCapacity)}`}
-          />
-        </div>
-      </ResultCard>
+      <CalculateButton
+        onClick={calculate}
+        disabled={annualIncome <= 0}
+        label={calculated ? "다시 계산하기" : "계산하기"}
+      />
 
-      <div className="rounded-2xl border border-gray-100 bg-white p-4">
-        <div className="text-xs font-medium text-gray-500 mb-2">연간 원리금 (스트레스 가산 반영)</div>
-        <div className="space-y-0.5 text-xs">
-          <BreakdownRow label="기존 대출 합계" value={result.existingAnnualPayment} />
-          {hasNewLoan === "yes" && (
-            <BreakdownRow label="신규 대출" value={result.newAnnualPayment} />
-          )}
-          <BreakdownRow
-            label="총 합계"
-            value={result.existingAnnualPayment + result.newAnnualPayment}
-            highlight
-          />
-        </div>
-      </div>
+      {result ? (
+        <>
+          <ResultCard
+            title="DSR 결과"
+            primaryValue={pct(result.totalDsr)}
+            primaryLabel={`한도 ${pct(result.limit)}`}
+            highlight={result.withinLimit ? "emerald" : "rose"}
+          >
+            <div className="grid grid-cols-2 gap-x-3 gap-y-1 pt-2 border-t border-current/10">
+              <BreakdownRow label="현재 DSR" value={pct(result.currentDsr)} />
+              <BreakdownRow
+                label={result.withinLimit ? "잔여 여력" : "초과"}
+                value={result.withinLimit ? result.remainingCapacity : `-${formatKRW(-result.remainingCapacity)}`}
+              />
+            </div>
+          </ResultCard>
+
+          <div className="rounded-2xl border border-gray-100 bg-white p-4">
+            <div className="text-xs font-medium text-gray-500 mb-2">연간 원리금 (스트레스 가산 반영)</div>
+            <div className="space-y-0.5 text-xs">
+              <BreakdownRow label="기존 대출 합계" value={result.existingAnnualPayment} />
+              {hasNewLoan === "yes" && (
+                <BreakdownRow label="신규 대출" value={result.newAnnualPayment} />
+              )}
+              <BreakdownRow
+                label="총 합계"
+                value={result.existingAnnualPayment + result.newAnnualPayment}
+                highlight
+              />
+            </div>
+          </div>
+        </>
+      ) : (
+        <ResultPlaceholder message="연소득과 대출 정보를 입력하고 계산하기를 눌러주세요" />
+      )}
 
       <p className="text-[11px] text-gray-400 leading-relaxed">
         * 2026 스트레스 DSR 3단계 적용 (수도권·규제지역 +3%p / 지방 +0.75%p). 변동금리·혼합형 대출에만 가산. 실제 은행 심사 시 만기·상환방식은 더 보수적일 수 있습니다.
