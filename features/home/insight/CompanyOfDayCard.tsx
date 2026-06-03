@@ -124,27 +124,27 @@ export function CompanyOfDayCard({ data }: Props) {
       {/* 표 (가로 스크롤, 모바일에서 좌/우 스크롤 가능 방향으로만 힌트 화살표 노출) */}
       <div className="relative">
         <div ref={scrollRef} className="bg-gray-50 rounded-xl p-3 overflow-x-auto">
-          <div className="grid grid-cols-[auto_repeat(5,auto)] gap-x-5 text-[11px] whitespace-nowrap min-w-max">
+          <div className="grid grid-cols-[auto_repeat(5,auto)] gap-x-5 gap-y-1.5 items-baseline text-[11px] whitespace-nowrap min-w-max">
             <div className="text-gray-400">구분</div>
             {data.history.map((h) => (
               <div key={h.year} className={`text-right ${h.year === latestYear ? "font-bold text-gray-900" : "text-gray-400"}`}>
                 {h.year}
               </div>
             ))}
-            <div className="text-gray-500 pt-1.5">매출액</div>
+            <div className="text-gray-500">매출액</div>
             {data.history.map((h) => (
               <div
                 key={h.year}
-                className={`text-right pt-1.5 tabular-nums ${h.year === latestYear ? "font-bold text-indigo-700" : "text-gray-700"}`}
+                className={`text-right tabular-nums ${h.year === latestYear ? "font-bold text-indigo-700" : "text-gray-700"}`}
               >
                 {h.revenue ? formatKRWCompact(h.revenue) : "—"}
               </div>
             ))}
-            <div className="text-gray-500 pt-1">영업이익</div>
+            <div className="text-gray-500">영업이익</div>
             {data.history.map((h) => (
               <div
                 key={h.year}
-                className={`text-right pt-1 tabular-nums ${h.year === latestYear ? "font-bold text-indigo-700" : "text-gray-700"}`}
+                className={`text-right tabular-nums ${h.year === latestYear ? "font-bold text-indigo-700" : "text-gray-700"}`}
               >
                 {h.operatingProfit != null ? formatKRWCompact(h.operatingProfit) : "—"}
               </div>
