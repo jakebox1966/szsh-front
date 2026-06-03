@@ -229,7 +229,7 @@ export function CompanyDetailContainer({ slug }: CompanyDetailContainerProps) {
         </RevealOnView>
 
         <RevealOnView>
-          <SummaryCardsSection summary={summary} />
+          <SummaryCardsSection summary={summary} revenueGrowth={finance?.revenue?.growth} />
         </RevealOnView>
 
         <div className="flex flex-col gap-6">

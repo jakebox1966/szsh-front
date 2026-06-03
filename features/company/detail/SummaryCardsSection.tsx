@@ -4,12 +4,21 @@ import type { CompanySummary } from "../data";
 
 type SummaryCardsSectionProps = {
   summary: CompanySummary;
+  revenueGrowth?: string; // 포맷된 전년대비 % (예: "+14.2%"). 없으면 빈 문자열
 };
 
-export function SummaryCardsSection({ summary }: SummaryCardsSectionProps) {
+export function SummaryCardsSection({ summary, revenueGrowth }: SummaryCardsSectionProps) {
   const salaryFromDart = !!summary.avgSalaryOfficial;
   const salaryValue = summary.avgSalaryOfficial ?? summary.avgSalary;
   const hasSalary = salaryValue && salaryValue !== "—" && salaryValue.trim() !== "";
+
+  // 하드코딩 제거 — 실제 매출 성장률 사용 (부호: + → up(빨강), - → down(파랑))
+  const hasGrowth = !!revenueGrowth && revenueGrowth.trim() !== "" && revenueGrowth !== "—";
+  const growthTrend: "up" | "down" | "neutral" = !hasGrowth
+    ? "neutral"
+    : revenueGrowth!.startsWith("-")
+      ? "down"
+      : "up";
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
@@ -60,8 +69,8 @@ export function SummaryCardsSection({ summary }: SummaryCardsSectionProps) {
         icon={<Building2 size={18} className="text-orange-600" />}
         label="최근 매출액"
         value={summary.revenue}
-        subtext="전년 대비 +14.2%"
-        trend="up"
+        subtext={hasGrowth ? `전년 대비 ${revenueGrowth}` : ""}
+        trend={growthTrend}
         source="DART"
       />
     </div>
