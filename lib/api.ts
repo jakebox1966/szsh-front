@@ -35,5 +35,8 @@ export async function apiFetch<T>(
     throw new ApiError(res.status, `API error: ${res.status} ${res.statusText}`);
   }
 
-  return res.json();
+  // 204 No Content / 빈 바디(예: DELETE)는 res.json() 이 파싱 에러를 던지므로 별도 처리.
+  if (res.status === 204) return undefined as T;
+  const text = await res.text();
+  return (text ? JSON.parse(text) : undefined) as T;
 }
