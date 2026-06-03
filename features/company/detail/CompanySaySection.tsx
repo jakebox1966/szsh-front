@@ -31,6 +31,8 @@ export function CompanySaySection({
   onDeleteComment,
 }: CompanySaySectionProps) {
   const isLoggedIn = currentUserPublicId !== null;
+  // 최초 5개만 노출, "더보기"로 5개씩 추가 (단일행이라 5개 = 고정 높이)
+  const [visibleCount, setVisibleCount] = useState(5);
   const canSubmit = isLoggedIn && comment.trim().length >= 2 && !submitting;
   const pathname = usePathname() || "/";
 
@@ -48,8 +50,8 @@ export function CompanySaySection({
           <MessageSquare size={16} className="text-indigo-600" />
           <h2 className="text-xs font-bold text-gray-900 tracking-tight">세전세후 세이(Say)</h2>
         </div>
-        <button
-          type="button"
+        <Link
+          href="/comments"
           className={`text-[10px] text-gray-400 flex items-center hover:text-gray-600 transition-colors ${
             isLoggedIn ? "" : "blur-[3px] select-none pointer-events-none"
           }`}
@@ -57,7 +59,7 @@ export function CompanySaySection({
           tabIndex={isLoggedIn ? 0 : -1}
         >
           전체보기 <ChevronRight size={10} />
-        </button>
+        </Link>
       </div>
 
       <div className="relative">
@@ -74,17 +76,28 @@ export function CompanySaySection({
               아직 댓글이 없습니다. 첫 번째 의견을 남겨보세요!
             </div>
           ) : (
-            <div className="space-y-2 mb-4">
-              {comments.map((c) => (
-                <CommentRow
-                  key={c.id}
-                  comment={c}
-                  isOwner={isLoggedIn && c.userPublicId === currentUserPublicId}
-                  onEdit={onEditComment}
-                  onDelete={onDeleteComment}
-                />
-              ))}
-            </div>
+            <>
+              <div className="space-y-2 mb-3">
+                {comments.slice(0, visibleCount).map((c) => (
+                  <CommentRow
+                    key={c.id}
+                    comment={c}
+                    isOwner={isLoggedIn && c.userPublicId === currentUserPublicId}
+                    onEdit={onEditComment}
+                    onDelete={onDeleteComment}
+                  />
+                ))}
+              </div>
+              {visibleCount < comments.length && (
+                <button
+                  type="button"
+                  onClick={() => setVisibleCount((v) => v + 5)}
+                  className="w-full mb-4 py-2 rounded-xl border border-gray-100 text-xs font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-700 transition-colors"
+                >
+                  더보기 {comments.length - visibleCount}개
+                </button>
+              )}
+            </>
           )}
 
           {submitError && isLoggedIn && (

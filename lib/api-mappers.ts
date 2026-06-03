@@ -121,9 +121,12 @@ function mapCompanyFinance(api: ApiCompanyFinance | null | undefined): CompanyFi
   };
 }
 
-function formatTimeAgo(isoString: string): string {
+export function formatTimeAgo(isoString: string): string {
   try {
-    const date = new Date(isoString);
+    // 백엔드는 naive UTC("...T05:00:00")로 보냄. 타임존 표기가 없으면 JS가 로컬로
+    // 오해하므로(KST면 +9h 어긋남) Z 를 붙여 UTC 로 해석시킨다.
+    const hasTz = /(Z|[+-]\d{2}:?\d{2})$/i.test(isoString);
+    const date = new Date(hasTz ? isoString : `${isoString}Z`);
     if (isNaN(date.getTime())) return isoString;
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();

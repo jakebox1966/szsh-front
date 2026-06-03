@@ -115,6 +115,30 @@ export type ApiCompanyComment = {
   createdAt?: string;
 };
 
+// --- 코멘트 모아보기 ---
+
+export type ApiCommentFeedItem = {
+  id: number;
+  companyName: string;
+  companySlug: string;
+  nickname: string;
+  content: string;
+  createdAt: string;
+};
+
+export type ApiCommentDigest = {
+  items: ApiCommentFeedItem[];
+  totalCount: number;
+};
+
+export type ApiCommentFeed = {
+  items: ApiCommentFeedItem[];
+  totalCount: number;
+  hasMore: boolean;
+  locked: boolean;
+  nextCursor: number | null;
+};
+
 // --- Company of Day (1일 1컴퍼니) ---
 
 export type ApiCompanyOfDayHistory = {
