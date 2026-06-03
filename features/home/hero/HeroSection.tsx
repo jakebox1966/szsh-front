@@ -13,6 +13,7 @@ import {
 import { apiFetch } from "@/lib/api";
 import { trackEvent } from "@/lib/analytics";
 import { useRecentCompanies, removeRecentCompany, clearRecentCompanies } from "@/lib/recent";
+import { recordSearchTerm, useRecentSearchTerms } from "@/lib/search-terms";
 import type { ApiCompanyListItem } from "@/lib/api-types";
 import type { HomeTag } from "../data";
 import {
@@ -69,6 +70,7 @@ export function HeroSection({
 }: HeroSectionProps) {
   const router = useRouter();
   const recentCompanies = useRecentCompanies();
+  const recentTerms = useRecentSearchTerms();
   const [modalTag, setModalTag] = useState<HomeTag | null>(null);
   // 닫는 동안에도 내부 콘텐츠가 보이도록 마지막 modalTag 보존.
   // modalTag 가 null 이 되어도 closing 애니메이션 (200ms) 동안 이전 콘텐츠 유지.
@@ -132,6 +134,7 @@ export function HeroSection({
       keyword: trimmed,
       click_type: "search_result_page",
     });
+    recordSearchTerm(trimmed); // 글로벌 최신 검색어 기록 (fire-and-forget)
     setOpen(false);
     router.push(`/search?q=${encodeURIComponent(trimmed)}`);
   };
@@ -147,6 +150,7 @@ export function HeroSection({
       from_path: "keyword_matching",
       company_name: name ?? slug,
     });
+    recordSearchTerm(query.trim()); // 자동완성 선택도 검색 행위 → 검색어 기록
     setOpen(false);
     router.push(`/company/${slug}`);
   };
@@ -191,9 +195,30 @@ export function HeroSection({
         <span>세전세후 AI-Powered Insights</span>
       </div>
 
-      <h1 className="text-4xl md:text-5xl font-semibold mb-8 leading-tight text-[#1a1a1a] tracking-[-0.03em]">
+      <h1 className="text-4xl md:text-5xl font-semibold mb-6 leading-tight text-[#1a1a1a] tracking-[-0.03em]">
         AI로 만나는 기업 리포트
       </h1>
+
+      {recentTerms.length > 0 && (
+        <div className="w-full max-w-2xl mx-auto mb-4">
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
+            <span className="shrink-0 text-xs font-semibold text-gray-500">최신 검색어</span>
+            {recentTerms.map((t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => {
+                  recordSearchTerm(t);
+                  router.push(`/search?q=${encodeURIComponent(t)}`);
+                }}
+                className="shrink-0 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap bg-gray-50 text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="relative group w-full max-w-2xl mx-auto mb-8" ref={wrapperRef}>
         <div className="relative bg-white rounded-full md:rounded-[2rem] shadow-[0_2px_12px_rgba(0,0,0,0.08)] border border-gray-200 p-1.5 md:p-2 flex items-center transition-all duration-300 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] hover:border-gray-300">
@@ -313,8 +338,8 @@ export function HeroSection({
         )}
       </div>
 
-      <div className="w-full overflow-x-auto no-scrollbar py-2">
-        <div className="flex flex-nowrap justify-start md:justify-center gap-2 min-w-max px-2">
+      <div className="w-full max-w-2xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
           {tags.map((tag) => {
             const Icon = tag.icon;
             // 모달 열린 동안 트리거 비활성화 (이중 클릭 / 다른 계산기 동시 호출 방지)
@@ -325,10 +350,14 @@ export function HeroSection({
                 type="button"
                 onClick={() => openModal(tag)}
                 disabled={isDisabled}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium border whitespace-nowrap bg-white border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:border-gray-200"
+                className="group flex flex-col items-center justify-center gap-2 px-2 py-4 rounded-2xl border border-gray-200 bg-white transition-all hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-50/50 hover:shadow-md hover:shadow-indigo-500/5 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:border-gray-200 disabled:hover:bg-white disabled:hover:shadow-none"
               >
-                <Icon size={14} />
-                {tag.label}
+                <span className="flex items-center justify-center w-9 h-9 rounded-xl bg-gray-50 text-gray-400 transition-colors group-hover:bg-indigo-100 group-hover:text-indigo-600">
+                  <Icon size={18} />
+                </span>
+                <span className="text-xs font-semibold text-center leading-tight text-gray-700 group-hover:text-indigo-700">
+                  {tag.label}
+                </span>
               </button>
             );
           })}
