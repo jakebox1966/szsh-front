@@ -105,16 +105,16 @@ export function InsightSection() {
 
   return (
     <div className="w-full max-w-2xl flex flex-col gap-8">
+      {/* 구좌 0: 솔직 코멘트 (최상단, 코멘트 모아보기 유도) */}
+      {commentDigest && commentDigest.items.length > 0 && (
+        <RevealOnView>
+          <CommentDigestCard data={commentDigest} />
+        </RevealOnView>
+      )}
       {/* 구좌 1: 1일 1컴퍼니 */}
       {displayData.companyOfDay && (
         <RevealOnView>
           <CompanyOfDayCard data={displayData.companyOfDay} />
-        </RevealOnView>
-      )}
-      {/* 구좌: 솔직 코멘트 (코멘트 모아보기 유도) */}
-      {commentDigest && commentDigest.items.length > 0 && (
-        <RevealOnView>
-          <CommentDigestCard data={commentDigest} />
         </RevealOnView>
       )}
       {/* 구좌 2: 기업실적 트렌드 (산업군 1위 회사들 5년 추이) */}
