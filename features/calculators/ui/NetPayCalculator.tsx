@@ -14,6 +14,7 @@ import {
   WonText,
 } from "./shared";
 import { useDeferredResult } from "./useDeferredResult";
+import { trackEvent } from "@/lib/analytics";
 
 export function NetPayCalculator() {
   const [annualGross, setAnnualGross] = useState(0);
@@ -49,7 +50,10 @@ export function NetPayCalculator() {
       </div>
 
       <CalculateButton
-        onClick={calculate}
+        onClick={() => {
+          trackEvent("salary_calculate", {});
+          calculate();
+        }}
         disabled={annualGross <= 0}
         label={calculated ? "다시 계산하기" : "계산하기"}
       />

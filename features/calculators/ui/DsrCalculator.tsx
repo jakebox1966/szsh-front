@@ -17,6 +17,7 @@ import {
   WonText,
 } from "./shared";
 import { useDeferredResult } from "./useDeferredResult";
+import { trackEvent } from "@/lib/analytics";
 
 type Row = ExistingLoan & { id: number };
 
@@ -104,7 +105,7 @@ export function DsrCalculator() {
           <button
             type="button"
             onClick={() => setLoans((rows) => [...rows, newRow()])}
-            className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700"
+            className="inline-flex items-center gap-1 text-xs font-medium text-indigo-600 px-2.5 py-1 rounded-full bg-indigo-50 hover:bg-indigo-100 transition-colors"
           >
             <Plus size={12} /> 추가
           </button>
@@ -231,7 +232,10 @@ export function DsrCalculator() {
       </div>
 
       <CalculateButton
-        onClick={calculate}
+        onClick={() => {
+          trackEvent("dsr_calculate", {});
+          calculate();
+        }}
         disabled={annualIncome <= 0}
         label={calculated ? "다시 계산하기" : "계산하기"}
       />

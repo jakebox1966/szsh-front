@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
+import { Calculator } from "lucide-react";
 import { formatKRW } from "@/lib/format";
 
 /** 만원 단위 입력 → 원 단위로 변환해서 onChange. 빈 문자열은 0. */
@@ -159,9 +160,9 @@ export function SegmentedControl<T extends string>({
           key={opt.value}
           type="button"
           onClick={() => onChange(opt.value)}
-          className={`flex-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+          className={`flex-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
             value === opt.value
-              ? "bg-white text-gray-900 shadow-sm"
+              ? "bg-white text-indigo-600 shadow-sm"
               : "text-gray-500 hover:text-gray-700"
           }`}
         >
@@ -244,8 +245,9 @@ export function CalculateButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className="w-full h-12 rounded-2xl bg-gray-900 text-white text-sm font-semibold transition hover:bg-gray-800 active:scale-[0.99] disabled:opacity-40 disabled:hover:bg-gray-900"
+      className="inline-flex w-full items-center justify-center gap-2 h-12 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold shadow-lg shadow-indigo-500/25 transition-all hover:shadow-xl hover:shadow-indigo-500/30 hover:brightness-[1.03] active:scale-[0.98] disabled:opacity-40 disabled:shadow-none disabled:cursor-not-allowed"
     >
+      <Calculator size={16} className="opacity-90" />
       {label}
     </button>
   );

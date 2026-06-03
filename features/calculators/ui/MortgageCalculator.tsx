@@ -22,6 +22,7 @@ import {
   WonText,
 } from "./shared";
 import { useDeferredResult } from "./useDeferredResult";
+import { trackEvent } from "@/lib/analytics";
 
 export function MortgageCalculator() {
   const [housePrice, setHousePrice] = useState(0);
@@ -108,7 +109,10 @@ export function MortgageCalculator() {
       </div>
 
       <CalculateButton
-        onClick={calculate}
+        onClick={() => {
+          trackEvent("mortgage_calculate", {});
+          calculate();
+        }}
         disabled={housePrice <= 0 || annualIncome <= 0}
         label={calculated ? "다시 계산하기" : "계산하기"}
       />

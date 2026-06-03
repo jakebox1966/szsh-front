@@ -32,7 +32,7 @@ export function Header() {
   };
 
   return (
-    <header className="fixed top-0 w-full px-6 py-4 flex justify-between items-center z-50 bg-white/90 backdrop-blur-sm border-b border-transparent">
+    <header className="fixed top-0 w-full px-6 py-4 flex justify-between items-center z-50 bg-white/70 supports-[backdrop-filter]:bg-white/55 backdrop-blur-xl">
       <Link href="/" className="flex items-center gap-2 cursor-pointer group">
         <span className="relative inline-block text-xl font-bold tracking-tight">
           <span

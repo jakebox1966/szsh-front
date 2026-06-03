@@ -4,6 +4,7 @@ import { useState } from "react";
 import { formatKRW } from "@/lib/format";
 import { calculateJeonse } from "../logic/jeonse";
 import { DEFAULT_JEONSE_RATE, JEONSE_LTV_RATIO } from "../constants/jeonse";
+import { trackEvent } from "@/lib/analytics";
 import {
   Field,
   ManwonInput,
@@ -33,6 +34,7 @@ export function JeonseCalculator() {
   const sliderPct = result && maxLoan > 0 ? (result.loanAmount / maxLoan) * 100 : 0;
 
   const handleCalculate = () => {
+    trackEvent("jeonse_calculate", {});
     setLoanOverride(null); // 매 계산마다 대출액은 한도(80%) 기본값에서 시작
     setCalculatedKey(committedKey);
   };
