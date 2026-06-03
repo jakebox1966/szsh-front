@@ -9,6 +9,7 @@ import { trackEvent } from "@/lib/analytics";
 import { mapCompanyDetail, mapCompanyComment } from "@/lib/api-mappers";
 import type { ApiCompanyDetail, ApiCompanyComment } from "@/lib/api-types";
 import { useAuth } from "@/lib/auth";
+import { pushRecentCompany } from "@/lib/recent";
 import {
   CompanyHeaderSection,
   CompanySaySection,
@@ -39,8 +40,11 @@ export function CompanyDetailContainer({ slug }: CompanyDetailContainerProps) {
       try {
         const data = await apiFetch<ApiCompanyDetail>(`/api/companies/${slug}`);
         if (!cancelled) {
-          setCompanyData(mapCompanyDetail(data));
+          const mapped = mapCompanyDetail(data);
+          setCompanyData(mapped);
           setError(null);
+          // 내 최근 검색 기업에 기록 (localStorage)
+          pushRecentCompany(slug, mapped.info.name);
         }
       } catch {
         if (!cancelled) {
@@ -58,7 +62,7 @@ export function CompanyDetailContainer({ slug }: CompanyDetailContainerProps) {
   const refreshComments = useCallback(async () => {
     try {
       const comments = await apiFetch<ApiCompanyComment[]>(
-        `/api/companies/${slug}/comments`,
+        `/api/companies/${slug}/comments?size=100`,
       );
       setCompanyData((prev) => ({
         ...prev,
