@@ -196,12 +196,12 @@ function CommentRow({ comment, isOwner, onEdit, onDelete }: CommentRowProps) {
     return (
       <div className="bg-indigo-50/40 border border-indigo-100 px-4 py-2 rounded-xl">
         <div className="flex items-center gap-3">
-          <span className="text-[10px] font-bold text-indigo-500 whitespace-nowrap min-w-[32px]">
+          <span className="text-[10px] font-bold text-indigo-500 whitespace-nowrap shrink-0 max-w-[88px] truncate">
             {comment.user}
           </span>
           <input
             type="text"
-            className="flex-1 bg-white border border-indigo-200 rounded-md px-2 py-1 text-[11px] outline-none focus:ring-2 focus:ring-indigo-100"
+            className="flex-1 min-w-0 bg-white border border-indigo-200 rounded-md px-2 py-1 text-[11px] outline-none focus:ring-2 focus:ring-indigo-100"
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={(e) => {
@@ -236,17 +236,17 @@ function CommentRow({ comment, isOwner, onEdit, onDelete }: CommentRowProps) {
   }
 
   return (
-    <div className="group relative flex items-center justify-between bg-gray-50 hover:bg-indigo-50/30 px-4 py-2 rounded-xl border border-gray-100 transition-colors">
-      <div className="flex items-center gap-3 overflow-hidden">
-        <span className="text-[10px] font-bold text-indigo-500 whitespace-nowrap min-w-[32px]">
+    <div className="group relative flex items-center justify-between gap-2 bg-gray-50 hover:bg-indigo-50/30 px-4 py-2 rounded-xl border border-gray-100 transition-colors">
+      <div className="flex items-center gap-3 min-w-0 flex-1">
+        <span className="text-[10px] font-bold text-indigo-500 whitespace-nowrap shrink-0 max-w-[88px] truncate">
           {comment.user}
         </span>
-        <p className="text-[11px] text-gray-700 truncate">
+        <p className="text-[11px] text-gray-700 truncate min-w-0 flex-1">
           {comment.content}
           {comment.edited && <span className="text-gray-400 ml-1">(수정됨)</span>}
         </p>
       </div>
-      <div className="flex items-center gap-1 text-[9px] text-gray-400 whitespace-nowrap ml-4">
+      <div className="flex items-center gap-1 text-[9px] text-gray-400 whitespace-nowrap shrink-0">
         <Clock size={10} />
         {comment.time}
         {isOwner && (
