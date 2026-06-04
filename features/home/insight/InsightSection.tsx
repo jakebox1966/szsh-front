@@ -6,14 +6,11 @@ import type {
   ApiSpotlight,
   ApiIndustryCompare,
   ApiCompanyOfDay,
-  ApiCommentDigest,
 } from "@/lib/api-types";
 import { RevealOnView } from "@/components/ui/RevealOnView";
-import { useAuth } from "@/lib/auth";
 import { SpotlightCard } from "./SpotlightCard";
 import { IndustryCompareCard } from "./IndustryCompareCard";
 import { CompanyOfDayCard } from "./CompanyOfDayCard";
-import { CommentDigestCard } from "./CommentDigestCard";
 
 type HomeData = {
   companyOfDay: ApiCompanyOfDay | null;
@@ -23,11 +20,8 @@ type HomeData = {
 };
 
 export function InsightSection() {
-  const { status } = useAuth();
   const [data, setData] = useState<HomeData | null>(null);
   const [loading, setLoading] = useState(true);
-  // 코멘트 다이제스트는 auth-aware(비로그인 1 / 로그인 5)라 로그인 상태가 바뀌면 재요청.
-  const [commentDigest, setCommentDigest] = useState<ApiCommentDigest | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -42,8 +36,8 @@ export function InsightSection() {
         const [codRes, compareRes, revRes, salRes] = await Promise.allSettled([
           apiFetch<ApiCompanyOfDay>("/api/home/company-of-day"),
           apiFetch<ApiIndustryCompare>("/api/home/industry-compare"),
-          apiFetch<ApiSpotlight>("/api/home/spotlight?metric=revenue&limit=5"),
-          apiFetch<ApiSpotlight>("/api/home/spotlight?metric=salary&limit=5"),
+          apiFetch<ApiSpotlight>("/api/home/spotlight?metric=revenue&limit=20&page=0"),
+          apiFetch<ApiSpotlight>("/api/home/spotlight?metric=salary&limit=20&page=0"),
         ]);
 
         if (cancelled) return;
@@ -71,16 +65,6 @@ export function InsightSection() {
     return () => { cancelled = true; };
   }, []);
 
-  // 로그인 상태 확정/변경 시 코멘트 다이제스트 재요청 (로그아웃하면 다시 1개로)
-  useEffect(() => {
-    if (status === "loading") return;
-    let cancelled = false;
-    apiFetch<ApiCommentDigest>("/api/comments/digest")
-      .then((d) => { if (!cancelled) setCommentDigest(d); })
-      .catch(() => { if (!cancelled) setCommentDigest(null); });
-    return () => { cancelled = true; };
-  }, [status]);
-
   if (loading) {
     return (
       <div className="w-full max-w-2xl flex flex-col gap-8">
@@ -105,12 +89,6 @@ export function InsightSection() {
 
   return (
     <div className="w-full max-w-2xl flex flex-col gap-8">
-      {/* 구좌 0: 솔직 코멘트 (최상단, 코멘트 모아보기 유도) */}
-      {commentDigest && commentDigest.items.length > 0 && (
-        <RevealOnView>
-          <CommentDigestCard data={commentDigest} />
-        </RevealOnView>
-      )}
       {/* 구좌 1: 1일 1컴퍼니 */}
       {displayData.companyOfDay && (
         <RevealOnView>

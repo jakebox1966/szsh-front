@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import type { HomeTag } from "./data";
 import { HeroSection } from "./hero";
+import { HomeBoards } from "./boards/HomeBoards";
 import { InsightSection } from "./insight";
 
 const TAGS: HomeTag[] = [
@@ -28,6 +29,9 @@ export function HomeContainer() {
         activeTag={activeTag}
         onTagChange={setActiveTag}
       />
+      <div className="w-full mb-12">
+        <HomeBoards />
+      </div>
       <InsightSection />
     </>
   );
