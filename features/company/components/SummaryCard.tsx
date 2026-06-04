@@ -31,7 +31,7 @@ export function SummaryCard({
   return (
     <div className="relative bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
       {source && hasValue && (
-        <div className="absolute -top-2 -right-2 shadow-sm rounded-md">
+        <div className="absolute -top-2 -right-2 flex shadow-sm rounded-md">
           <SourceBadge source={source} />
         </div>
       )}

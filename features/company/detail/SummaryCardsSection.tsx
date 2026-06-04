@@ -4,10 +4,14 @@ import type { CompanySummary } from "../data";
 
 type SummaryCardsSectionProps = {
   summary: CompanySummary;
+  revenueValue?: string; // finance 기준 포맷 매출(DART). 성장률과 같은 소스로 통일.
   revenueGrowth?: string; // 포맷된 전년대비 % (예: "+14.2%"). 없으면 빈 문자열
 };
 
-export function SummaryCardsSection({ summary, revenueGrowth }: SummaryCardsSectionProps) {
+export function SummaryCardsSection({ summary, revenueValue, revenueGrowth }: SummaryCardsSectionProps) {
+  // 매출 값: finance(DART) 우선, 없으면 요약값 fallback (성장률 출처와 일치시켜 뱃지 누락 방지)
+  const revenueDisplay =
+    revenueValue && revenueValue.trim() !== "" ? revenueValue : summary.revenue;
   const salaryFromDart = !!summary.avgSalaryOfficial;
   const salaryValue = summary.avgSalaryOfficial ?? summary.avgSalary;
   const hasSalary = salaryValue && salaryValue !== "—" && salaryValue.trim() !== "";
@@ -24,7 +28,7 @@ export function SummaryCardsSection({ summary, revenueGrowth }: SummaryCardsSect
     <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
       <div className="relative bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
         {hasSalary && (
-          <div className="absolute -top-2 -right-2 shadow-sm rounded-md">
+          <div className="absolute -top-2 -right-2 flex shadow-sm rounded-md">
             <SourceBadge source={salaryFromDart ? "DART" : "NPS"} />
           </div>
         )}
@@ -68,7 +72,7 @@ export function SummaryCardsSection({ summary, revenueGrowth }: SummaryCardsSect
       <SummaryCard
         icon={<Building2 size={18} className="text-orange-600" />}
         label="최근 매출액"
-        value={summary.revenue}
+        value={revenueDisplay}
         subtext={hasGrowth ? `전년 대비 ${revenueGrowth}` : ""}
         trend={growthTrend}
         source="DART"

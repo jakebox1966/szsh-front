@@ -5,11 +5,13 @@ import { kakaoCompanyData } from "./data";
 import type { CompanyData, CompanyComment } from "./data";
 import { RevealOnView } from "@/components/ui/RevealOnView";
 import { apiFetch } from "@/lib/api";
+import { formatKRW } from "@/lib/format";
 import { trackEvent } from "@/lib/analytics";
 import { mapCompanyDetail, mapCompanyComment } from "@/lib/api-mappers";
 import type { ApiCompanyDetail, ApiCompanyComment } from "@/lib/api-types";
 import { useAuth } from "@/lib/auth";
 import { pushRecentCompany } from "@/lib/recent";
+import { recordSearchTerm } from "@/lib/search-terms";
 import {
   CompanyHeaderSection,
   CompanySaySection,
@@ -43,8 +45,10 @@ export function CompanyDetailContainer({ slug }: CompanyDetailContainerProps) {
           const mapped = mapCompanyDetail(data);
           setCompanyData(mapped);
           setError(null);
-          // 내 최근 검색 기업에 기록 (localStorage)
+          // 회사 조회 시점에 기록 (localStorage 개인 최근 + 글로벌 실시간 검색어).
+          // 검색창 엔터가 아니라 "실제 회사를 본 시점" 기준으로 통일.
           pushRecentCompany(slug, mapped.info.name);
+          recordSearchTerm(mapped.info.name);
         }
       } catch {
         if (!cancelled) {
@@ -229,7 +233,11 @@ export function CompanyDetailContainer({ slug }: CompanyDetailContainerProps) {
         </RevealOnView>
 
         <RevealOnView>
-          <SummaryCardsSection summary={summary} revenueGrowth={finance?.revenue?.growth} />
+          <SummaryCardsSection
+            summary={summary}
+            revenueValue={finance?.revenue?.current ? formatKRW(finance.revenue.current) : undefined}
+            revenueGrowth={finance?.revenue?.growth}
+          />
         </RevealOnView>
 
         <div className="flex flex-col gap-6">
