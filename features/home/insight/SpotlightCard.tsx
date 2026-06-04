@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { ApiSpotlight } from "@/lib/api-types";
 import { formatKRW, formatPercent } from "@/lib/format";
@@ -8,6 +9,10 @@ import { trackEvent } from "@/lib/analytics";
 type SpotlightCardProps = {
   data: ApiSpotlight;
 };
+
+const PAGE_SIZE = 5;
+const AUTO_MS = 5000; // 5초마다 다음 슬라이드
+const DRAG_THRESHOLD = 50; // px 이상 밀면 페이지 넘김
 
 function renderMetricValue(item: ApiSpotlight["items"][number], metric: ApiSpotlight["metric"]) {
   if (metric === "salary") {
@@ -51,11 +56,66 @@ function renderMetricValue(item: ApiSpotlight["items"][number], metric: ApiSpotl
 }
 
 export function SpotlightCard({ data }: SpotlightCardProps) {
+  const [page, setPage] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const [dragDx, setDragDx] = useState(0);
+  const startXRef = useRef(0);
+  const movedRef = useRef(false); // 드래그로 움직였으면 클릭(네비) 무시용
+
   const empty = data.items.length === 0;
-  const rankStart = data.rankStart ?? 1;     // 페이지 로테이션 (1 또는 6)
-  // GA from_path 매핑 — 매출/평균연봉 외 metric 은 home_field_revenue 로 fallback
+
+  // 1~20위를 5개씩 슬라이드
+  const pages: ApiSpotlight["items"][] = [];
+  for (let i = 0; i < data.items.length; i += PAGE_SIZE) {
+    pages.push(data.items.slice(i, i + PAGE_SIZE));
+  }
+  const totalPages = pages.length;
+  const safePage = Math.min(page, Math.max(0, totalPages - 1));
+
+  // 자동 넘김: 5초마다 다음, 마지막 → 처음 루프. 드래그 중엔 멈춤.
+  // page 가 deps 라 수동 조작/자동 모두 타이머를 5초로 리셋.
+  useEffect(() => {
+    if (totalPages <= 1 || dragging) return;
+    const id = setTimeout(() => setPage((p) => (p + 1) % totalPages), AUTO_MS);
+    return () => clearTimeout(id);
+  }, [page, totalPages, dragging]);
+
   const trackingPath: "home_field_revenue" | "home_field_salary" =
     data.metric === "salary" ? "home_field_salary" : "home_field_revenue";
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (totalPages <= 1) return;
+    startXRef.current = e.clientX;
+    movedRef.current = false;
+    setDragging(true);
+    setDragDx(0);
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {
+      // 일부 환경에서 setPointerCapture 가 throw — 무시 (드래그는 그대로 동작)
+    }
+  };
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!dragging) return;
+    const dx = e.clientX - startXRef.current;
+    if (Math.abs(dx) > 5) movedRef.current = true;
+    setDragDx(dx);
+  };
+  const endDrag = () => {
+    if (!dragging) return;
+    if (dragDx <= -DRAG_THRESHOLD) setPage((p) => Math.min(p + 1, totalPages - 1));
+    else if (dragDx >= DRAG_THRESHOLD) setPage((p) => Math.max(p - 1, 0));
+    setDragging(false);
+    setDragDx(0);
+  };
+  // 드래그였으면 행 클릭(네비게이션) 막기
+  const onClickCapture = (e: React.MouseEvent) => {
+    if (movedRef.current) {
+      e.preventDefault();
+      e.stopPropagation();
+      movedRef.current = false;
+    }
+  };
 
   return (
     <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-all duration-300">
@@ -63,47 +123,87 @@ export function SpotlightCard({ data }: SpotlightCardProps) {
         <span className="inline-flex items-center text-xs font-medium text-blue-700 bg-blue-50 border border-blue-100 px-2.5 py-1 rounded-full mb-2">
           오늘의 분야 · {data.groupLabel}
         </span>
-        <h3 className="text-lg font-bold text-[#1a1a1a]">
-          {data.metricLabel}
-        </h3>
-        {data.dataAsOf && (
-          <p className="text-sm text-gray-500 mt-1">{data.dataAsOf}</p>
-        )}
+        <h3 className="text-lg font-bold text-[#1a1a1a]">{data.metricLabel}</h3>
+        {data.dataAsOf && <p className="text-sm text-gray-500 mt-1">{data.dataAsOf}</p>}
       </div>
 
       {empty ? (
         <p className="text-sm text-gray-400 text-center py-8">데이터가 없습니다.</p>
       ) : (
-        <div className="space-y-1">
-          {data.items.map((item, index) => (
-            <Link
-              key={item.slug}
-              href={`/company/${item.slug}`}
-              onClick={() =>
-                trackEvent("company_detail", {
-                  from_path: trackingPath,
-                  company_name: item.name,
-                })
-              }
-              className="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50/80 transition-colors cursor-pointer group"
+        <>
+          {/* 슬라이드 영역 — 마우스/터치로 밀어서 넘김 */}
+          <div
+            className={`overflow-hidden touch-pan-y select-none ${
+              totalPages > 1 ? "cursor-grab active:cursor-grabbing" : ""
+            }`}
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={endDrag}
+            onPointerCancel={endDrag}
+            onClickCapture={onClickCapture}
+          >
+            <div
+              className="flex"
+              style={{
+                transform: `translateX(calc(${-safePage * 100}% + ${dragging ? dragDx : 0}px))`,
+                transition: dragging ? "none" : "transform 0.4s ease-out",
+              }}
             >
-              <div className="flex items-center gap-4 min-w-0">
-                <span
-                  className={`
-                    w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold font-mono shrink-0
-                    ${rankStart + index <= 3 ? "bg-black text-white" : "bg-gray-100 text-gray-500"}
-                  `}
-                >
-                  {rankStart + index}
-                </span>
-                <span className="font-semibold text-gray-800 truncate">{item.name}</span>
-              </div>
-              <div className="text-right shrink-0 ml-2">
-                {renderMetricValue(item, data.metric)}
-              </div>
-            </Link>
-          ))}
-        </div>
+              {pages.map((pageItems, pIdx) => (
+                <div key={pIdx} className="w-full shrink-0 space-y-1">
+                  {pageItems.map((item, i) => {
+                    const rank = pIdx * PAGE_SIZE + i + 1;
+                    return (
+                      <Link
+                        key={item.slug}
+                        href={`/company/${item.slug}`}
+                        draggable={false}
+                        onClick={() =>
+                          trackEvent("company_detail", {
+                            from_path: trackingPath,
+                            company_name: item.name,
+                          })
+                        }
+                        className="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50/80 transition-colors cursor-pointer"
+                      >
+                        <div className="flex items-center gap-4 min-w-0">
+                          <span
+                            className={`w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold font-mono shrink-0 ${
+                              rank <= 3 ? "bg-black text-white" : "bg-gray-100 text-gray-500"
+                            }`}
+                          >
+                            {rank}
+                          </span>
+                          <span className="font-semibold text-gray-800 truncate">{item.name}</span>
+                        </div>
+                        <div className="text-right shrink-0 ml-2">
+                          {renderMetricValue(item, data.metric)}
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 인디케이터 (항상 노출) */}
+          {totalPages > 1 && (
+            <div className="mt-4 flex items-center justify-center gap-1.5">
+              {pages.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setPage(i)}
+                  aria-label={`${i * PAGE_SIZE + 1}~${i * PAGE_SIZE + PAGE_SIZE}위`}
+                  className={`h-1.5 rounded-full transition-all ${
+                    i === safePage ? "w-4 bg-blue-600" : "w-1.5 bg-gray-200 hover:bg-gray-300"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   );
