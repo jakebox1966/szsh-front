@@ -2,79 +2,15 @@
 
 import { useState, useEffect, useRef, type KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Search, ArrowRight, Sparkles, Building2, Clock, X } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Search, ArrowRight, Building2, Clock, X } from "lucide-react";
 import { apiFetch } from "@/lib/api";
 import { trackEvent } from "@/lib/analytics";
 import { useRecentCompanies, removeRecentCompany, clearRecentCompanies } from "@/lib/recent";
 import type { ApiCompanyListItem } from "@/lib/api-types";
-import type { HomeTag } from "../data";
-import {
-  NetPayCalculator,
-  JeonseCalculator,
-  MortgageCalculator,
-  DsrCalculator,
-} from "@/features/calculators";
 
-// 계산기 탭 id → GA4 진입 이벤트 이름. 이 4개에 한해 진입 이벤트 발사.
-const CALCULATOR_ENTRY_EVENTS = {
-  salary_table: "salary_calculate",
-  jeonse: "jeonse_calculate",
-  mortgage: "mortgage_calculate",
-  dsr: "dsr_calculate",
-} as const;
-
-const CALCULATOR_DESCRIPTIONS: Record<string, string> = {
-  salary_table: "연봉 기준 월 실수령액과 4대보험·세금 공제 내역을 계산합니다.",
-  jeonse: "보증금·소득·보증기관 조건으로 전세자금대출 한도와 월 부담을 계산합니다.",
-  mortgage: "주택가격·지역·소득으로 LTV·DTI 한도와 월 상환액을 계산합니다.",
-  dsr: "기존 대출과 신규 대출을 합산해 DSR 한도 초과 여부를 확인합니다.",
-};
-
-function renderCalculator(tagId: string) {
-  switch (tagId) {
-    case "salary_table":
-      return <NetPayCalculator />;
-    case "jeonse":
-      return <JeonseCalculator />;
-    case "mortgage":
-      return <MortgageCalculator />;
-    case "dsr":
-      return <DsrCalculator />;
-    default:
-      return (
-        <p className="text-sm text-gray-500 py-4">
-          이 계산기는 곧 추가될 예정입니다.
-        </p>
-      );
-  }
-}
-
-type HeroSectionProps = {
-  tags: HomeTag[];
-  activeTag: string;
-  onTagChange: (label: string) => void;
-};
-
-export function HeroSection({
-  tags,
-  activeTag,
-  onTagChange,
-}: HeroSectionProps) {
+export function HeroSection() {
   const router = useRouter();
   const recentCompanies = useRecentCompanies();
-  const [modalTag, setModalTag] = useState<HomeTag | null>(null);
-  // 닫는 동안에도 내부 콘텐츠가 보이도록 마지막 modalTag 보존.
-  // modalTag 가 null 이 되어도 closing 애니메이션 (200ms) 동안 이전 콘텐츠 유지.
-  const lastModalTagRef = useRef<HomeTag | null>(null);
-  if (modalTag) lastModalTagRef.current = modalTag;
-  const displayedTag = modalTag ?? lastModalTagRef.current;
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<ApiCompanyListItem[]>([]);
   const [open, setOpen] = useState(false);
@@ -114,15 +50,6 @@ export function HeroSection({
 
     return () => clearTimeout(handle);
   }, [query]);
-
-  const openModal = (tag: HomeTag) => {
-    setModalTag(tag);
-    onTagChange(tag.label);
-    // 계산기 진입 이벤트 (로그인 시 user_id 자동 부착). 계산기 탭이 아니면 발사 안 함.
-    const entryEvent =
-      CALCULATOR_ENTRY_EVENTS[tag.id as keyof typeof CALCULATOR_ENTRY_EVENTS];
-    if (entryEvent) trackEvent(entryEvent, {});
-  };
 
   const submitSearch = () => {
     const trimmed = query.trim();
@@ -186,13 +113,10 @@ export function HeroSection({
     // animate-fade-in 사용 X — 해당 클래스는 opacity 를 애니메이션하므로
     // forwards 적용 시 stacking context 가 영구 유지되어 안쪽 dropdown z-index 가 갇힘
     <div className="text-center mb-12 w-full">
-      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-semibold mb-6">
-        <Sparkles size={12} />
-        <span>세전세후 AI-Powered Insights</span>
-      </div>
-
-      <h1 className="text-4xl md:text-5xl font-semibold mb-6 leading-tight text-[#1a1a1a] tracking-[-0.03em]">
-        AI로 만나는 기업 리포트
+      <h1 className="mb-7">
+        <span className="text-5xl md:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+          szsh.kr
+        </span>
       </h1>
 
       <div className="relative group w-full max-w-2xl mx-auto mb-8" ref={wrapperRef}>
@@ -312,60 +236,6 @@ export function HeroSection({
           </div>
         )}
       </div>
-
-      <div className="w-full max-w-2xl mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
-          {tags.map((tag) => {
-            const Icon = tag.icon;
-            // 모달 열린 동안 트리거 비활성화 (이중 클릭 / 다른 계산기 동시 호출 방지)
-            const isDisabled = !!modalTag;
-            return (
-              <button
-                key={tag.id}
-                type="button"
-                onClick={() => openModal(tag)}
-                disabled={isDisabled}
-                className="group flex flex-col items-center justify-center gap-2 px-2 py-4 rounded-2xl border border-gray-200 bg-white transition-all hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-50/50 hover:shadow-md hover:shadow-indigo-500/5 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:border-gray-200 disabled:hover:bg-white disabled:hover:shadow-none"
-              >
-                <span className="flex items-center justify-center w-9 h-9 rounded-xl bg-gray-50 text-gray-400 transition-colors group-hover:bg-indigo-100 group-hover:text-indigo-600">
-                  <Icon size={18} />
-                </span>
-                <span className="text-xs font-semibold text-center leading-tight text-gray-700 group-hover:text-indigo-700">
-                  {tag.label}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Tag Modal - shadcn Dialog */}
-      <Dialog
-        open={!!modalTag}
-        onOpenChange={(open) => {
-          if (!open) setModalTag(null);
-        }}
-      >
-        <DialogContent className="sm:max-w-xl max-h-[88vh] overflow-y-auto">
-          {displayedTag && (
-            <>
-              <DialogHeader>
-                <div className="flex items-center gap-2">
-                  {(() => {
-                    const Icon = displayedTag.icon;
-                    return <Icon size={20} className="text-primary" />;
-                  })()}
-                  <DialogTitle>{displayedTag.label}</DialogTitle>
-                </div>
-                <DialogDescription>
-                  {CALCULATOR_DESCRIPTIONS[displayedTag.id] ?? ""}
-                </DialogDescription>
-              </DialogHeader>
-              <div className="mt-4">{renderCalculator(displayedTag.id)}</div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
