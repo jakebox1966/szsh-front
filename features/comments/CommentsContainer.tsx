@@ -98,7 +98,7 @@ export function CommentsContainer() {
   }, [locked, loadMore]);
 
   return (
-    <div className="mx-auto w-full max-w-2xl px-4 py-8">
+    <div className="mx-auto w-full max-w-2xl px-4 pt-24 pb-12">
       <header className="mb-6">
         <h1 className="flex items-center gap-2 text-2xl font-bold text-[#1a1a1a]">
           <MessageSquareQuote size={22} className="text-indigo-600" />
