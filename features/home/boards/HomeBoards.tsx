@@ -22,6 +22,29 @@ const BLUR_ROWS = [
   { content: "재택 병행 가능하고 장비 지원도 좋아요", company: "○○○○" },
 ];
 
+// 최근 조회 기업 1건: 기록 검색어(keyword) + 매칭된 정식명(name)·slug(있으면 바로 상세이동)
+type RecentCompanyItem = { keyword: string; name: string; slug: string | null };
+
+// 아바타 색 팔레트 (목업처럼 선명한 브랜드 톤). 이름 해시로 결정 → 회사마다 색 고정.
+const AVATAR_COLORS = [
+  "#F97316", "#2563EB", "#14B8A6", "#F43F5E", "#7C3AED",
+  "#10B981", "#F59E0B", "#4F46E5", "#EC4899", "#0EA5E9",
+];
+
+function avatarColor(name: string): string {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
+  return AVATAR_COLORS[h % AVATAR_COLORS.length];
+}
+
+// 아바타 이니셜: 앞의 법인키워드/괄호 건너뛰고 첫 글자.
+function avatarInitial(name: string): string {
+  const cleaned = (name || "")
+    .replace(/^\s*(\(주\)|\(유\)|\(재\)|\(사\)|㈜|주식회사|유한회사)\s*/, "")
+    .trim();
+  return ((cleaned || name).charAt(0) || "?").toUpperCase();
+}
+
 /**
  * 홈 검색창 아래 2분할 보드.
  * - 좌: 실시간 검색어 (글로벌, 새로고침)
@@ -32,12 +55,12 @@ export function HomeBoards() {
   const { status } = useAuth();
   const isAuthed = status === "authenticated";
 
-  const [terms, setTerms] = useState<string[]>([]);
+  const [terms, setTerms] = useState<RecentCompanyItem[]>([]);
   const [feed, setFeed] = useState<ApiCommentFeed | null>(null);
 
   const loadTerms = useCallback(() => {
-    apiFetch<{ keyword: string }[]>("/api/search-terms/recent?limit=10")
-      .then((rows) => setTerms(rows.map((r) => r.keyword)))
+    apiFetch<RecentCompanyItem[]>("/api/search-terms/recent?limit=10")
+      .then(setTerms)
       .catch(() => {});
   }, []);
 
@@ -80,7 +103,7 @@ export function HomeBoards() {
       {/* 실시간 검색어 */}
       <div className="h-full rounded-2xl border border-gray-100 bg-white p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-bold text-gray-900">실시간 검색 기업</h3>
+          <h3 className="text-sm font-bold text-gray-900">최근 조회 기업</h3>
           <button
             type="button"
             onClick={loadTerms}
@@ -95,15 +118,24 @@ export function HomeBoards() {
         ) : (
           <ol className="space-y-2">
             {terms.map((t, i) => (
-              <li key={t}>
+              <li key={t.slug ?? t.keyword}>
                 <button
                   type="button"
-                  onClick={() => goSearch(t)}
+                  onClick={() =>
+                    t.slug ? goCompany(t.slug, t.name) : goSearch(t.keyword)
+                  }
                   className="group flex w-full items-center gap-2.5 text-left"
                 >
                   <span className="w-4 shrink-0 text-xs font-bold text-indigo-500">{i + 1}</span>
+                  <span
+                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[11px] font-bold text-white"
+                    style={{ backgroundColor: avatarColor(t.name) }}
+                    aria-hidden
+                  >
+                    {avatarInitial(t.name)}
+                  </span>
                   <span className="truncate text-sm text-gray-700 transition-colors group-hover:text-indigo-600">
-                    {t}
+                    {t.name}
                   </span>
                 </button>
               </li>
