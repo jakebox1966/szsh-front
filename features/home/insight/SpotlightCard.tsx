@@ -89,16 +89,20 @@ export function SpotlightCard({ data }: SpotlightCardProps) {
     movedRef.current = false;
     setDragging(true);
     setDragDx(0);
-    try {
-      e.currentTarget.setPointerCapture(e.pointerId);
-    } catch {
-      // 일부 환경에서 setPointerCapture 가 throw — 무시 (드래그는 그대로 동작)
-    }
+    // ※ 여기서 setPointerCapture 하면 안 됨 — 캡처 중엔 click 이 컨테이너로 retarget 돼
+    //   안쪽 <Link> 네비게이션이 안 먹음(순수 클릭도 막힘). 실제 드래그 시작 시에만 캡처.
   };
   const onPointerMove = (e: React.PointerEvent) => {
     if (!dragging) return;
     const dx = e.clientX - startXRef.current;
-    if (Math.abs(dx) > 5) movedRef.current = true;
+    if (!movedRef.current && Math.abs(dx) > 5) {
+      movedRef.current = true; // 드래그로 확정된 순간에만 포인터 캡처(클릭은 영향 없음)
+      try {
+        e.currentTarget.setPointerCapture(e.pointerId);
+      } catch {
+        // 일부 환경에서 throw — 무시(드래그는 그대로 동작)
+      }
+    }
     setDragDx(dx);
   };
   const endDrag = () => {
