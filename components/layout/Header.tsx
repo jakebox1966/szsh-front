@@ -39,15 +39,15 @@ export function Header() {
             className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600"
             aria-hidden
           >
-            szsh.kr
+            세전세후
           </span>
           <span
             className="absolute inset-0 bg-clip-text text-transparent bg-[length:200%_100%] bg-[linear-gradient(90deg,transparent_0%,transparent_35%,rgba(255,255,255,0.45)_50%,transparent_65%,transparent_100%)] animate-text-shine"
             aria-hidden
           >
-            szsh.kr
+            세전세후
           </span>
-          <span className="sr-only">szsh.kr</span>
+          <span className="sr-only">세전세후</span>
         </span>
       </Link>
 

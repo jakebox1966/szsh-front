@@ -112,12 +112,15 @@ export function HeroSection() {
   return (
     // animate-fade-in 사용 X — 해당 클래스는 opacity 를 애니메이션하므로
     // forwards 적용 시 stacking context 가 영구 유지되어 안쪽 dropdown z-index 가 갇힘
-    <div className="text-center mb-12 w-full">
-      <h1 className="mb-7">
+    <div className="text-center mb-8 w-full">
+      <h1 className="mb-3">
         <span className="text-5xl md:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
-          szsh.kr
+          szsh
         </span>
       </h1>
+      <p className="mb-8 text-base md:text-lg font-semibold text-gray-700">
+        취업·이직 전 연봉부터 성장성까지 기업의 데이터를 확인하세요.
+      </p>
 
       <div className="relative group w-full max-w-2xl mx-auto mb-8" ref={wrapperRef}>
         <div className="relative bg-white rounded-full md:rounded-[2rem] shadow-[0_2px_12px_rgba(0,0,0,0.08)] border border-gray-200 p-1.5 md:p-2 flex items-center transition-all duration-300 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] hover:border-gray-300">
@@ -133,7 +136,7 @@ export function HeroSection() {
             }}
             onFocus={() => setOpen(true)}
             onKeyDown={handleKeyDown}
-            placeholder="기업명을 검색해보세요"
+            placeholder="기업명 검색"
             className="flex-1 min-w-0 bg-transparent border-none outline-none py-2 md:py-3 text-sm md:text-lg text-gray-800 placeholder-gray-400 font-medium"
           />
           <button
