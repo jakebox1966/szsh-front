@@ -147,13 +147,13 @@ export function HomeBoards() {
       {/* 최신 댓글 */}
       <div className="h-full rounded-2xl border border-gray-100 bg-white p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-bold text-gray-900">최신 댓글</h3>
+          <h3 className="text-sm font-bold text-gray-900">최신 세이</h3>
           {totalComments > 0 && (
             <span className="text-xs text-gray-400">총 {totalComments.toLocaleString()}건</span>
           )}
         </div>
         {comments.length === 0 ? (
-          <p className="py-5 text-center text-xs text-gray-400">아직 댓글이 없어요</p>
+          <p className="py-5 text-center text-xs text-gray-400">아직 세이가 없어요</p>
         ) : (
           <ul className="space-y-2">
             {comments.map((c) => (

@@ -73,7 +73,7 @@ export function CompanySaySection({
         >
           {comments.length === 0 ? (
             <div className="text-center py-6 text-sm text-gray-400">
-              아직 댓글이 없습니다. 첫 번째 의견을 남겨보세요!
+              아직 세이가 없습니다. 첫 번째 의견을 남겨보세요!
             </div>
           ) : (
             <>
@@ -188,7 +188,7 @@ function CommentRow({ comment, isOwner, onEdit, onDelete }: CommentRowProps) {
 
   const handleDelete = async () => {
     setMenuOpen(false);
-    if (!window.confirm("이 댓글을 삭제하시겠습니까?")) return;
+    if (!window.confirm("이 세이를 삭제하시겠습니까?")) return;
     await onDelete(comment.id);
   };
 
@@ -256,7 +256,7 @@ function CommentRow({ comment, isOwner, onEdit, onDelete }: CommentRowProps) {
               onClick={() => setMenuOpen((v) => !v)}
               onBlur={() => setTimeout(() => setMenuOpen(false), 150)}
               className="p-1 rounded hover:bg-gray-200/70 text-gray-400 hover:text-gray-700"
-              aria-label="댓글 메뉴"
+              aria-label="세이 메뉴"
             >
               <MoreHorizontal size={12} />
             </button>

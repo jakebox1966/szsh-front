@@ -102,11 +102,11 @@ export function CommentsContainer() {
       <header className="mb-6">
         <h1 className="flex items-center gap-2 text-2xl font-bold text-[#1a1a1a]">
           <MessageSquareQuote size={22} className="text-indigo-600" />
-          코멘트 모아보기
+          세이 모아보기
         </h1>
         {total > 0 && (
           <p className="mt-1 text-sm text-gray-500">
-            지금까지 {total.toLocaleString()}개의 솔직 코멘트
+            지금까지 {total.toLocaleString()}개의 솔직 세이
           </p>
         )}
       </header>
@@ -121,7 +121,7 @@ export function CommentsContainer() {
           ))}
         </ul>
       ) : items.length === 0 ? (
-        <p className="py-16 text-center text-sm text-gray-400">아직 코멘트가 없습니다.</p>
+        <p className="py-16 text-center text-sm text-gray-400">아직 세이가 없습니다.</p>
       ) : (
         <div className="rounded-2xl border border-gray-100 bg-white overflow-hidden">
           <ul>
@@ -147,7 +147,7 @@ export function CommentsContainer() {
                   <Lock size={18} />
                 </div>
                 <p className="text-sm font-medium text-gray-700">
-                  로그인하면 {(total - items.length).toLocaleString()}개 코멘트를 모두 볼 수 있어요
+                  로그인하면 {(total - items.length).toLocaleString()}개 세이를 모두 볼 수 있어요
                 </p>
                 <Link
                   href="/login?callbackUrl=/comments"

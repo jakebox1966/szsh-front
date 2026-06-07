@@ -118,7 +118,7 @@ export function CompanyDetailContainer({ slug }: CompanyDetailContainerProps) {
         sampleComments: prev.sampleComments.filter((c) => c.id !== tempComment.id),
       }));
       setComment(trimmed);
-      setSubmitError("댓글 등록에 실패했습니다. 다시 시도해주세요.");
+      setSubmitError("세이 등록에 실패했습니다. 다시 시도해주세요.");
     } finally {
       setSubmitting(false);
     }

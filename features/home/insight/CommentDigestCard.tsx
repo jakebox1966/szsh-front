@@ -31,7 +31,7 @@ export function CommentDigestCard({ data }: Props) {
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-4">
         <span className="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-700 bg-indigo-50 border border-indigo-100 px-2.5 py-1 rounded-full">
-          <MessageSquareQuote size={12} /> 솔직 코멘트
+          <MessageSquareQuote size={12} /> 솔직 세이
         </span>
         {isAuthed ? (
           <Link
