@@ -7,6 +7,7 @@ import { Search, ChevronDown, LogOut } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useAuth, type AuthUser } from "@/lib/auth";
 import { trackEvent } from "@/lib/analytics";
+import { HamburgerMenu } from "@/components/layout/HamburgerMenu";
 
 export function Header() {
   const { user, status, logout } = useAuth();
@@ -33,7 +34,9 @@ export function Header() {
 
   return (
     <header className="fixed top-0 w-full px-6 py-4 flex justify-between items-center z-50 bg-white/70 supports-[backdrop-filter]:bg-white/55 backdrop-blur-xl">
-      <Link href="/" className="flex items-center gap-2 cursor-pointer group">
+      <div className="flex items-center gap-2">
+        <HamburgerMenu />
+        <Link href="/" className="flex items-center gap-2 cursor-pointer group">
         <span className="relative inline-block text-xl font-bold tracking-tight">
           <span
             className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600"
@@ -49,7 +52,8 @@ export function Header() {
           </span>
           <span className="sr-only">세전세후</span>
         </span>
-      </Link>
+        </Link>
+      </div>
 
       {showSearch && (
         <form
