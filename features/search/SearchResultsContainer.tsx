@@ -3,11 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Building2, Search } from "lucide-react";
-import { apiFetch, ApiError } from "@/lib/api";
+import { apiFetch } from "@/lib/api";
 import { trackEvent } from "@/lib/analytics";
-import { useAuth } from "@/lib/auth";
-import { consumeAnonSearch } from "@/lib/searchQuota";
-import { SearchGate } from "./SearchGate";
 import type { ApiCompanyListItem } from "@/lib/api-types";
 
 type SearchResultsContainerProps = {
@@ -15,16 +12,12 @@ type SearchResultsContainerProps = {
 };
 
 export function SearchResultsContainer({ query }: SearchResultsContainerProps) {
-  const { status } = useAuth();
   const [results, setResults] = useState<ApiCompanyListItem[] | null>(null);
   const [loading, setLoading] = useState(true);
-  const [gate, setGate] = useState<null | "anon" | "free">(null);
 
   useEffect(() => {
-    if (status === "loading") return; // 로그인 여부 확정 후 카운트(중복차감 방지)
     let cancelled = false;
     setLoading(true);
-    setGate(null);
 
     if (!query.trim()) {
       setResults([]);
@@ -32,18 +25,7 @@ export function SearchResultsContainer({ query }: SearchResultsContainerProps) {
       return;
     }
 
-    // 비회원: localStorage 일일 한도(2) 먼저 차감 — 초과 시 결과 호출 안 함.
-    // 회원은 서버(GET /api/search)가 차감/차단(429).
-    if (status === "unauthenticated") {
-      const r = consumeAnonSearch();
-      if (!r.allowed) {
-        setResults(null);
-        setGate("anon");
-        setLoading(false);
-        return;
-      }
-    }
-
+    // 검색은 한도 차감하지 않는다(일일 한도는 상세 진입에서만 차감).
     async function fetchResults() {
       try {
         const data = await apiFetch<ApiCompanyListItem[]>(
@@ -56,14 +38,8 @@ export function SearchResultsContainer({ query }: SearchResultsContainerProps) {
             results_count: data.length,
           });
         }
-      } catch (e) {
-        if (cancelled) return;
-        if (e instanceof ApiError && e.status === 429) {
-          setResults(null);
-          setGate("free"); // 무료회원 일일 한도 초과
-        } else {
-          setResults([]);
-        }
+      } catch {
+        if (!cancelled) setResults([]);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -74,7 +50,7 @@ export function SearchResultsContainer({ query }: SearchResultsContainerProps) {
     return () => {
       cancelled = true;
     };
-  }, [query, status]);
+  }, [query]);
 
   return (
     <div className="w-full max-w-2xl mx-auto">
@@ -99,9 +75,7 @@ export function SearchResultsContainer({ query }: SearchResultsContainerProps) {
         </div>
       )}
 
-      {!loading && gate && <SearchGate reason={gate} query={query} />}
-
-      {!loading && !gate && results && results.length === 0 && (
+      {!loading && results && results.length === 0 && (
         <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center">
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-50 text-gray-400 mb-4">
             <Search size={20} />
@@ -115,7 +89,7 @@ export function SearchResultsContainer({ query }: SearchResultsContainerProps) {
         </div>
       )}
 
-      {!loading && !gate && results && results.length > 0 && (
+      {!loading && results && results.length > 0 && (
         <div className="space-y-2">
           {results.map((item) => (
             <Link

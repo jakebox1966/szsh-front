@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { kakaoCompanyData } from "./data";
 import type { CompanyData, CompanyComment } from "./data";
 import { RevealOnView } from "@/components/ui/RevealOnView";
-import { apiFetch } from "@/lib/api";
+import { apiFetch, ApiError } from "@/lib/api";
 import { formatKRW } from "@/lib/format";
 import { trackEvent } from "@/lib/analytics";
 import { mapCompanyDetail, mapCompanyComment } from "@/lib/api-mappers";
@@ -12,6 +12,8 @@ import type { ApiCompanyDetail, ApiCompanyComment } from "@/lib/api-types";
 import { useAuth } from "@/lib/auth";
 import { pushRecentCompany } from "@/lib/recent";
 import { recordSearchTerm } from "@/lib/search-terms";
+import { consumeAnonView } from "@/lib/viewQuota";
+import { ViewGate } from "./ViewGate";
 import {
   CompanyHeaderSection,
   CompanySaySection,
@@ -27,16 +29,27 @@ type CompanyDetailContainerProps = {
 };
 
 export function CompanyDetailContainer({ slug }: CompanyDetailContainerProps) {
-  const { user } = useAuth();
+  const { user, status } = useAuth();
   const [companyData, setCompanyData] = useState<CompanyData>(kakaoCompanyData);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [gated, setGated] = useState<null | "anon" | "free">(null);
   const [comment, setComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-
   useEffect(() => {
+    if (status === "loading") return; // 로그인 여부 확정 후 차감(중복/오차감 방지)
     let cancelled = false;
+    setLoading(true);
+
+    // 비회원: localStorage 일일 한도(2) 차감 — 같은 회사(slug)는 하루 1번만(idempotent).
+    //   초과면 상세 안 부르고 게이트. 회원은 서버(GET /api/companies/{slug})가 차감/차단(429).
+    if (status === "unauthenticated" && !consumeAnonView(slug).allowed) {
+      setGated("anon");
+      setLoading(false);
+      return;
+    }
+    setGated(null);
 
     async function fetchCompany() {
       try {
@@ -50,8 +63,11 @@ export function CompanyDetailContainer({ slug }: CompanyDetailContainerProps) {
           pushRecentCompany(slug, mapped.info.name);
           recordSearchTerm(mapped.info.name);
         }
-      } catch {
-        if (!cancelled) {
+      } catch (e) {
+        if (cancelled) return;
+        if (e instanceof ApiError && e.status === 429) {
+          setGated("free"); // 회원 일일 조회 한도 초과
+        } else {
           setError("기업 정보를 불러오지 못했습니다. 샘플 데이터를 표시합니다.");
         }
       } finally {
@@ -61,7 +77,7 @@ export function CompanyDetailContainer({ slug }: CompanyDetailContainerProps) {
 
     fetchCompany();
     return () => { cancelled = true; };
-  }, [slug]);
+  }, [slug, status]);
 
   const refreshComments = useCallback(async () => {
     try {
@@ -198,6 +214,16 @@ export function CompanyDetailContainer({ slug }: CompanyDetailContainerProps) {
               ))}
             </div>
           </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (gated) {
+    return (
+      <div className="min-h-screen bg-[#F9FAFB] text-[#1a1a1a] font-sans">
+        <main className="pt-24 pb-20 px-4 md:px-6 max-w-3xl mx-auto">
+          <ViewGate reason={gated} slug={slug} />
         </main>
       </div>
     );
