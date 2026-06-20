@@ -187,10 +187,10 @@ export function ResultCard({
   highlight?: "blue" | "emerald" | "amber" | "rose";
 }) {
   const highlightClasses = {
-    blue: "from-blue-50 to-indigo-50 border-blue-100 text-blue-700",
-    emerald: "from-emerald-50 to-teal-50 border-emerald-100 text-emerald-700",
-    amber: "from-amber-50 to-orange-50 border-amber-100 text-amber-700",
-    rose: "from-rose-50 to-pink-50 border-rose-100 text-rose-700",
+    blue: "from-blue-50 to-indigo-50 dark:from-blue-500/10 dark:to-indigo-500/10 border-blue-100 dark:border-blue-500/20 text-blue-700 dark:text-blue-300",
+    emerald: "from-emerald-50 to-teal-50 dark:from-emerald-500/10 dark:to-teal-500/10 border-emerald-100 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-300",
+    amber: "from-amber-50 to-orange-50 dark:from-amber-500/10 dark:to-orange-500/10 border-amber-100 dark:border-amber-500/20 text-amber-700 dark:text-amber-300",
+    rose: "from-rose-50 to-pink-50 dark:from-rose-500/10 dark:to-pink-500/10 border-rose-100 dark:border-rose-500/20 text-rose-700 dark:text-rose-300",
   }[highlight];
 
   return (

@@ -22,7 +22,7 @@ export function LoginPageClient() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white via-blue-50/40 to-white px-4 py-12 sm:px-6">
+    <main className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white via-blue-50/40 to-white dark:from-background dark:via-blue-500/5 dark:to-background px-4 py-12 sm:px-6">
       <div className="w-full max-w-md">
         <div className="text-center mb-8 sm:mb-10">
           <Link

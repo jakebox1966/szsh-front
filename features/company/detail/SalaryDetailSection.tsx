@@ -56,8 +56,8 @@ function SalaryBreakdown({ gross }: { gross: number }) {
   return (
     <div className="space-y-3">
       {/* 세전 */}
-      <div className="p-5 bg-gradient-to-br from-blue-50 to-blue-50/40 rounded-2xl text-center">
-        <p className="text-xs text-blue-600 font-semibold mb-1">월 평균 급여 (세전)</p>
+      <div className="p-5 bg-gradient-to-br from-blue-50 to-blue-50/40 dark:from-blue-500/10 dark:to-blue-500/5 rounded-2xl text-center">
+        <p className="text-xs text-blue-600 dark:text-blue-400 font-semibold mb-1">월 평균 급여 (세전)</p>
         <p className="text-3xl font-bold text-foreground">{formatKRW(gross)}</p>
         <p className="text-xs text-muted-foreground mt-1">
           연 환산 약 {formatKRW(gross * 12)}
@@ -105,7 +105,7 @@ function SalaryBreakdown({ gross }: { gross: number }) {
       </div>
 
       {/* 세후 */}
-      <div className="p-5 bg-gradient-to-br from-emerald-50 to-emerald-50/40 rounded-2xl text-center">
+      <div className="p-5 bg-gradient-to-br from-emerald-50 to-emerald-50/40 dark:from-emerald-500/10 dark:to-emerald-500/5 rounded-2xl text-center">
         <p className="text-xs text-emerald-700 dark:text-emerald-400 font-semibold mb-1">
           월 예상 실수령액 (세후)
         </p>

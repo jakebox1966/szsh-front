@@ -98,7 +98,7 @@ export function CommentsContainer() {
   }, [locked, loadMore]);
 
   return (
-    <div className="mx-auto w-full max-w-2xl px-4 pt-24 pb-12">
+    <div className="min-h-screen mx-auto w-full max-w-2xl px-4 pt-24 pb-12">
       <header className="mb-6">
         <h1 className="flex items-center gap-2 text-2xl font-bold text-foreground">
           <MessageSquareQuote size={22} className="text-indigo-600 dark:text-indigo-400" />
@@ -142,7 +142,7 @@ export function CommentsContainer() {
                   </li>
                 ))}
               </ul>
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-gradient-to-b from-white/30 via-white/85 to-white px-6 text-center">
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-gradient-to-b from-white/30 via-white/85 to-white dark:from-card/30 dark:via-card/85 dark:to-card px-6 text-center">
                 <div className="flex h-11 w-11 items-center justify-center rounded-full bg-indigo-50 text-indigo-600">
                   <Lock size={18} />
                 </div>

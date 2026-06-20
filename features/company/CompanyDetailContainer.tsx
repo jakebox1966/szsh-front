@@ -233,7 +233,7 @@ export function CompanyDetailContainer({ slug }: CompanyDetailContainerProps) {
     <div className="min-h-screen bg-[#F9FAFB] dark:bg-background text-foreground font-sans selection:bg-yellow-100 selection:text-yellow-900">
       <main className="pt-24 pb-20 px-4 md:px-6 max-w-3xl mx-auto">
         {error && (
-          <div className="bg-yellow-50 dark:bg-yellow-500/15 border border-yellow-200 rounded-xl px-4 py-3 text-sm text-yellow-800 mb-4">
+          <div className="bg-yellow-50 dark:bg-yellow-500/15 border border-yellow-200 rounded-xl px-4 py-3 text-sm text-yellow-800 dark:text-yellow-300 mb-4">
             {error}
           </div>
         )}
