@@ -45,6 +45,34 @@ export function HamburgerMenu() {
     return () => document.removeEventListener("keydown", onKey);
   }, [open]);
 
+  // 드로어 열리면 배경 스크롤 잠금. body 를 현재 스크롤 위치에 position:fixed 로 고정
+  // → iOS Safari 포함 배경 스크롤 완전 차단. 닫으면 원복 + 스크롤 위치 복귀.
+  useEffect(() => {
+    if (!open) return;
+    const body = document.body;
+    const scrollY = window.scrollY;
+    const prev = {
+      position: body.style.position,
+      top: body.style.top,
+      left: body.style.left,
+      right: body.style.right,
+      overflow: body.style.overflow,
+    };
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.left = "0";
+    body.style.right = "0";
+    body.style.overflow = "hidden";
+    return () => {
+      body.style.position = prev.position;
+      body.style.top = prev.top;
+      body.style.left = prev.left;
+      body.style.right = prev.right;
+      body.style.overflow = prev.overflow;
+      window.scrollTo(0, scrollY);
+    };
+  }, [open]);
+
   // 드로어 열릴 때 검색 사용량 갱신.
   //   비회원: localStorage 를 소비 없이 peek. 회원: 서버 /api/search/quota.
   //   두 카운터는 별개라 가입 시 차감 없이 0/20 시작.
@@ -163,7 +191,7 @@ export function HamburgerMenu() {
                 </div>
                 <UsageRow loading={status === "loading"} quota={quota} />
                 <p className="mt-2 px-1 text-[11px] text-muted-foreground">
-                  매일 자정(KST)에 리셋됩니다
+                  매일 자정에 리셋됩니다
                 </p>
               </div>
 
