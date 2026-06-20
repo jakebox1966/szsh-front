@@ -114,7 +114,7 @@ export function HeroSection() {
     // forwards 적용 시 stacking context 가 영구 유지되어 안쪽 dropdown z-index 가 갇힘
     <div className="text-center mb-8 w-full">
       <h1 className="mb-3">
-        <span className="text-5xl md:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+        <span className="text-5xl md:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-indigo-500 to-violet-600">
           szsh
         </span>
       </h1>
