@@ -87,7 +87,7 @@ const ORG_JSON_LD = {
       "@id": `${SITE_URL}#organization`,
       name: SITE_NAME,
       url: SITE_URL,
-      logo: `${SITE_URL}/icon.png`,
+      logo: `${SITE_URL}/icon`,
     },
     {
       "@type": "WebSite",
