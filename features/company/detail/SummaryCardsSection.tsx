@@ -26,24 +26,24 @@ export function SummaryCardsSection({ summary, revenueValue, revenueGrowth }: Su
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
-      <div className="relative bg-white p-5 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+      <div className="relative bg-card p-5 rounded-2xl border border-border shadow-sm hover:shadow-md transition-shadow">
         {hasSalary && (
           <div className="absolute -top-2 -right-2 flex shadow-sm rounded-md">
             <SourceBadge source={salaryFromDart ? "DART" : "NPS"} />
           </div>
         )}
         <div className="flex items-center gap-2 mb-3">
-          <div className="p-1.5 bg-green-50 rounded-lg text-green-600 shrink-0">
+          <div className="p-1.5 bg-green-50 dark:bg-green-500/15 rounded-lg text-green-600 shrink-0">
             <DollarSign size={18} />
           </div>
-          <span className="text-xs text-gray-500 font-medium">
+          <span className="text-xs text-muted-foreground font-medium">
             {salaryFromDart ? "DART 공시 평균연봉" : "추정 평균연봉"}
           </span>
         </div>
-        <div className="text-lg md:text-xl font-bold text-gray-900 mb-2">
+        <div className="text-lg md:text-xl font-bold text-foreground mb-2">
           {summary.avgSalaryOfficial ?? summary.avgSalary}
         </div>
-        <div className="text-xs text-gray-400">
+        <div className="text-xs text-muted-foreground">
           {salaryFromDart
             ? "DART 사업보고서 기준"
             : summary.avgSalaryCapped

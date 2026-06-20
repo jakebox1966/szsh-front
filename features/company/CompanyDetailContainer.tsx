@@ -192,23 +192,23 @@ export function CompanyDetailContainer({ slug }: CompanyDetailContainerProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F9FAFB] text-[#1a1a1a] font-sans">
+      <div className="min-h-screen bg-[#F9FAFB] dark:bg-background text-foreground font-sans">
         <main className="pt-24 pb-20 px-4 md:px-6 max-w-3xl mx-auto">
           <div className="animate-pulse space-y-6">
-            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
+            <div className="bg-card rounded-3xl p-6 border border-border shadow-sm">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-16 h-16 bg-gray-200 rounded-2xl" />
                 <div className="space-y-2 flex-1">
                   <div className="h-7 bg-gray-200 rounded w-48" />
-                  <div className="h-4 bg-gray-100 rounded w-64" />
+                  <div className="h-4 bg-muted rounded w-64" />
                 </div>
               </div>
-              <div className="h-20 bg-gray-50 rounded-xl" />
+              <div className="h-20 bg-muted rounded-xl" />
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
-                  <div className="h-4 bg-gray-100 rounded w-20 mb-3" />
+                <div key={i} className="bg-card p-5 rounded-2xl border border-border shadow-sm">
+                  <div className="h-4 bg-muted rounded w-20 mb-3" />
                   <div className="h-6 bg-gray-200 rounded w-24" />
                 </div>
               ))}
@@ -221,7 +221,7 @@ export function CompanyDetailContainer({ slug }: CompanyDetailContainerProps) {
 
   if (gated) {
     return (
-      <div className="min-h-screen bg-[#F9FAFB] text-[#1a1a1a] font-sans">
+      <div className="min-h-screen bg-[#F9FAFB] dark:bg-background text-foreground font-sans">
         <main className="pt-24 pb-20 px-4 md:px-6 max-w-3xl mx-auto">
           <ViewGate reason={gated} slug={slug} />
         </main>
@@ -230,10 +230,10 @@ export function CompanyDetailContainer({ slug }: CompanyDetailContainerProps) {
   }
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] text-[#1a1a1a] font-sans selection:bg-yellow-100 selection:text-yellow-900">
+    <div className="min-h-screen bg-[#F9FAFB] dark:bg-background text-foreground font-sans selection:bg-yellow-100 selection:text-yellow-900">
       <main className="pt-24 pb-20 px-4 md:px-6 max-w-3xl mx-auto">
         {error && (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-xl px-4 py-3 text-sm text-yellow-800 mb-4">
+          <div className="bg-yellow-50 dark:bg-yellow-500/15 border border-yellow-200 rounded-xl px-4 py-3 text-sm text-yellow-800 mb-4">
             {error}
           </div>
         )}

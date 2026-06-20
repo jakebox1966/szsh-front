@@ -71,12 +71,12 @@ export function InsightSection() {
         {[1, 2, 3, 4].map((i) => (
           <div
             key={i}
-            className="bg-white rounded-2xl p-6 border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)] animate-pulse"
+            className="bg-card rounded-2xl p-6 border border-border shadow-[0_2px_8px_rgba(0,0,0,0.04)] animate-pulse"
           >
-            <div className="h-6 bg-gray-100 rounded w-48 mb-6" />
+            <div className="h-6 bg-muted rounded w-48 mb-6" />
             <div className="space-y-3">
               {[1, 2, 3].map((j) => (
-                <div key={j} className="h-10 bg-gray-50 rounded-xl" />
+                <div key={j} className="h-10 bg-muted rounded-xl" />
               ))}
             </div>
           </div>

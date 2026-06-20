@@ -27,16 +27,16 @@ export function CommentDigestCard({ data }: Props) {
   const remaining = Math.max(0, data.totalCount - items.length);
 
   return (
-    <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-all duration-300">
+    <div className="bg-card rounded-2xl p-6 border border-border shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-all duration-300">
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-4">
-        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-700 bg-indigo-50 border border-indigo-100 px-2.5 py-1 rounded-full">
+        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-700 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/15 border border-indigo-100 px-2.5 py-1 rounded-full">
           <MessageSquareQuote size={12} /> 솔직 세이
         </span>
         {isAuthed ? (
           <Link
             href="/comments"
-            className="text-xs font-medium text-gray-500 hover:text-gray-900 flex items-center gap-0.5"
+            className="text-xs font-medium text-muted-foreground hover:text-foreground flex items-center gap-0.5"
           >
             전체보기 <ChevronRight size={14} />
           </Link>
@@ -44,7 +44,7 @@ export function CommentDigestCard({ data }: Props) {
           // 비로그인: 전체보기도 잠금 느낌으로 블러 (네비는 하단 CTA 로 유도)
           <span
             aria-hidden
-            className="text-xs font-medium text-gray-400 flex items-center gap-0.5 blur-[2px] select-none"
+            className="text-xs font-medium text-muted-foreground flex items-center gap-0.5 blur-[2px] select-none"
           >
             전체보기 <ChevronRight size={14} />
           </span>
@@ -52,15 +52,15 @@ export function CommentDigestCard({ data }: Props) {
       </div>
 
       {/* 공개 코멘트 (비로그인 1 / 로그인 ≤5) + 비로그인은 블러 행으로 채움 */}
-      <ul className="divide-y divide-gray-100">
+      <ul className="divide-y divide-border">
         {items.map((c) => (
           <li key={c.id} className="py-2.5 first:pt-0">
             <Link href={`/company/${c.companySlug}`} className="block group">
-              <p className="text-sm text-gray-800 leading-relaxed line-clamp-2">
+              <p className="text-sm text-foreground leading-relaxed line-clamp-2">
                 &ldquo;{c.content}&rdquo;
               </p>
-              <p className="mt-1 text-xs text-gray-400">
-                <span className="font-semibold text-indigo-500 group-hover:text-indigo-600">
+              <p className="mt-1 text-xs text-muted-foreground">
+                <span className="font-semibold text-indigo-500 dark:text-indigo-400 group-hover:text-indigo-600">
                   {c.companyName}
                 </span>
                 {" · "}
@@ -76,11 +76,11 @@ export function CommentDigestCard({ data }: Props) {
           BLUR_PLACEHOLDERS.slice(0, Math.min(BLUR_PLACEHOLDERS.length, remaining)).map(
             (f, i) => (
               <li key={`blur-${i}`} aria-hidden className="py-2.5 select-none blur-[5px]">
-                <p className="text-sm text-gray-800 leading-relaxed line-clamp-2">
+                <p className="text-sm text-foreground leading-relaxed line-clamp-2">
                   &ldquo;{f.content}&rdquo;
                 </p>
-                <p className="mt-1 text-xs text-gray-400">
-                  <span className="font-medium text-gray-600">{f.company}</span>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  <span className="font-medium text-muted-foreground">{f.company}</span>
                   {" · "}
                   {f.nickname}
                   {" · "}

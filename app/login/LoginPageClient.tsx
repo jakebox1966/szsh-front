@@ -34,15 +34,15 @@ export function LoginPageClient() {
               szsh.kr
             </span>
           </Link>
-          <h1 className="mt-6 text-xl sm:text-2xl font-semibold text-gray-900">
+          <h1 className="mt-6 text-xl sm:text-2xl font-semibold text-foreground">
             로그인
           </h1>
-          <p className="mt-2 text-sm text-gray-500">
+          <p className="mt-2 text-sm text-muted-foreground">
             소셜 계정으로 빠르게 시작하세요
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8">
+        <div className="bg-card rounded-2xl shadow-sm border border-border p-6 sm:p-8">
           <div className="flex flex-col gap-3">
             <button
               type="button"
@@ -56,14 +56,14 @@ export function LoginPageClient() {
             <button
               type="button"
               onClick={() => go("google")}
-              className="w-full flex items-center justify-center gap-2 h-12 px-4 rounded-xl bg-white border border-gray-200 text-gray-800 text-sm sm:text-base font-medium hover:bg-gray-50 active:bg-gray-100 transition"
+              className="w-full flex items-center justify-center gap-2 h-12 px-4 rounded-xl bg-card border border-border text-foreground text-sm sm:text-base font-medium hover:bg-accent active:bg-accent transition"
             >
               <GoogleIcon className="w-5 h-5" />
               <span>Google로 시작하기</span>
             </button>
           </div>
 
-          <p className="mt-6 text-xs text-center text-gray-400 leading-relaxed">
+          <p className="mt-6 text-xs text-center text-muted-foreground leading-relaxed">
             로그인 시 서비스 이용약관 및 개인정보 처리방침에<br className="sm:hidden" />
             {" "}동의하는 것으로 간주됩니다.
           </p>
@@ -72,7 +72,7 @@ export function LoginPageClient() {
         <div className="mt-6 text-center">
           <Link
             href="/"
-            className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             ← 홈으로 돌아가기
           </Link>

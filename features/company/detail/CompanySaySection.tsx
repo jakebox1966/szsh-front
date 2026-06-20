@@ -44,15 +44,15 @@ export function CompanySaySection({
   };
 
   return (
-    <div className="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm mb-6">
+    <div className="bg-card rounded-3xl p-5 border border-border shadow-sm mb-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <MessageSquare size={16} className="text-indigo-600" />
-          <h2 className="text-xs font-bold text-gray-900 tracking-tight">세전세후 세이(Say)</h2>
+          <MessageSquare size={16} className="text-indigo-600 dark:text-indigo-400" />
+          <h2 className="text-xs font-bold text-foreground tracking-tight">세전세후 세이(Say)</h2>
         </div>
         <Link
           href="/comments"
-          className={`text-[10px] text-gray-400 flex items-center hover:text-gray-600 transition-colors ${
+          className={`text-[10px] text-muted-foreground flex items-center hover:text-muted-foreground transition-colors ${
             isLoggedIn ? "" : "blur-[3px] select-none pointer-events-none"
           }`}
           aria-hidden={!isLoggedIn}
@@ -72,7 +72,7 @@ export function CompanySaySection({
           aria-hidden={!isLoggedIn}
         >
           {comments.length === 0 ? (
-            <div className="text-center py-6 text-sm text-gray-400">
+            <div className="text-center py-6 text-sm text-muted-foreground">
               아직 세이가 없습니다. 첫 번째 의견을 남겨보세요!
             </div>
           ) : (
@@ -92,7 +92,7 @@ export function CompanySaySection({
                 <button
                   type="button"
                   onClick={() => setVisibleCount((v) => v + 5)}
-                  className="w-full mb-4 py-2 rounded-xl border border-gray-100 text-xs font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-700 transition-colors"
+                  className="w-full mb-4 py-2 rounded-xl border border-border text-xs font-medium text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
                 >
                   더보기 {comments.length - visibleCount}개
                 </button>
@@ -107,7 +107,7 @@ export function CompanySaySection({
           <div className="relative">
             <input
               type="text"
-              className="w-full bg-gray-50 border border-gray-100 rounded-full py-2.5 px-5 pr-12 text-xs focus:ring-2 focus:ring-indigo-100 outline-none transition-all placeholder:text-gray-400"
+              className="w-full bg-muted border border-border rounded-full py-2.5 px-5 pr-12 text-xs focus:ring-2 focus:ring-indigo-100 outline-none transition-all placeholder:text-muted-foreground"
               placeholder="기업에 대한 의견을 남겨주세요. (2자 이상)"
               value={comment}
               onChange={(e) => onCommentChange(e.target.value)}
@@ -117,7 +117,7 @@ export function CompanySaySection({
             <button
               type="button"
               className={`absolute right-1.5 top-1.5 p-1 rounded-full transition-all ${
-                canSubmit ? "bg-indigo-600 text-white shadow-md" : "bg-gray-200 text-gray-400"
+                canSubmit ? "bg-indigo-600 text-white shadow-md" : "bg-gray-200 text-muted-foreground"
               }`}
               disabled={!canSubmit}
               onClick={onSubmitComment}
@@ -129,11 +129,11 @@ export function CompanySaySection({
 
         {!isLoggedIn && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="flex flex-col items-center gap-2.5 bg-white/90 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-lg border border-gray-100">
-              <div className="w-9 h-9 rounded-full bg-indigo-50 flex items-center justify-center">
-                <Lock size={16} className="text-indigo-600" />
+            <div className="flex flex-col items-center gap-2.5 bg-card/90 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-lg border border-border">
+              <div className="w-9 h-9 rounded-full bg-indigo-50 dark:bg-indigo-500/15 flex items-center justify-center">
+                <Lock size={16} className="text-indigo-600 dark:text-indigo-400" />
               </div>
-              <p className="text-sm font-semibold text-gray-900">
+              <p className="text-sm font-semibold text-foreground">
                 로그인 후 확인할 수 있어요
               </p>
               <Link
@@ -194,14 +194,14 @@ function CommentRow({ comment, isOwner, onEdit, onDelete }: CommentRowProps) {
 
   if (editing) {
     return (
-      <div className="bg-indigo-50/40 border border-indigo-100 px-4 py-2 rounded-xl">
+      <div className="bg-indigo-50/40 dark:bg-indigo-500/15 border border-indigo-100 px-4 py-2 rounded-xl">
         <div className="flex items-center gap-3">
-          <span className="text-[10px] font-bold text-indigo-500 whitespace-nowrap shrink-0">
+          <span className="text-[10px] font-bold text-indigo-500 dark:text-indigo-400 whitespace-nowrap shrink-0">
             {comment.user}
           </span>
           <input
             type="text"
-            className="flex-1 min-w-0 bg-white border border-indigo-200 rounded-md px-2 py-1 text-[11px] outline-none focus:ring-2 focus:ring-indigo-100"
+            className="flex-1 min-w-0 bg-card border border-indigo-200 rounded-md px-2 py-1 text-[11px] outline-none focus:ring-2 focus:ring-indigo-100"
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={(e) => {
@@ -217,7 +217,7 @@ function CommentRow({ comment, isOwner, onEdit, onDelete }: CommentRowProps) {
           <button
             type="button"
             onClick={saveEdit}
-            className="p-1 rounded text-indigo-600 hover:bg-indigo-100"
+            className="p-1 rounded text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-500/20"
             aria-label="저장"
           >
             <Check size={14} />
@@ -225,7 +225,7 @@ function CommentRow({ comment, isOwner, onEdit, onDelete }: CommentRowProps) {
           <button
             type="button"
             onClick={cancelEdit}
-            className="p-1 rounded text-gray-500 hover:bg-gray-100"
+            className="p-1 rounded text-muted-foreground hover:bg-accent"
             aria-label="취소"
           >
             <X size={14} />
@@ -236,17 +236,17 @@ function CommentRow({ comment, isOwner, onEdit, onDelete }: CommentRowProps) {
   }
 
   return (
-    <div className="group relative flex items-center justify-between gap-2 bg-gray-50 hover:bg-indigo-50/30 px-4 py-2 rounded-xl border border-gray-100 transition-colors">
+    <div className="group relative flex items-center justify-between gap-2 bg-muted hover:bg-indigo-50/30 px-4 py-2 rounded-xl border border-border transition-colors">
       <div className="flex items-center gap-3 min-w-0 flex-1">
-        <span className="text-[10px] font-bold text-indigo-500 whitespace-nowrap shrink-0">
+        <span className="text-[10px] font-bold text-indigo-500 dark:text-indigo-400 whitespace-nowrap shrink-0">
           {comment.user}
         </span>
-        <p className="text-[11px] text-gray-700 truncate min-w-0 flex-1">
+        <p className="text-[11px] text-foreground truncate min-w-0 flex-1">
           {comment.content}
-          {comment.edited && <span className="text-gray-400 ml-1">(수정됨)</span>}
+          {comment.edited && <span className="text-muted-foreground ml-1">(수정됨)</span>}
         </p>
       </div>
-      <div className="flex items-center gap-1 text-[9px] text-gray-400 whitespace-nowrap shrink-0">
+      <div className="flex items-center gap-1 text-[9px] text-muted-foreground whitespace-nowrap shrink-0">
         <Clock size={10} />
         {comment.time}
         {isOwner && (
@@ -255,18 +255,18 @@ function CommentRow({ comment, isOwner, onEdit, onDelete }: CommentRowProps) {
               type="button"
               onClick={() => setMenuOpen((v) => !v)}
               onBlur={() => setTimeout(() => setMenuOpen(false), 150)}
-              className="p-1 rounded hover:bg-gray-200/70 text-gray-400 hover:text-gray-700"
+              className="p-1 rounded hover:bg-gray-200/70 text-muted-foreground hover:text-foreground"
               aria-label="세이 메뉴"
             >
               <MoreHorizontal size={12} />
             </button>
             {menuOpen && (
-              <div className="absolute right-0 top-full mt-1 z-10 bg-white border border-gray-100 rounded-lg shadow-md text-[10px] py-1 min-w-[80px]">
+              <div className="absolute right-0 top-full mt-1 z-10 bg-card border border-border rounded-lg shadow-md text-[10px] py-1 min-w-[80px]">
                 <button
                   type="button"
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={startEdit}
-                  className="block w-full text-left px-3 py-1.5 hover:bg-gray-50 text-gray-700"
+                  className="block w-full text-left px-3 py-1.5 hover:bg-accent text-foreground"
                 >
                   수정
                 </button>
@@ -274,7 +274,7 @@ function CommentRow({ comment, isOwner, onEdit, onDelete }: CommentRowProps) {
                   type="button"
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={handleDelete}
-                  className="block w-full text-left px-3 py-1.5 hover:bg-gray-50 text-red-500"
+                  className="block w-full text-left px-3 py-1.5 hover:bg-accent text-red-500"
                 >
                   삭제
                 </button>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AuthProvider } from "@/lib/auth";
+import { ThemeProvider, THEME_INIT_SCRIPT } from "@/lib/theme";
 import "./globals.css";
 
 // GA4 측정 ID. Vercel 환경변수에서 주입 — 비어있으면 GA 자체를 안 띄움.
@@ -114,8 +115,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
+    <html lang="ko" suppressHydrationWarning>
       <head>
+        {/* 다크모드 FOUC 방지 — React 하이드레이션 전에 .dark 클래스 동기 세팅 */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         {/*
           GA gtag.js — `<head>` 에 직접 삽입해서 React 하이드레이션 보다 먼저
           로드/실행되게 함. afterInteractive Script 컴포넌트를 쓰면 OAuth 콜백
@@ -146,9 +149,11 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
-        <AuthProvider>{children}</AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

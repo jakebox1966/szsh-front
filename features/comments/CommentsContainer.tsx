@@ -10,14 +10,14 @@ import { trackEvent } from "@/lib/analytics";
 
 function CommentRow({ c }: { c: ApiCommentFeedItem }) {
   return (
-    <li className="px-4 py-4 border-b border-gray-100">
-      <p className="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap break-words">
+    <li className="px-4 py-4 border-b border-border">
+      <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap break-words">
         {c.content}
       </p>
-      <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-gray-400">
+      <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
         <Link
           href={`/company/${c.companySlug}`}
-          className="font-semibold text-indigo-500 hover:text-indigo-600"
+          className="font-semibold text-indigo-500 dark:text-indigo-400 hover:text-indigo-600"
         >
           {c.companyName}
         </Link>
@@ -100,30 +100,30 @@ export function CommentsContainer() {
   return (
     <div className="mx-auto w-full max-w-2xl px-4 pt-24 pb-12">
       <header className="mb-6">
-        <h1 className="flex items-center gap-2 text-2xl font-bold text-[#1a1a1a]">
-          <MessageSquareQuote size={22} className="text-indigo-600" />
+        <h1 className="flex items-center gap-2 text-2xl font-bold text-foreground">
+          <MessageSquareQuote size={22} className="text-indigo-600 dark:text-indigo-400" />
           세이 모아보기
         </h1>
         {total > 0 && (
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-muted-foreground">
             지금까지 {total.toLocaleString()}개의 솔직 세이
           </p>
         )}
       </header>
 
       {loading ? (
-        <ul className="rounded-2xl border border-gray-100 bg-white overflow-hidden">
+        <ul className="rounded-2xl border border-border bg-card overflow-hidden">
           {[0, 1, 2, 3].map((i) => (
-            <li key={i} className="px-4 py-4 border-b border-gray-100 space-y-2 animate-pulse">
-              <div className="h-3 w-11/12 rounded bg-gray-100" />
-              <div className="h-3 w-2/3 rounded bg-gray-100" />
+            <li key={i} className="px-4 py-4 border-b border-border space-y-2 animate-pulse">
+              <div className="h-3 w-11/12 rounded bg-muted" />
+              <div className="h-3 w-2/3 rounded bg-muted" />
             </li>
           ))}
         </ul>
       ) : items.length === 0 ? (
-        <p className="py-16 text-center text-sm text-gray-400">아직 세이가 없습니다.</p>
+        <p className="py-16 text-center text-sm text-muted-foreground">아직 세이가 없습니다.</p>
       ) : (
-        <div className="rounded-2xl border border-gray-100 bg-white overflow-hidden">
+        <div className="rounded-2xl border border-border bg-card overflow-hidden">
           <ul>
             {items.map((c) => (
               <CommentRow key={c.id} c={c} />
@@ -162,7 +162,7 @@ export function CommentsContainer() {
 
           {/* 로그인: 무한 스크롤 sentinel */}
           {!locked && hasMore && (
-            <div ref={sentinelRef} className="py-6 text-center text-xs text-gray-400">
+            <div ref={sentinelRef} className="py-6 text-center text-xs text-muted-foreground">
               {loadingMore ? "불러오는 중…" : ""}
             </div>
           )}

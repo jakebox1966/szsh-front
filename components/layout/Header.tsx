@@ -33,7 +33,7 @@ export function Header() {
   };
 
   return (
-    <header className="fixed top-0 w-full px-6 py-4 flex justify-between items-center z-50 bg-white/70 supports-[backdrop-filter]:bg-white/55 backdrop-blur-xl">
+    <header className="fixed top-0 w-full px-6 py-4 flex justify-between items-center z-50 bg-card/70 supports-[backdrop-filter]:bg-card/55 backdrop-blur-xl">
       <div className="flex items-center gap-2">
         <HamburgerMenu />
         <Link href="/" className="flex items-center gap-2 cursor-pointer group">
@@ -60,7 +60,7 @@ export function Header() {
           onSubmit={handleSearch}
           className="hidden md:flex flex-1 max-w-md mx-8 relative"
         >
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground">
             <Search size={16} />
           </div>
           <input
@@ -68,21 +68,21 @@ export function Header() {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="다른 기업 검색..."
-            className="w-full bg-gray-50 border-none rounded-full py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-blue-100 transition-all outline-none"
+            className="w-full bg-muted border-none rounded-full py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-blue-100 transition-all outline-none"
           />
         </form>
       )}
 
       <div className="flex items-center gap-3">
         {status === "loading" ? (
-          <span className="text-sm text-gray-400">…</span>
+          <span className="text-sm text-muted-foreground">…</span>
         ) : user ? (
           <UserMenu user={user} onLogout={logout} />
         ) : (
           <Link
             href="/login"
             onClick={() => trackEvent("sign_up_start", { from_path: "gnb_login" })}
-            className="px-4 py-2 text-sm font-medium border border-gray-200 rounded-full hover:bg-gray-50 transition-colors"
+            className="px-4 py-2 text-sm font-medium border border-border rounded-full hover:bg-accent transition-colors"
           >
             로그인
           </Link>
@@ -127,32 +127,32 @@ function UserMenu({
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="menu"
         aria-expanded={open}
-        className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors"
+        className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full border border-border hover:border-border hover:bg-accent transition-colors"
       >
         <Avatar user={user} initial={initial} />
-        <span className="text-sm font-medium text-gray-800 max-w-[100px] sm:max-w-[160px] truncate">
+        <span className="text-sm font-medium text-foreground max-w-[100px] sm:max-w-[160px] truncate">
           {user.nickname}
         </span>
         <ChevronDown
           size={14}
-          className={`text-gray-400 transition-transform ${open ? "rotate-180" : ""}`}
+          className={`text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`}
         />
       </button>
 
       {open && (
         <div
           role="menu"
-          className="absolute right-0 mt-2 w-60 rounded-2xl border border-gray-100 bg-white shadow-lg overflow-hidden"
+          className="absolute right-0 mt-2 w-60 rounded-2xl border border-border bg-card shadow-lg overflow-hidden"
         >
           {/* 프로필 헤더 */}
           <div className="flex items-center gap-3 p-4 bg-gradient-to-br from-blue-50/60 to-indigo-50/40">
             <Avatar user={user} initial={initial} size="lg" />
             <div className="min-w-0 flex-1">
-              <div className="text-sm font-semibold text-gray-900 truncate">
+              <div className="text-sm font-semibold text-foreground truncate">
                 {user.nickname}
               </div>
               {user.email && (
-                <div className="text-xs text-gray-500 truncate mt-0.5">
+                <div className="text-xs text-muted-foreground truncate mt-0.5">
                   {user.email}
                 </div>
               )}
@@ -168,9 +168,9 @@ function UserMenu({
                 setOpen(false);
                 onLogout();
               }}
-              className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+              className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-foreground hover:bg-accent transition-colors"
             >
-              <LogOut size={15} className="text-gray-400" />
+              <LogOut size={15} className="text-muted-foreground" />
               로그아웃
             </button>
           </div>

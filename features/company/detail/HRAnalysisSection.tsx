@@ -71,44 +71,44 @@ export function HRAnalysisSection({ hr, turnoverRate }: HRAnalysisSectionProps) 
   const updateLabel = hr.latestMonth ? `최신 데이터 ${hr.latestMonth}` : "";
 
   return (
-    <div className="bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-sm">
+    <div className="bg-card rounded-3xl p-6 md:p-8 border border-border shadow-sm">
       {/* 헤더 */}
       <div className="mb-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-            <Users className="text-gray-400" size={20} />
+          <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+            <Users className="text-muted-foreground" size={20} />
             고용 현황
           </h2>
           {data.length > 0 && <SourceBadge source="NPS" />}
         </div>
         {updateLabel && (
-          <p className="text-xs text-gray-400 mt-1">{updateLabel}</p>
+          <p className="text-xs text-muted-foreground mt-1">{updateLabel}</p>
         )}
       </div>
 
       {/* KPI 4개 카드 */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
         <div>
-          <p className="text-xs text-gray-500 mb-1">{latestMonthLabel} 근무 인원수</p>
-          <p className="text-2xl font-bold text-gray-900">
-            {formatNumber(hr.monthlyHeadcount ?? hr.current)}<span className="text-base font-normal text-gray-400 ml-0.5">명</span>
+          <p className="text-xs text-muted-foreground mb-1">{latestMonthLabel} 근무 인원수</p>
+          <p className="text-2xl font-bold text-foreground">
+            {formatNumber(hr.monthlyHeadcount ?? hr.current)}<span className="text-base font-normal text-muted-foreground ml-0.5">명</span>
           </p>
         </div>
         <div>
-          <p className="text-xs text-gray-500 mb-1">{latestMonthLabel} 입사자 수</p>
-          <p className="text-2xl font-bold text-gray-900">
-            {formatNumber(hr.monthlyIn)}<span className="text-base font-normal text-gray-400 ml-0.5">명</span>
+          <p className="text-xs text-muted-foreground mb-1">{latestMonthLabel} 입사자 수</p>
+          <p className="text-2xl font-bold text-foreground">
+            {formatNumber(hr.monthlyIn)}<span className="text-base font-normal text-muted-foreground ml-0.5">명</span>
           </p>
         </div>
         <div>
-          <p className="text-xs text-gray-500 mb-1">{latestMonthLabel} 퇴사자 수</p>
-          <p className="text-2xl font-bold text-gray-900">
-            {formatNumber(hr.monthlyOut)}<span className="text-base font-normal text-gray-400 ml-0.5">명</span>
+          <p className="text-xs text-muted-foreground mb-1">{latestMonthLabel} 퇴사자 수</p>
+          <p className="text-2xl font-bold text-foreground">
+            {formatNumber(hr.monthlyOut)}<span className="text-base font-normal text-muted-foreground ml-0.5">명</span>
           </p>
         </div>
         <div>
-          <p className="text-xs text-gray-500 mb-1">연간 퇴사율</p>
-          <p className="text-2xl font-bold text-gray-900">{turnoverLabel}</p>
+          <p className="text-xs text-muted-foreground mb-1">연간 퇴사율</p>
+          <p className="text-2xl font-bold text-foreground">{turnoverLabel}</p>
         </div>
       </div>
 
@@ -160,7 +160,7 @@ export function HRAnalysisSection({ hr, turnoverRate }: HRAnalysisSectionProps) 
           </ResponsiveContainer>
         </div>
       ) : (
-        <p className="text-sm text-gray-400 text-center py-12">월별 데이터 없음</p>
+        <p className="text-sm text-muted-foreground text-center py-12">월별 데이터 없음</p>
       )}
     </div>
   );

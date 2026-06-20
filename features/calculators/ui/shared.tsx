@@ -30,9 +30,9 @@ export function ManwonInput({
           onChange(raw === "" ? 0 : parseInt(raw, 10) * 10_000);
         }}
         placeholder={placeholder}
-        className="w-full h-11 pl-3 pr-12 rounded-xl border border-gray-200 text-sm text-gray-900 placeholder-gray-400 bg-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"
+        className="w-full h-11 pl-3 pr-12 rounded-xl border border-input text-sm text-foreground placeholder:text-muted-foreground bg-background focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"
       />
-      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 pointer-events-none">
+      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
         만원
       </span>
     </div>
@@ -95,10 +95,10 @@ export function NumberInput({
         value={text}
         onChange={(e) => handleChange(e.target.value)}
         onBlur={handleBlur}
-        className="w-full h-11 pl-3 pr-10 rounded-xl border border-gray-200 text-sm text-gray-900 placeholder-gray-400 bg-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"
+        className="w-full h-11 pl-3 pr-10 rounded-xl border border-input text-sm text-foreground placeholder:text-muted-foreground bg-background focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"
       />
       {suffix && (
-        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 pointer-events-none">
+        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
           {suffix}
         </span>
       )}
@@ -123,13 +123,13 @@ export function Field({
   return (
     <div className="flex flex-col gap-1.5">
       <div className="flex items-baseline justify-between gap-2 min-h-[1rem]">
-        <label htmlFor={id} className="text-xs font-medium text-gray-700">
+        <label htmlFor={id} className="text-xs font-medium text-foreground">
           {label}
         </label>
         {aside}
       </div>
       {children}
-      {hint && <p className="text-[11px] text-gray-400">{hint}</p>}
+      {hint && <p className="text-[11px] text-muted-foreground">{hint}</p>}
     </div>
   );
 }
@@ -138,7 +138,7 @@ export function Field({
 export function WonText({ won }: { won: number }) {
   if (!won) return null;
   return (
-    <span className="text-[11px] font-medium text-gray-500 tabular-nums">
+    <span className="text-[11px] font-medium text-muted-foreground tabular-nums">
       {formatKRW(won)}
     </span>
   );
@@ -154,7 +154,7 @@ export function SegmentedControl<T extends string>({
   options: { value: T; label: string }[];
 }) {
   return (
-    <div className="inline-flex w-full p-1 bg-gray-100 rounded-xl gap-1">
+    <div className="inline-flex w-full p-1 bg-muted rounded-xl gap-1">
       {options.map((opt) => (
         <button
           key={opt.value}
@@ -162,8 +162,8 @@ export function SegmentedControl<T extends string>({
           onClick={() => onChange(opt.value)}
           className={`flex-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
             value === opt.value
-              ? "bg-white text-indigo-600 shadow-sm"
-              : "text-gray-500 hover:text-gray-700"
+              ? "bg-card text-indigo-600 dark:text-indigo-400 shadow-sm"
+              : "text-muted-foreground hover:text-foreground"
           }`}
         >
           {opt.label}
@@ -219,11 +219,11 @@ export function BreakdownRow({
   return (
     <div
       className={`flex items-center justify-between py-1.5 px-2 rounded-md ${
-        highlight ? "bg-white/60" : ""
+        highlight ? "bg-card/60" : ""
       }`}
     >
-      <span className="text-gray-600">{label}</span>
-      <span className={`font-medium ${highlight ? "text-gray-900" : "text-gray-800"}`}>
+      <span className="text-muted-foreground">{label}</span>
+      <span className={`font-medium ${highlight ? "text-foreground" : "text-foreground"}`}>
         {typeof value === "number" ? formatKRW(value) : value}
       </span>
     </div>
@@ -256,7 +256,7 @@ export function CalculateButton({
 /** 아직 계산 전이거나 입력이 바뀌어 결과가 없을 때 보여줄 자리표시. */
 export function ResultPlaceholder({ message }: { message: string }) {
   return (
-    <div className="rounded-2xl border border-dashed border-gray-200 bg-gray-50/50 p-8 text-center text-sm text-gray-400">
+    <div className="rounded-2xl border border-dashed border-border bg-muted/50 p-8 text-center text-sm text-muted-foreground">
       {message}
     </div>
   );

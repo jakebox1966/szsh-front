@@ -101,20 +101,20 @@ export function HomeBoards() {
   return (
     <div className="w-full max-w-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-3 items-stretch">
       {/* 실시간 검색어 */}
-      <div className="h-full rounded-2xl border border-gray-100 bg-white p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+      <div className="h-full rounded-2xl border border-border bg-card p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-bold text-gray-900">최근 조회 기업</h3>
+          <h3 className="text-sm font-bold text-foreground">최근 조회 기업</h3>
           <button
             type="button"
             onClick={loadTerms}
             aria-label="새로고침"
-            className="text-gray-400 hover:text-indigo-600 transition-colors"
+            className="text-muted-foreground hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
           >
             <RefreshCw size={14} />
           </button>
         </div>
         {terms.length === 0 ? (
-          <p className="py-5 text-center text-xs text-gray-400">아직 검색 기록이 없어요</p>
+          <p className="py-5 text-center text-xs text-muted-foreground">아직 검색 기록이 없어요</p>
         ) : (
           <ol className="space-y-2">
             {terms.map((t, i) => (
@@ -126,7 +126,7 @@ export function HomeBoards() {
                   }
                   className="group flex w-full items-center gap-2.5 text-left"
                 >
-                  <span className="w-4 shrink-0 text-xs font-bold text-indigo-500">{i + 1}</span>
+                  <span className="w-4 shrink-0 text-xs font-bold text-indigo-500 dark:text-indigo-400">{i + 1}</span>
                   <span
                     className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[11px] font-bold text-white"
                     style={{ backgroundColor: avatarColor(t.name) }}
@@ -134,7 +134,7 @@ export function HomeBoards() {
                   >
                     {avatarInitial(t.name)}
                   </span>
-                  <span className="truncate text-sm text-gray-700 transition-colors group-hover:text-indigo-600">
+                  <span className="truncate text-sm text-foreground transition-colors group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
                     {t.name}
                   </span>
                 </button>
@@ -145,15 +145,15 @@ export function HomeBoards() {
       </div>
 
       {/* 최신 댓글 */}
-      <div className="h-full rounded-2xl border border-gray-100 bg-white p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+      <div className="h-full rounded-2xl border border-border bg-card p-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-bold text-gray-900">최신 세이</h3>
+          <h3 className="text-sm font-bold text-foreground">최신 세이</h3>
           {totalComments > 0 && (
-            <span className="text-xs text-gray-400">총 {totalComments.toLocaleString()}건</span>
+            <span className="text-xs text-muted-foreground">총 {totalComments.toLocaleString()}건</span>
           )}
         </div>
         {comments.length === 0 ? (
-          <p className="py-5 text-center text-xs text-gray-400">아직 세이가 없어요</p>
+          <p className="py-5 text-center text-xs text-muted-foreground">아직 세이가 없어요</p>
         ) : (
           <ul className="space-y-2">
             {comments.map((c) => (
@@ -163,10 +163,10 @@ export function HomeBoards() {
                   onClick={() => goCompany(c.companySlug, c.companyName)}
                   className="group flex w-full items-center gap-2 text-left"
                 >
-                  <span className="flex-1 truncate text-sm text-gray-700 transition-colors group-hover:text-indigo-600">
+                  <span className="flex-1 truncate text-sm text-foreground transition-colors group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
                     {c.content}
                   </span>
-                  <span className="max-w-[34%] shrink-0 truncate text-xs font-medium text-indigo-500">
+                  <span className="max-w-[34%] shrink-0 truncate text-xs font-medium text-indigo-500 dark:text-indigo-400">
                     {c.companyName}
                   </span>
                 </button>
@@ -185,8 +185,8 @@ export function HomeBoards() {
                     aria-hidden
                     className="flex select-none items-center gap-2 blur-[3px]"
                   >
-                    <span className="flex-1 truncate text-sm text-gray-700">{r.content}</span>
-                    <span className="max-w-[34%] shrink-0 truncate text-xs font-medium text-indigo-500">
+                    <span className="flex-1 truncate text-sm text-foreground">{r.content}</span>
+                    <span className="max-w-[34%] shrink-0 truncate text-xs font-medium text-indigo-500 dark:text-indigo-400">
                       {r.company}
                     </span>
                   </li>
@@ -195,7 +195,7 @@ export function HomeBoards() {
                   <Link
                     href="/login?callbackUrl=/"
                     onClick={() => trackEvent("sign_up_start", { from_path: "comment_login" })}
-                    className="flex items-center justify-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-700"
+                    className="flex items-center justify-center gap-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700"
                   >
                     <Lock size={11} /> 로그인하고 더 보기
                   </Link>
@@ -208,7 +208,7 @@ export function HomeBoards() {
               <li className="pt-1">
                 <Link
                   href="/comments"
-                  className="flex items-center justify-center gap-0.5 text-xs font-medium text-gray-500 hover:text-gray-900"
+                  className="flex items-center justify-center gap-0.5 text-xs font-medium text-muted-foreground hover:text-foreground"
                 >
                   전체보기 <ChevronRight size={12} />
                 </Link>

@@ -118,13 +118,13 @@ export function HeroSection() {
           szsh
         </span>
       </h1>
-      <p className="mb-8 text-base md:text-lg font-semibold text-gray-700">
+      <p className="mb-8 text-base md:text-lg font-semibold text-foreground">
         취업·이직 전 연봉부터 성장성까지 기업의 데이터를 확인하세요.
       </p>
 
       <div className="relative group w-full max-w-2xl mx-auto mb-8" ref={wrapperRef}>
-        <div className="relative bg-white rounded-full md:rounded-[2rem] shadow-[0_2px_12px_rgba(0,0,0,0.08)] border border-gray-200 p-1.5 md:p-2 flex items-center transition-all duration-300 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] hover:border-gray-300">
-          <div className="pl-3 pr-2 md:pl-4 md:pr-3 text-gray-400 shrink-0">
+        <div className="relative bg-card rounded-full md:rounded-[2rem] shadow-[0_2px_12px_rgba(0,0,0,0.08)] border border-border p-1.5 md:p-2 flex items-center transition-all duration-300 hover:shadow-[0_4px_20px_rgba(0,0,0,0.12)] hover:border-border">
+          <div className="pl-3 pr-2 md:pl-4 md:pr-3 text-muted-foreground shrink-0">
             <Search className="w-[18px] h-[18px] md:w-[22px] md:h-[22px]" strokeWidth={2} />
           </div>
           <input
@@ -137,7 +137,7 @@ export function HeroSection() {
             onFocus={() => setOpen(true)}
             onKeyDown={handleKeyDown}
             placeholder="기업명 검색"
-            className="flex-1 min-w-0 bg-transparent border-none outline-none py-2 md:py-3 text-sm md:text-lg text-gray-800 placeholder-gray-400 font-medium"
+            className="flex-1 min-w-0 bg-transparent border-none outline-none py-2 md:py-3 text-sm md:text-lg text-foreground placeholder:text-muted-foreground font-medium"
           />
           <button
             type="button"
@@ -151,32 +151,32 @@ export function HeroSection() {
         </div>
 
         {showDropdown && (
-          <div className="absolute left-0 right-0 mt-2 bg-white rounded-2xl border border-gray-200 shadow-[0_8px_24px_rgba(0,0,0,0.08)] overflow-hidden z-[50] text-left">
+          <div className="absolute left-0 right-0 mt-2 bg-card rounded-2xl border border-border shadow-[0_8px_24px_rgba(0,0,0,0.08)] overflow-hidden z-[50] text-left">
             {showRecent ? (
               <>
                 <div className="flex items-center justify-between px-4 pt-3 pb-1.5">
-                  <span className="text-xs font-medium text-gray-400">최근 검색</span>
+                  <span className="text-xs font-medium text-muted-foreground">최근 검색</span>
                   <button
                     type="button"
                     onClick={clearRecentCompanies}
-                    className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+                    className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                   >
                     전체 삭제
                   </button>
                 </div>
                 <ul className="max-h-80 overflow-y-auto pb-1">
                   {recentCompanies.map((c) => (
-                    <li key={c.slug} className="flex items-center hover:bg-gray-50">
+                    <li key={c.slug} className="flex items-center hover:bg-accent">
                       <button
                         type="button"
                         onClick={() => goToRecent(c.slug, c.name)}
                         className="flex-1 min-w-0 flex items-center gap-3 pl-4 py-2.5"
                       >
-                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-50 text-gray-400 shrink-0">
+                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-muted text-muted-foreground shrink-0">
                           <Clock size={14} />
                         </div>
                         <div className="min-w-0 flex-1 text-left">
-                          <div className="text-sm font-medium text-gray-900 truncate">
+                          <div className="text-sm font-medium text-foreground truncate">
                             {c.name}
                           </div>
                         </div>
@@ -185,7 +185,7 @@ export function HeroSection() {
                         type="button"
                         onClick={() => removeRecentCompany(c.slug)}
                         aria-label={`${c.name} 최근 검색에서 삭제`}
-                        className="shrink-0 px-3 py-2.5 text-gray-300 hover:text-gray-600 transition-colors"
+                        className="shrink-0 px-3 py-2.5 text-muted-foreground hover:text-foreground transition-colors"
                       >
                         <X size={14} />
                       </button>
@@ -204,19 +204,19 @@ export function HeroSection() {
                         onClick={() => goToCompany(item.slug, item.name)}
                         className={`w-full flex items-center gap-3 px-4 py-2.5 transition-colors ${
                           idx === activeIndex
-                            ? "bg-gray-50"
-                            : "hover:bg-gray-50"
+                            ? "bg-accent"
+                            : "hover:bg-accent"
                         }`}
                       >
-                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-50 text-gray-500 shrink-0">
+                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-muted text-muted-foreground shrink-0">
                           <Building2 size={14} />
                         </div>
                         <div className="min-w-0 flex-1 text-left">
-                          <div className="text-sm font-medium text-gray-900 truncate">
+                          <div className="text-sm font-medium text-foreground truncate">
                             {item.name}
                           </div>
                           {(item.engName || item.industry) && (
-                            <div className="text-xs text-gray-400 truncate">
+                            <div className="text-xs text-muted-foreground truncate">
                               {[item.engName, item.industry]
                                 .filter(Boolean)
                                 .join(" · ")}
@@ -230,7 +230,7 @@ export function HeroSection() {
                 <button
                   type="button"
                   onClick={submitSearch}
-                  className="w-full px-4 py-2.5 text-xs text-blue-600 hover:bg-blue-50 border-t border-gray-100 transition-colors text-left"
+                  className="w-full px-4 py-2.5 text-xs text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-500/15 border-t border-border transition-colors text-left"
                 >
                   &ldquo;{query.trim()}&rdquo; 전체 결과 보기
                 </button>

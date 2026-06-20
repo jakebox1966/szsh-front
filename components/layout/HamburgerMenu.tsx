@@ -4,10 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
-import { Menu, X, Home, MessageCircle, Search } from "lucide-react";
+import { Menu, X, Home, MessageCircle, Search, Sun, Moon, Monitor } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { apiFetch } from "@/lib/api";
 import { peekAnonView } from "@/lib/viewQuota";
+import { useTheme, type Theme } from "@/lib/theme";
 
 // 햄버거 버튼 하나 → 누르면 왼쪽에서 드로어가 슬라이드로 나온다.
 // 오버레이·드로어는 document.body 로 포탈(헤더 backdrop-blur 의 containing block 밖으로).
@@ -82,7 +83,7 @@ export function HamburgerMenu() {
         type="button"
         onClick={() => setOpen(true)}
         aria-label="메뉴 열기"
-        className="inline-flex items-center justify-center rounded-full p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+        className="inline-flex items-center justify-center rounded-full p-2 text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
       >
         <Menu size={22} />
       </button>
@@ -102,12 +103,12 @@ export function HamburgerMenu() {
             <aside
               role="dialog"
               aria-modal="true"
-              className={`fixed left-0 top-0 z-[60] flex h-screen w-72 max-w-[85vw] flex-col bg-white shadow-xl transition-transform duration-300 ease-in-out ${
+              className={`fixed left-0 top-0 z-[60] flex h-screen w-72 max-w-[85vw] flex-col bg-card shadow-xl transition-transform duration-300 ease-in-out ${
                 open ? "translate-x-0" : "-translate-x-full"
               }`}
             >
               {/* 상단: 세전세후 로고 + 닫기 */}
-              <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
+              <div className="flex items-center justify-between border-b border-border px-5 py-4">
                 <Link
                   href="/"
                   onClick={() => setOpen(false)}
@@ -131,7 +132,7 @@ export function HamburgerMenu() {
                   type="button"
                   onClick={() => setOpen(false)}
                   aria-label="메뉴 닫기"
-                  className="rounded-full p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors"
+                  className="rounded-full p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
                 >
                   <X size={18} />
                 </button>
@@ -156,20 +157,57 @@ export function HamburgerMenu() {
               </nav>
 
               {/* 검색 횟수 사용량 카드 */}
-              <div className="mt-1 border-t border-gray-100 px-5 py-4">
-                <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-400">
+              <div className="mt-1 border-t border-border px-5 py-4">
+                <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                   <Search size={14} /> 일일 조회
                 </div>
                 <UsageRow loading={status === "loading"} quota={quota} />
-                <p className="mt-2 px-1 text-[11px] text-gray-400">
+                <p className="mt-2 px-1 text-[11px] text-muted-foreground">
                   매일 자정(KST)에 리셋됩니다
                 </p>
               </div>
+
+              {/* 테마 선택 (라이트/다크/시스템) */}
+              <ThemeToggle />
             </aside>
           </>,
           document.body
         )}
     </>
+  );
+}
+
+function ThemeToggle() {
+  const { theme, setTheme } = useTheme();
+  const opts: { value: Theme; label: string; icon: React.ReactNode }[] = [
+    { value: "light", label: "라이트", icon: <Sun size={15} /> },
+    { value: "dark", label: "다크", icon: <Moon size={15} /> },
+    { value: "system", label: "시스템", icon: <Monitor size={15} /> },
+  ];
+  return (
+    <div className="mt-auto border-t border-border px-5 py-4">
+      <div className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        테마
+      </div>
+      <div className="grid grid-cols-3 gap-1 rounded-lg bg-muted p-1">
+        {opts.map((o) => (
+          <button
+            key={o.value}
+            type="button"
+            onClick={() => setTheme(o.value)}
+            aria-pressed={theme === o.value}
+            className={`flex items-center justify-center gap-1 rounded-md py-1.5 text-xs font-medium transition-colors ${
+              theme === o.value
+                ? "bg-card text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {o.icon}
+            {o.label}
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -192,11 +230,15 @@ function DrawerNavItem({
       onClick={onClick}
       className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
         active
-          ? "bg-indigo-50 font-medium text-indigo-600"
-          : "text-gray-700 hover:bg-gray-50"
+          ? "bg-indigo-50 dark:bg-indigo-500/15 font-medium text-indigo-600 dark:text-indigo-400"
+          : "text-foreground hover:bg-accent"
       }`}
     >
-      <span className={active ? "text-indigo-600" : "text-gray-400"}>
+      <span
+        className={
+          active ? "text-indigo-600 dark:text-indigo-400" : "text-muted-foreground"
+        }
+      >
         {icon}
       </span>
       {label}
@@ -206,13 +248,15 @@ function DrawerNavItem({
 
 function UsageRow({ loading, quota }: { loading: boolean; quota: Quota | null }) {
   if (loading || quota === null) {
-    return <div className="px-1 text-sm text-gray-400">…</div>;
+    return <div className="px-1 text-sm text-muted-foreground">…</div>;
   }
   if (quota.unlimited) {
     return (
       <div className="flex items-center justify-between px-1">
-        <span className="text-sm text-gray-600">프리미엄</span>
-        <span className="text-sm font-semibold text-indigo-600">무제한</span>
+        <span className="text-sm text-muted-foreground">프리미엄</span>
+        <span className="text-sm font-semibold text-indigo-600 dark:text-indigo-400">
+          무제한
+        </span>
       </div>
     );
   }
@@ -222,14 +266,15 @@ function UsageRow({ loading, quota }: { loading: boolean; quota: Quota | null })
   return (
     <div className="px-1">
       <div className="flex items-center justify-between">
-        <span className="text-sm text-gray-600">
+        <span className="text-sm text-muted-foreground">
           {quota.authenticated ? "무료 회원" : "비회원"}
         </span>
-        <span className="text-sm font-semibold text-gray-900">
-          <span className="text-indigo-600">{used}</span> / {limit}회
+        <span className="text-sm font-semibold text-foreground">
+          <span className="text-indigo-600 dark:text-indigo-400">{used}</span> /{" "}
+          {limit}회
         </span>
       </div>
-      <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
+      <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-muted">
         <div
           className="h-full rounded-full bg-indigo-500 transition-all"
           style={{ width: `${pct}%` }}

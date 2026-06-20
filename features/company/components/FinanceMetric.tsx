@@ -9,9 +9,9 @@ export type FinanceMetricProps = {
 export function FinanceMetric({ label, value, growth }: FinanceMetricProps) {
   const isGrowthPositive = (growth ?? "").startsWith("+");
   return (
-    <div className="flex flex-col items-center p-3 bg-gray-50 rounded-xl">
-      <span className="text-xs text-gray-500 mb-1">{label}</span>
-      <span className="text-base font-bold text-gray-900">{formatKRWCompact(value)}</span>
+    <div className="flex flex-col items-center p-3 bg-muted rounded-xl">
+      <span className="text-xs text-muted-foreground mb-1">{label}</span>
+      <span className="text-base font-bold text-foreground">{formatKRWCompact(value)}</span>
       <span
         className={`text-xs font-medium ${isGrowthPositive ? "text-red-500" : "text-blue-500"}`}
       >

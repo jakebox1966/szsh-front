@@ -17,7 +17,7 @@ const DRAG_THRESHOLD = 50; // px 이상 밀면 페이지 넘김
 function renderMetricValue(item: ApiSpotlight["items"][number], metric: ApiSpotlight["metric"]) {
   if (metric === "salary") {
     return (
-      <span className="font-bold text-gray-900 text-sm">
+      <span className="font-bold text-foreground text-sm">
         {item.salary ? formatKRW(item.salary, { unit: false }) : "—"}
       </span>
     );
@@ -25,7 +25,7 @@ function renderMetricValue(item: ApiSpotlight["items"][number], metric: ApiSpotl
   if (metric === "revenue") {
     return (
       <div className="flex flex-col items-end">
-        <span className="font-bold text-gray-900 text-sm">
+        <span className="font-bold text-foreground text-sm">
           {item.revenue ? formatKRW(item.revenue, { unit: false }) : "—"}
         </span>
         {item.revenueGrowth != null && (
@@ -43,7 +43,7 @@ function renderMetricValue(item: ApiSpotlight["items"][number], metric: ApiSpotl
   // growth
   return (
     <div className="flex flex-col items-end">
-      <span className="font-bold text-gray-900 text-sm">
+      <span className="font-bold text-foreground text-sm">
         {item.employees ? `${item.employees.toLocaleString()}명` : "—"}
       </span>
       {item.employeeGrowth != null && (
@@ -122,17 +122,17 @@ export function SpotlightCard({ data }: SpotlightCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-all duration-300">
+    <div className="bg-card rounded-2xl p-6 border border-border shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-all duration-300">
       <div className="mb-6">
-        <span className="inline-flex items-center text-xs font-medium text-blue-700 bg-blue-50 border border-blue-100 px-2.5 py-1 rounded-full mb-2">
+        <span className="inline-flex items-center text-xs font-medium text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/15 border border-blue-100 px-2.5 py-1 rounded-full mb-2">
           오늘의 분야 · {data.groupLabel}
         </span>
-        <h3 className="text-lg font-bold text-[#1a1a1a]">{data.metricLabel}</h3>
-        {data.dataAsOf && <p className="text-sm text-gray-500 mt-1">{data.dataAsOf}</p>}
+        <h3 className="text-lg font-bold text-foreground">{data.metricLabel}</h3>
+        {data.dataAsOf && <p className="text-sm text-muted-foreground mt-1">{data.dataAsOf}</p>}
       </div>
 
       {empty ? (
-        <p className="text-sm text-gray-400 text-center py-8">데이터가 없습니다.</p>
+        <p className="text-sm text-muted-foreground text-center py-8">데이터가 없습니다.</p>
       ) : (
         <>
           {/* 슬라이드 영역 — 마우스/터치로 밀어서 넘김 */}
@@ -168,17 +168,17 @@ export function SpotlightCard({ data }: SpotlightCardProps) {
                             company_name: item.name,
                           })
                         }
-                        className="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50/80 transition-colors cursor-pointer"
+                        className="flex items-center justify-between p-3 rounded-xl hover:bg-accent transition-colors cursor-pointer"
                       >
                         <div className="flex items-center gap-4 min-w-0">
                           <span
                             className={`w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold font-mono shrink-0 ${
-                              rank <= 3 ? "bg-black text-white" : "bg-gray-100 text-gray-500"
+                              rank <= 3 ? "bg-black text-white" : "bg-muted text-muted-foreground"
                             }`}
                           >
                             {rank}
                           </span>
-                          <span className="font-semibold text-gray-800 truncate">{item.name}</span>
+                          <span className="font-semibold text-foreground truncate">{item.name}</span>
                         </div>
                         <div className="text-right shrink-0 ml-2">
                           {renderMetricValue(item, data.metric)}

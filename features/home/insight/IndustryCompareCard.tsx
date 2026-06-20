@@ -10,7 +10,7 @@ type Props = {
 };
 
 function GrowthChip({ pct }: { pct: number | null | undefined }) {
-  if (pct === null || pct === undefined) return <span className="text-[10px] text-gray-300">—</span>;
+  if (pct === null || pct === undefined) return <span className="text-[10px] text-muted-foreground">—</span>;
   const positive = pct >= 0;
   return (
     <span className={`text-[10px] font-medium tabular-nums ${positive ? "text-green-600" : "text-red-500"}`}>
@@ -32,12 +32,12 @@ function CompanyBlock({ company }: { company: ApiCompareCompany }) {
           company_name: company.name,
         })
       }
-      className="block p-4 rounded-xl hover:bg-gray-50/80 transition-colors cursor-pointer border border-gray-100"
+      className="block p-4 rounded-xl hover:bg-accent transition-colors cursor-pointer border border-border"
     >
-      <div className="font-semibold text-gray-900 mb-3 truncate">{company.name}</div>
+      <div className="font-semibold text-foreground mb-3 truncate">{company.name}</div>
 
       {/* 헤더 */}
-      <div className="grid grid-cols-[36px_1fr_1fr] gap-x-2 text-[10px] font-medium text-gray-400 mb-1">
+      <div className="grid grid-cols-[36px_1fr_1fr] gap-x-2 text-[10px] font-medium text-muted-foreground mb-1">
         <div>연도</div>
         <div className="text-right">매출</div>
         <div className="text-right">영업이익</div>
@@ -50,15 +50,15 @@ function CompanyBlock({ company }: { company: ApiCompareCompany }) {
             key={h.year}
             className="grid grid-cols-[36px_1fr_1fr] gap-x-2 items-baseline"
           >
-            <div className="text-xs text-gray-500 tabular-nums">{h.year}</div>
+            <div className="text-xs text-muted-foreground tabular-nums">{h.year}</div>
             <div className="text-right">
-              <div className="text-xs font-semibold text-gray-800 tabular-nums">
+              <div className="text-xs font-semibold text-foreground tabular-nums">
                 {h.revenue ? formatKRWCompact(h.revenue) : "—"}
               </div>
               <GrowthChip pct={h.revenueGrowth} />
             </div>
             <div className="text-right">
-              <div className="text-xs font-semibold text-gray-800 tabular-nums">
+              <div className="text-xs font-semibold text-foreground tabular-nums">
                 {h.operatingProfit != null ? formatKRWCompact(h.operatingProfit) : "—"}
               </div>
               <GrowthChip pct={h.profitGrowth} />
@@ -74,14 +74,14 @@ export function IndustryCompareCard({ data }: Props) {
   if (data.items.length === 0) return null;
 
   return (
-    <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-all duration-300">
+    <div className="bg-card rounded-2xl p-6 border border-border shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-all duration-300">
       <div className="mb-6">
-        <span className="inline-flex items-center text-xs font-medium text-purple-700 bg-purple-50 border border-purple-100 px-2.5 py-1 rounded-full mb-2">
+        <span className="inline-flex items-center text-xs font-medium text-purple-700 dark:text-purple-400 bg-purple-50 dark:bg-purple-500/15 border border-purple-100 px-2.5 py-1 rounded-full mb-2">
           오늘의 업종 비교 · {data.groupLabel}
         </span>
-        <h3 className="text-lg font-bold text-[#1a1a1a]">매출·영업이익 5년 추이</h3>
+        <h3 className="text-lg font-bold text-foreground">매출·영업이익 5년 추이</h3>
         {data.dataAsOf && (
-          <p className="text-sm text-gray-500 mt-1">{data.dataAsOf}</p>
+          <p className="text-sm text-muted-foreground mt-1">{data.dataAsOf}</p>
         )}
       </div>
 

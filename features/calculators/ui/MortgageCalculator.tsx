@@ -77,7 +77,7 @@ export function MortgageCalculator() {
           <select
             value={termYears}
             onChange={(e) => setTermYears(Number(e.target.value))}
-            className="w-full h-11 px-3 rounded-xl border border-gray-200 text-sm text-gray-900 bg-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"
+            className="w-full h-11 px-3 rounded-xl border border-input text-sm text-foreground bg-background focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"
           >
             {LOAN_TERM_OPTIONS.map((y) => (
               <option key={y} value={y}>
@@ -140,8 +140,8 @@ export function MortgageCalculator() {
             </div>
           </ResultCard>
 
-          <div className="rounded-2xl border border-gray-100 bg-white p-4">
-            <div className="text-xs font-medium text-gray-500 mb-2">상환 요약 ({termYears}년 원리금균등)</div>
+          <div className="rounded-2xl border border-border bg-card p-4">
+            <div className="text-xs font-medium text-muted-foreground mb-2">상환 요약 ({termYears}년 원리금균등)</div>
             <div className="space-y-0.5 text-xs">
               <BreakdownRow label="월 상환액" value={result.monthlyPayment} highlight />
               <BreakdownRow label="총 상환액" value={result.totalPayment} />
@@ -153,7 +153,7 @@ export function MortgageCalculator() {
         <ResultPlaceholder message="주택 가격과 연소득을 입력하고 계산하기를 눌러주세요" />
       )}
 
-      <p className="text-[11px] text-gray-400 leading-relaxed">
+      <p className="text-[11px] text-muted-foreground leading-relaxed">
         * LTV·DTI는 정부 정책 기준 한도이며, 은행 자체 심사기준·신용도에 따라 실제 한도가 달라질 수 있습니다. DSR 한도도 추가로 확인 필요합니다.
       </p>
     </div>

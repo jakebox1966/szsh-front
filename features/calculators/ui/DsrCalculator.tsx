@@ -101,11 +101,11 @@ export function DsrCalculator() {
 
       <div>
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-medium text-gray-700">기존 대출</span>
+          <span className="text-xs font-medium text-foreground">기존 대출</span>
           <button
             type="button"
             onClick={() => setLoans((rows) => [...rows, newRow()])}
-            className="inline-flex items-center gap-1 text-xs font-medium text-indigo-600 px-2.5 py-1 rounded-full bg-indigo-50 hover:bg-indigo-100 transition-colors"
+            className="inline-flex items-center gap-1 text-xs font-medium text-indigo-600 dark:text-indigo-400 px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-500/15 hover:bg-indigo-100 transition-colors"
           >
             <Plus size={12} /> 추가
           </button>
@@ -114,14 +114,14 @@ export function DsrCalculator() {
           {loans.map((row) => (
             <div
               key={row.id}
-              className="rounded-xl border border-gray-100 bg-white p-3 grid grid-cols-12 gap-2 items-end"
+              className="rounded-xl border border-border bg-card p-3 grid grid-cols-12 gap-2 items-end"
             >
               <div className="col-span-6 sm:col-span-3">
                 <Field label="종류">
                   <select
                     value={row.type}
                     onChange={(e) => updateRow(row.id, { type: e.target.value as LoanType })}
-                    className="w-full h-10 px-2 rounded-lg border border-gray-200 text-xs bg-white focus:outline-none focus:border-blue-500"
+                    className="w-full h-10 px-2 rounded-lg border border-input text-xs bg-background focus:outline-none focus:border-blue-500"
                   >
                     {(Object.keys(LOAN_TYPE_LABELS) as LoanType[]).map((t) => (
                       <option key={t} value={t}>
@@ -166,7 +166,7 @@ export function DsrCalculator() {
                   type="button"
                   onClick={() => removeRow(row.id)}
                   disabled={loans.length <= 1}
-                  className="h-10 w-10 inline-flex items-center justify-center rounded-lg text-gray-400 hover:text-rose-500 hover:bg-rose-50 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gray-400"
+                  className="h-10 w-10 inline-flex items-center justify-center rounded-lg text-muted-foreground hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/15 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-muted-foreground"
                   aria-label="삭제"
                 >
                   <X size={14} />
@@ -194,7 +194,7 @@ export function DsrCalculator() {
               <select
                 value={newLoanType}
                 onChange={(e) => setNewLoanType(e.target.value as LoanType)}
-                className="w-full h-11 px-2 rounded-xl border border-gray-200 text-xs bg-white focus:outline-none focus:border-blue-500"
+                className="w-full h-11 px-2 rounded-xl border border-input text-xs bg-background focus:outline-none focus:border-blue-500"
               >
                 {(Object.keys(LOAN_TYPE_LABELS) as LoanType[]).map((t) => (
                   <option key={t} value={t}>
@@ -257,8 +257,8 @@ export function DsrCalculator() {
             </div>
           </ResultCard>
 
-          <div className="rounded-2xl border border-gray-100 bg-white p-4">
-            <div className="text-xs font-medium text-gray-500 mb-2">연간 원리금 (스트레스 가산 반영)</div>
+          <div className="rounded-2xl border border-border bg-card p-4">
+            <div className="text-xs font-medium text-muted-foreground mb-2">연간 원리금 (스트레스 가산 반영)</div>
             <div className="space-y-0.5 text-xs">
               <BreakdownRow label="기존 대출 합계" value={result.existingAnnualPayment} />
               {hasNewLoan === "yes" && (
@@ -276,7 +276,7 @@ export function DsrCalculator() {
         <ResultPlaceholder message="연소득과 대출 정보를 입력하고 계산하기를 눌러주세요" />
       )}
 
-      <p className="text-[11px] text-gray-400 leading-relaxed">
+      <p className="text-[11px] text-muted-foreground leading-relaxed">
         * 2026 스트레스 DSR 3단계 적용 (수도권·규제지역 +3%p / 지방 +0.75%p). 변동금리·혼합형 대출에만 가산. 실제 은행 심사 시 만기·상환방식은 더 보수적일 수 있습니다.
       </p>
     </div>

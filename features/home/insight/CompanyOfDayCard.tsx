@@ -61,10 +61,10 @@ export function CompanyOfDayCard({ data }: Props) {
   const latestYear = data.history[data.history.length - 1]?.year;
 
   return (
-    <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-all duration-300">
+    <div className="bg-card rounded-2xl p-6 border border-border shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-all duration-300">
       {/* 카드 상단 라벨 라인 */}
       <div className="flex items-center justify-between mb-4">
-        <span className="inline-flex items-center text-xs font-medium text-indigo-700 bg-indigo-50 border border-indigo-100 px-2.5 py-1 rounded-full">
+        <span className="inline-flex items-center text-xs font-medium text-indigo-700 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/15 border border-indigo-100 px-2.5 py-1 rounded-full">
           1일 1컴퍼니
         </span>
         <Link
@@ -75,7 +75,7 @@ export function CompanyOfDayCard({ data }: Props) {
               company_name: data.name,
             })
           }
-          className="text-xs font-medium text-gray-500 hover:text-gray-900 flex items-center gap-0.5"
+          className="text-xs font-medium text-muted-foreground hover:text-foreground flex items-center gap-0.5"
         >
           더보기 <ChevronRight size={14} />
         </Link>
@@ -83,12 +83,12 @@ export function CompanyOfDayCard({ data }: Props) {
 
       {/* 회사 헤더 */}
       <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
+        <div className="w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
           <Building2 size={22} />
         </div>
         <div className="min-w-0">
-          <h3 className="text-lg font-bold text-[#1a1a1a] leading-tight truncate">{data.name}</h3>
-          <p className="text-xs text-gray-500 mt-1 truncate">
+          <h3 className="text-lg font-bold text-foreground leading-tight truncate">{data.name}</h3>
+          <p className="text-xs text-muted-foreground mt-1 truncate">
             {[data.market && data.stockCode ? `${data.market} ${data.stockCode}` : null, data.industry]
               .filter(Boolean)
               .join(" · ")}
@@ -98,20 +98,20 @@ export function CompanyOfDayCard({ data }: Props) {
 
       {/* 막대그래프: 5년치, 막대 2개씩 (매출/영업이익) */}
       <div className="mt-4 mb-4 relative">
-        <div className="flex items-end justify-around h-32 border-b border-gray-100 px-2">
+        <div className="flex items-end justify-around h-32 border-b border-border px-2">
           {data.history.map((h) => (
             <div key={h.year} className="flex flex-col items-center gap-1 h-full justify-end">
               <div className="flex items-end gap-1 h-full">
                 <Bar value={h.revenue ?? 0} max={max} color="bg-indigo-200" label={`${h.year} 매출`} />
                 <Bar value={h.operatingProfit ?? 0} max={max} color="bg-indigo-500" label={`${h.year} 영업이익`} />
               </div>
-              <div className={`text-[10px] mt-1 ${h.year === latestYear ? "font-bold text-gray-900" : "text-gray-400"}`}>
+              <div className={`text-[10px] mt-1 ${h.year === latestYear ? "font-bold text-foreground" : "text-muted-foreground"}`}>
                 {h.year}
               </div>
             </div>
           ))}
         </div>
-        <div className="flex items-center justify-end gap-3 mt-2 text-[10px] text-gray-500">
+        <div className="flex items-center justify-end gap-3 mt-2 text-[10px] text-muted-foreground">
           <span className="inline-flex items-center gap-1">
             <span className="w-2 h-2 bg-indigo-200 rounded-sm" /> 매출
           </span>
@@ -123,28 +123,28 @@ export function CompanyOfDayCard({ data }: Props) {
 
       {/* 표 (가로 스크롤, 모바일에서 좌/우 스크롤 가능 방향으로만 힌트 화살표 노출) */}
       <div className="relative">
-        <div ref={scrollRef} className="bg-gray-50 rounded-xl p-3 overflow-x-auto">
+        <div ref={scrollRef} className="bg-muted rounded-xl p-3 overflow-x-auto">
           <div className="grid grid-cols-[auto_repeat(5,auto)] gap-x-5 gap-y-1.5 items-baseline text-[11px] whitespace-nowrap min-w-max">
-            <div className="text-gray-400">구분</div>
+            <div className="text-muted-foreground">구분</div>
             {data.history.map((h) => (
-              <div key={h.year} className={`text-right ${h.year === latestYear ? "font-bold text-gray-900" : "text-gray-400"}`}>
+              <div key={h.year} className={`text-right ${h.year === latestYear ? "font-bold text-foreground" : "text-muted-foreground"}`}>
                 {h.year}
               </div>
             ))}
-            <div className="text-gray-500">매출액</div>
+            <div className="text-muted-foreground">매출액</div>
             {data.history.map((h) => (
               <div
                 key={h.year}
-                className={`text-right tabular-nums ${h.year === latestYear ? "font-bold text-indigo-700" : "text-gray-700"}`}
+                className={`text-right tabular-nums ${h.year === latestYear ? "font-bold text-indigo-700 dark:text-indigo-400" : "text-foreground"}`}
               >
                 {h.revenue ? formatKRWCompact(h.revenue) : "—"}
               </div>
             ))}
-            <div className="text-gray-500">영업이익</div>
+            <div className="text-muted-foreground">영업이익</div>
             {data.history.map((h) => (
               <div
                 key={h.year}
-                className={`text-right tabular-nums ${h.year === latestYear ? "font-bold text-indigo-700" : "text-gray-700"}`}
+                className={`text-right tabular-nums ${h.year === latestYear ? "font-bold text-indigo-700 dark:text-indigo-400" : "text-foreground"}`}
               >
                 {h.operatingProfit != null ? formatKRWCompact(h.operatingProfit) : "—"}
               </div>
@@ -155,36 +155,36 @@ export function CompanyOfDayCard({ data }: Props) {
         <div
           className={`pointer-events-none absolute top-0 left-0 h-full w-10 rounded-l-xl bg-gradient-to-r from-gray-50 via-gray-50/80 to-transparent flex items-center justify-start pl-1.5 md:hidden transition-opacity duration-200 ${canScrollLeft ? "opacity-100" : "opacity-0"}`}
         >
-          <ChevronLeft size={16} className="text-gray-400/70" />
+          <ChevronLeft size={16} className="text-muted-foreground/70" />
         </div>
         <div
           className={`pointer-events-none absolute top-0 right-0 h-full w-10 rounded-r-xl bg-gradient-to-l from-gray-50 via-gray-50/80 to-transparent flex items-center justify-end pr-1.5 md:hidden transition-opacity duration-200 ${canScrollRight ? "opacity-100" : "opacity-0"}`}
         >
-          <ChevronRight size={16} className="text-gray-400/70" />
+          <ChevronRight size={16} className="text-muted-foreground/70" />
         </div>
       </div>
 
       {/* 핵심 지표 박스 */}
       <div className="grid grid-cols-2 gap-3 mt-3">
-        <div className="bg-white border border-gray-100 rounded-xl p-3">
-          <div className="text-[11px] text-gray-500">영업이익률</div>
+        <div className="bg-card border border-border rounded-xl p-3">
+          <div className="text-[11px] text-muted-foreground">영업이익률</div>
           <div className={`text-base font-bold mt-0.5 tabular-nums ${
-            data.operatingMargin == null ? "text-gray-400"
-              : data.operatingMargin >= 0 ? "text-indigo-700" : "text-red-500"
+            data.operatingMargin == null ? "text-muted-foreground"
+              : data.operatingMargin >= 0 ? "text-indigo-700 dark:text-indigo-400" : "text-red-500"
           }`}>
             {data.operatingMargin != null ? formatPercent(data.operatingMargin, { signed: false }) : "—"}
           </div>
         </div>
-        <div className="bg-white border border-gray-100 rounded-xl p-3">
-          <div className="text-[11px] text-gray-500">1인당 생산성</div>
-          <div className="text-base font-bold mt-0.5 tabular-nums text-indigo-700">
+        <div className="bg-card border border-border rounded-xl p-3">
+          <div className="text-[11px] text-muted-foreground">1인당 생산성</div>
+          <div className="text-base font-bold mt-0.5 tabular-nums text-indigo-700 dark:text-indigo-400">
             {data.revenuePerEmployee ? formatKRWCompact(data.revenuePerEmployee) : "—"}
           </div>
         </div>
       </div>
 
       {data.dataAsOf && (
-        <p className="text-[10px] text-gray-400 mt-3 text-right">{data.dataAsOf}</p>
+        <p className="text-[10px] text-muted-foreground mt-3 text-right">{data.dataAsOf}</p>
       )}
     </div>
   );

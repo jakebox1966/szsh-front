@@ -72,8 +72,8 @@ export function NetPayCalculator() {
             </div>
           </ResultCard>
 
-          <div className="rounded-2xl border border-gray-100 bg-white p-4">
-            <div className="text-xs font-medium text-gray-500 mb-2">월 공제 내역</div>
+          <div className="rounded-2xl border border-border bg-card p-4">
+            <div className="text-xs font-medium text-muted-foreground mb-2">월 공제 내역</div>
             <div className="space-y-0.5 text-xs">
               <BreakdownRow label="국민연금 (4.5%)" value={result.deductions.nationalPension} />
               <BreakdownRow label="건강보험 (3.595%)" value={result.deductions.healthInsurance} />
@@ -88,7 +88,7 @@ export function NetPayCalculator() {
         <ResultPlaceholder message="세전 연봉을 입력하고 계산하기를 눌러주세요" />
       )}
 
-      <p className="text-[11px] text-gray-400 leading-relaxed">
+      <p className="text-[11px] text-muted-foreground leading-relaxed">
         * 2026년 4대보험 요율 + 국세청 간이세액표(2026.3.1 시행) 기준입니다. 회사의 원천징수와 거의 일치하지만, 비과세 항목·연말정산 결과는 별개입니다.
       </p>
     </div>

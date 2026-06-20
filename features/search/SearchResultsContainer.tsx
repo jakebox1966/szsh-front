@@ -55,11 +55,11 @@ export function SearchResultsContainer({ query }: SearchResultsContainerProps) {
   return (
     <div className="w-full max-w-2xl mx-auto">
       <div className="mb-8">
-        <div className="inline-flex items-center gap-2 text-gray-500 text-sm mb-2">
+        <div className="inline-flex items-center gap-2 text-muted-foreground text-sm mb-2">
           <Search size={14} />
           <span>검색 결과</span>
         </div>
-        <h1 className="text-2xl font-semibold text-[#1a1a1a]">
+        <h1 className="text-2xl font-semibold text-foreground">
           &ldquo;{query}&rdquo;
         </h1>
       </div>
@@ -69,21 +69,21 @@ export function SearchResultsContainer({ query }: SearchResultsContainerProps) {
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="h-20 bg-gray-50 rounded-2xl animate-pulse"
+              className="h-20 bg-muted rounded-2xl animate-pulse"
             />
           ))}
         </div>
       )}
 
       {!loading && results && results.length === 0 && (
-        <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-50 text-gray-400 mb-4">
+        <div className="bg-card rounded-2xl border border-border p-12 text-center">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-muted text-muted-foreground mb-4">
             <Search size={20} />
           </div>
-          <p className="text-gray-700 font-medium mb-1">
+          <p className="text-foreground font-medium mb-1">
             찾으시는 기업이 없습니다.
           </p>
-          <p className="text-gray-400 text-sm">
+          <p className="text-muted-foreground text-sm">
             다른 검색어로 시도해보세요.
           </p>
         </div>
@@ -101,22 +101,22 @@ export function SearchResultsContainer({ query }: SearchResultsContainerProps) {
                   company_name: item.name,
                 })
               }
-              className="flex items-center gap-4 p-4 bg-white rounded-2xl border border-gray-100 hover:border-gray-300 hover:shadow-sm transition-all"
+              className="flex items-center gap-4 p-4 bg-card rounded-2xl border border-border hover:border-border hover:shadow-sm transition-all"
             >
-              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-50 text-gray-500 shrink-0">
+              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-muted text-muted-foreground shrink-0">
                 <Building2 size={18} />
               </div>
               <div className="min-w-0 flex-1">
-                <div className="font-medium text-gray-900 truncate flex items-center gap-2">
+                <div className="font-medium text-foreground truncate flex items-center gap-2">
                   <span className="truncate">{item.name}</span>
                   {item.isListed === false && (
-                    <span className="shrink-0 text-[10px] font-medium text-gray-500 bg-gray-100 border border-gray-200 px-1.5 py-0.5 rounded-full">
+                    <span className="shrink-0 text-[10px] font-medium text-muted-foreground bg-muted border border-border px-1.5 py-0.5 rounded-full">
                       비상장
                     </span>
                   )}
                 </div>
                 {(item.engName || item.industry) && (
-                  <div className="text-xs text-gray-400 truncate">
+                  <div className="text-xs text-muted-foreground truncate">
                     {[item.engName, item.industry].filter(Boolean).join(" · ")}
                   </div>
                 )}

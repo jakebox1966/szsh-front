@@ -16,24 +16,24 @@ export function SalaryDetailSection({ salary }: SalaryDetailSectionProps) {
   const gross = salary.avgMonthlyRaw;
 
   return (
-    <div className="bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-sm">
+    <div className="bg-card rounded-3xl p-6 md:p-8 border border-border shadow-sm">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-          <DollarSign className="text-gray-400" size={20} />
+        <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+          <DollarSign className="text-muted-foreground" size={20} />
           연봉 상세 분석
         </h2>
         {gross && <SourceBadge source={salary.source} />}
       </div>
 
       {!gross ? (
-        <p className="text-sm text-gray-400 text-center py-12">
+        <p className="text-sm text-muted-foreground text-center py-12">
           평균 급여 데이터가 없습니다.
         </p>
       ) : (
         <SalaryBreakdown gross={gross} />
       )}
 
-      <p className="text-xs text-right text-gray-400 mt-4">
+      <p className="text-xs text-right text-muted-foreground mt-4">
         * 4대보험 + 간이세액표 근사치 (단신·부양가족 1인 가정). 성과급/비과세 미반영.
       </p>
     </div>
@@ -58,22 +58,22 @@ function SalaryBreakdown({ gross }: { gross: number }) {
       {/* 세전 */}
       <div className="p-5 bg-gradient-to-br from-blue-50 to-blue-50/40 rounded-2xl text-center">
         <p className="text-xs text-blue-600 font-semibold mb-1">월 평균 급여 (세전)</p>
-        <p className="text-3xl font-bold text-gray-900">{formatKRW(gross)}</p>
-        <p className="text-xs text-gray-400 mt-1">
+        <p className="text-3xl font-bold text-foreground">{formatKRW(gross)}</p>
+        <p className="text-xs text-muted-foreground mt-1">
           연 환산 약 {formatKRW(gross * 12)}
         </p>
       </div>
 
       {/* 화살표 */}
       <div className="flex justify-center">
-        <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center">
-          <ArrowDown size={16} className="text-gray-400" />
+        <div className="w-9 h-9 rounded-full bg-muted flex items-center justify-center">
+          <ArrowDown size={16} className="text-muted-foreground" />
         </div>
       </div>
 
       {/* 공제 내역 */}
-      <div className="p-4 bg-gray-50 rounded-2xl">
-        <p className="text-xs font-semibold text-gray-500 mb-3 px-1">
+      <div className="p-4 bg-muted rounded-2xl">
+        <p className="text-xs font-semibold text-muted-foreground mb-3 px-1">
           공제 내역 (월 기준)
         </p>
         <ul className="space-y-1.5">
@@ -82,15 +82,15 @@ function SalaryBreakdown({ gross }: { gross: number }) {
               key={d.label}
               className="flex items-center justify-between text-sm px-1"
             >
-              <span className="text-gray-600">{d.label}</span>
-              <span className="font-medium text-gray-700 tabular-nums">
+              <span className="text-muted-foreground">{d.label}</span>
+              <span className="font-medium text-foreground tabular-nums">
                 − {formatWon(d.value)}
               </span>
             </li>
           ))}
-          <li className="flex items-center justify-between text-sm px-1 pt-2 mt-2 border-t border-gray-200">
-            <span className="font-semibold text-gray-700">총 공제액</span>
-            <span className="font-bold text-gray-900 tabular-nums">
+          <li className="flex items-center justify-between text-sm px-1 pt-2 mt-2 border-t border-border">
+            <span className="font-semibold text-foreground">총 공제액</span>
+            <span className="font-bold text-foreground tabular-nums">
               − {formatWon(pay.totalDeduction)}
             </span>
           </li>
@@ -99,18 +99,18 @@ function SalaryBreakdown({ gross }: { gross: number }) {
 
       {/* 화살표 */}
       <div className="flex justify-center">
-        <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center">
-          <ArrowDown size={16} className="text-gray-400" />
+        <div className="w-9 h-9 rounded-full bg-muted flex items-center justify-center">
+          <ArrowDown size={16} className="text-muted-foreground" />
         </div>
       </div>
 
       {/* 세후 */}
       <div className="p-5 bg-gradient-to-br from-emerald-50 to-emerald-50/40 rounded-2xl text-center">
-        <p className="text-xs text-emerald-700 font-semibold mb-1">
+        <p className="text-xs text-emerald-700 dark:text-emerald-400 font-semibold mb-1">
           월 예상 실수령액 (세후)
         </p>
-        <p className="text-3xl font-bold text-gray-900">약 {formatKRW(pay.net)}</p>
-        <p className="text-xs text-emerald-700 mt-1 font-medium">
+        <p className="text-3xl font-bold text-foreground">약 {formatKRW(pay.net)}</p>
+        <p className="text-xs text-emerald-700 dark:text-emerald-400 mt-1 font-medium">
           세전 대비 {netRate}% 수령
         </p>
       </div>

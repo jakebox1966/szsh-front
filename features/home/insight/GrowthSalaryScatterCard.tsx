@@ -49,15 +49,15 @@ export function GrowthSalaryScatterCard() {
   const yMid = projectY(10000);
 
   return (
-    <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-all duration-300">
+    <div className="bg-card rounded-2xl p-6 border border-border shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-all duration-300">
       <div className="flex items-start justify-between mb-1">
         <div className="flex items-center gap-2">
-          <div className="p-2 bg-gray-50 rounded-lg text-gray-700">
+          <div className="p-2 bg-muted rounded-lg text-foreground">
             <ScatterChart size={18} />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-[#1a1a1a]">성장 × 연봉</h3>
-            <p className="text-xs text-gray-500">우상단(성장기업)에 있는 회사를 한눈에</p>
+            <h3 className="text-lg font-bold text-foreground">성장 × 연봉</h3>
+            <p className="text-xs text-muted-foreground">우상단(성장기업)에 있는 회사를 한눈에</p>
           </div>
         </div>
       </div>
@@ -248,7 +248,7 @@ export function GrowthSalaryScatterCard() {
       </div>
 
       {/* 범례 */}
-      <div className="flex flex-wrap gap-3 mt-3 text-xs text-gray-500">
+      <div className="flex flex-wrap gap-3 mt-3 text-xs text-muted-foreground">
         {(Object.keys(CATEGORY_LABEL) as Array<ScatterCompany["category"]>).map((k) => (
           <span key={k} className="inline-flex items-center gap-1.5">
             <span
@@ -258,7 +258,7 @@ export function GrowthSalaryScatterCard() {
             {CATEGORY_LABEL[k]}
           </span>
         ))}
-        <span className="text-gray-400 ml-auto">점 클릭 시 회사 상세로 이동</span>
+        <span className="text-muted-foreground ml-auto">점 클릭 시 회사 상세로 이동</span>
       </div>
     </div>
   );

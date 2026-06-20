@@ -130,10 +130,10 @@ export function FinanceSection({ finance }: FinanceSectionProps) {
   );
 
   return (
-    <div className="bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-sm">
+    <div className="bg-card rounded-3xl p-6 md:p-8 border border-border shadow-sm">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-          <Building2 className="text-gray-400" size={20} />
+        <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+          <Building2 className="text-muted-foreground" size={20} />
           재무 성장성
         </h2>
         {hasData && <SourceBadge source="DART" />}
@@ -141,11 +141,11 @@ export function FinanceSection({ finance }: FinanceSectionProps) {
 
       {!hasData ? (
         <div className="flex flex-col items-center justify-center py-16 text-center">
-          <div className="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center mb-3">
-            <BarChart3 className="text-gray-300" size={24} />
+          <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center mb-3">
+            <BarChart3 className="text-muted-foreground" size={24} />
           </div>
-          <p className="text-sm font-medium text-gray-500">공시된 재무 데이터가 없습니다</p>
-          <p className="text-xs text-gray-400 mt-1">
+          <p className="text-sm font-medium text-muted-foreground">공시된 재무 데이터가 없습니다</p>
+          <p className="text-xs text-muted-foreground mt-1">
             비상장 / 외감 비대상 기업일 수 있습니다
           </p>
         </div>
@@ -170,16 +170,16 @@ export function FinanceSection({ finance }: FinanceSectionProps) {
           </div>
 
           {finance!.history.length > 0 && (
-            <div className="pt-4 border-t border-gray-100">
-              <div className="flex items-center gap-1.5 mb-4 p-1 bg-gray-100 rounded-xl w-fit mx-auto">
+            <div className="pt-4 border-t border-border">
+              <div className="flex items-center gap-1.5 mb-4 p-1 bg-muted rounded-xl w-fit mx-auto">
                 {TABS.map(({ key, label, icon: Icon }) => (
                   <button
                     key={key}
                     onClick={() => setTab(key)}
                     className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                       tab === key
-                        ? "bg-white text-gray-900 shadow-sm"
-                        : "text-gray-500 hover:text-gray-700"
+                        ? "bg-card text-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
                     <Icon size={13} />

@@ -20,7 +20,7 @@ type Signal = {
 };
 
 // 모든 시그널 칩 동일 톤 — 정보는 라벨/아이콘으로 전달.
-const CHIP_STYLE = "text-blue-800 bg-white";
+const CHIP_STYLE = "text-blue-800 bg-card";
 
 function computeSignals(data: CompanyData): Signal[] {
   const signals: Signal[] = [];
@@ -85,7 +85,7 @@ export function KeySignalsSection({ companyData }: Props) {
   if (signals.length === 0) return null;
 
   return (
-    <div className="bg-blue-50/50 border border-blue-100 rounded-xl p-4">
+    <div className="bg-blue-50/50 dark:bg-blue-500/15 border border-blue-100 rounded-xl p-4">
       <div className="flex items-center gap-1.5 text-xs font-bold text-blue-800 mb-2.5">
         <Sparkles size={14} className="text-blue-600" />
         한눈에 보기

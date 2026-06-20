@@ -52,7 +52,7 @@ function renderCalculator(tagId: string) {
       return <DsrCalculator />;
     default:
       return (
-        <p className="text-sm text-gray-500 py-4">
+        <p className="text-sm text-muted-foreground py-4">
           이 계산기는 곧 추가될 예정입니다.
         </p>
       );
@@ -77,8 +77,8 @@ export function CalculatorSection() {
   return (
     <section className="w-full max-w-2xl mx-auto">
       <div className="mb-4 text-center">
-        <h2 className="text-lg font-bold text-[#1a1a1a]">금융 계산기</h2>
-        <p className="mt-1 text-sm text-gray-500">
+        <h2 className="text-lg font-bold text-foreground">금융 계산기</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
           연봉·전세·주담대·DSR 한도를 빠르게 계산해보세요
         </p>
       </div>
@@ -94,12 +94,12 @@ export function CalculatorSection() {
               type="button"
               onClick={() => openModal(tag)}
               disabled={isDisabled}
-              className="group flex flex-col items-center justify-center gap-2 px-2 py-4 rounded-2xl border border-gray-200 bg-white transition-all hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-50/50 hover:shadow-md hover:shadow-indigo-500/5 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:border-gray-200 disabled:hover:bg-white disabled:hover:shadow-none"
+              className="group flex flex-col items-center justify-center gap-2 px-2 py-4 rounded-2xl border border-border bg-card transition-all hover:-translate-y-0.5 hover:border-indigo-200 hover:bg-indigo-50/50 hover:shadow-md hover:shadow-indigo-500/5 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:border-border disabled:hover:bg-card disabled:hover:shadow-none"
             >
-              <span className="flex items-center justify-center w-9 h-9 rounded-xl bg-gray-50 text-gray-400 transition-colors group-hover:bg-indigo-100 group-hover:text-indigo-600">
+              <span className="flex items-center justify-center w-9 h-9 rounded-xl bg-muted text-muted-foreground transition-colors group-hover:bg-indigo-100 dark:group-hover:bg-indigo-500/20 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
                 <Icon size={18} />
               </span>
-              <span className="text-xs font-semibold text-center leading-tight text-gray-700 group-hover:text-indigo-700">
+              <span className="text-xs font-semibold text-center leading-tight text-foreground group-hover:text-indigo-700">
                 {tag.label}
               </span>
             </button>
