@@ -141,7 +141,7 @@ export function HeroSection() {
           />
           <button
             type="button"
-            className="p-2 md:p-3 bg-blue-600 rounded-full hover:bg-blue-700 transition-colors text-white shadow-sm md:shadow-md disabled:opacity-50 shrink-0"
+            className="p-2 md:p-3 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full hover:brightness-110 transition-all text-white shadow-sm md:shadow-md shadow-indigo-500/25 disabled:opacity-50 shrink-0"
             onClick={submitSearch}
             disabled={!query.trim()}
             aria-label="검색"
