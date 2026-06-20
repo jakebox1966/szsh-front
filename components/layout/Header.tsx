@@ -204,7 +204,7 @@ function Avatar({
   }
   return (
     <div
-      className={`flex items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-bold ${
+      className={`flex items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white font-bold ${
         size === "lg" ? "w-10 h-10 text-base" : "w-7 h-7 text-xs"
       }`}
       aria-hidden
