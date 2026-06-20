@@ -142,13 +142,13 @@ function UserMenu({
       {open && (
         <div
           role="menu"
-          className="absolute right-0 mt-2 w-60 rounded-2xl border border-border bg-card shadow-lg overflow-hidden"
+          className="absolute right-0 mt-2 w-72 rounded-2xl border border-border bg-card shadow-lg overflow-hidden"
         >
           {/* 프로필 헤더 */}
           <div className="flex items-center gap-3 p-4 bg-gradient-to-br from-blue-50/60 to-indigo-50/40 dark:from-blue-500/10 dark:to-indigo-500/10">
             <Avatar user={user} initial={initial} size="lg" />
             <div className="min-w-0 flex-1">
-              <div className="text-sm font-semibold text-foreground truncate">
+              <div className="text-sm font-semibold text-foreground break-words leading-snug">
                 {user.nickname}
               </div>
               {user.email && (
