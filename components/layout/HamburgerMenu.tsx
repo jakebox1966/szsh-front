@@ -131,12 +131,12 @@ export function HamburgerMenu() {
             <aside
               role="dialog"
               aria-modal="true"
-              className={`fixed left-0 top-0 z-[60] flex h-screen w-72 max-w-[85vw] flex-col bg-card shadow-xl transition-transform duration-300 ease-in-out ${
+              className={`fixed left-0 top-0 z-[60] flex h-dvh w-72 max-w-[85vw] flex-col bg-card shadow-xl transition-transform duration-300 ease-in-out ${
                 open ? "translate-x-0" : "-translate-x-full"
               }`}
             >
               {/* 상단: 세전세후 로고 + 닫기 */}
-              <div className="flex items-center justify-between border-b border-border px-5 py-4">
+              <div className="flex shrink-0 items-center justify-between border-b border-border px-5 py-4">
                 <Link
                   href="/"
                   onClick={() => setOpen(false)}
@@ -166,6 +166,8 @@ export function HamburgerMenu() {
                 </button>
               </div>
 
+              {/* 스크롤 영역 — 모바일에서 내용이 넘치면 여기서 스크롤 */}
+              <div className="flex-1 min-h-0 overflow-y-auto">
               {/* 메뉴 (아이콘 포함) */}
               <nav className="space-y-1 p-3">
                 <DrawerNavItem
@@ -194,8 +196,9 @@ export function HamburgerMenu() {
                   매일 자정에 리셋됩니다
                 </p>
               </div>
+              </div>
 
-              {/* 테마 선택 (라이트/다크/시스템) */}
+              {/* 테마 선택 (라이트/다크/시스템) — 바닥 고정 */}
               <ThemeToggle />
             </aside>
           </>,
@@ -213,7 +216,7 @@ function ThemeToggle() {
     { value: "system", label: "시스템", icon: <Monitor size={15} /> },
   ];
   return (
-    <div className="mt-auto border-t border-border px-5 py-4">
+    <div className="shrink-0 border-t border-border px-5 py-4">
       <div className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
         테마
       </div>
