@@ -18,18 +18,46 @@ export class ApiError extends Error {
   }
 }
 
+// ── 토큰 자동 갱신 ──────────────────────────────────────────────
+// access(30분) 만료로 401 이 오면 refresh(14일) 쿠키로 1회 갱신 후 재시도.
+// 동시다발 401 에 /auth/refresh 가 중복 호출되지 않도록 in-flight Promise 공유.
+let refreshInFlight: Promise<boolean> | null = null;
+
+export function tryRefresh(): Promise<boolean> {
+  if (!refreshInFlight) {
+    refreshInFlight = fetch("/auth/refresh", {
+      method: "POST",
+      credentials: "include",
+    })
+      .then((r) => r.ok)
+      .catch(() => false)
+      .finally(() => {
+        refreshInFlight = null;
+      });
+  }
+  return refreshInFlight;
+}
+
 export async function apiFetch<T>(
   path: string,
   options?: RequestInit,
 ): Promise<T> {
-  const res = await fetch(path, {
-    credentials: "include",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  });
+  const doFetch = () =>
+    fetch(path, {
+      credentials: "include",
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+      },
+    });
+
+  let res = await doFetch();
+
+  // access 토큰 만료(401) → refresh 로 1회 갱신 후 재시도. (실패하면 원래 401 유지)
+  if (res.status === 401 && (await tryRefresh())) {
+    res = await doFetch();
+  }
 
   if (!res.ok) {
     throw new ApiError(res.status, `API error: ${res.status} ${res.statusText}`);

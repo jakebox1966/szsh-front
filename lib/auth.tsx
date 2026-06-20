@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
-import { OAUTH_BASE_URL } from "./api";
+import { OAUTH_BASE_URL, tryRefresh } from "./api";
 import { trackEvent, setUserId } from "./analytics";
 
 export type AuthUser = {
@@ -35,13 +35,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [status, setStatus] = useState<AuthContextValue["status"]>("loading");
 
   const refresh = useCallback(async () => {
-    try {
-      const me = await fetchMe();
+    const applyMe = (me: AuthUser | null) => {
       setUser(me);
       setStatus(me ? "authenticated" : "unauthenticated");
       // 재방문(이미 로그인된 세션)에서도 이후 모든 GA 이벤트에 user_id 부착.
       if (me?.public_id) setUserId(me.public_id);
+    };
+    try {
+      applyMe(await fetchMe());
     } catch {
+      // access(30분) 만료 등으로 /auth/me 실패 → refresh(14일) 쿠키로 살려보고 재시도.
+      if (await tryRefresh()) {
+        try {
+          applyMe(await fetchMe());
+          return;
+        } catch {
+          /* refresh 후에도 실패 → 로그아웃 처리 */
+        }
+      }
       setUser(null);
       setStatus("unauthenticated");
     }
