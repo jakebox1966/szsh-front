@@ -36,11 +36,15 @@ export function CompanyHeaderSection({ info, children }: CompanyHeaderSectionPro
               )}
             </h1>
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground mt-2">
-              <span className="flex items-center gap-1">
-                <Briefcase size={14} /> {info.industry}
-              </span>
-              <span className="w-1 h-1 bg-gray-300 rounded-full" />
-              <span>{info.history}</span>
+              {info.industry && (
+                <span className="flex items-center gap-1">
+                  <Briefcase size={14} /> {info.industry}
+                </span>
+              )}
+              {info.industry && info.history && (
+                <span className="w-1 h-1 bg-gray-300 rounded-full" />
+              )}
+              {info.history && <span>{info.history}</span>}
             </div>
           </div>
         </div>
