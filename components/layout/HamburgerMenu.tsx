@@ -150,7 +150,7 @@ export function HamburgerMenu() {
                 <DrawerNavItem
                   href="/comments"
                   icon={<MessageCircle size={18} />}
-                  label="인기댓글"
+                  label="최근 세이"
                   active={pathname === "/comments"}
                   onClick={() => setOpen(false)}
                 />
