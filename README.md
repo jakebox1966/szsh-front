@@ -52,6 +52,13 @@
 ### Backend
 - FastAPI 기반 백엔드 서버와 연동
 
+
+<img width="1107" height="523" alt="szsh3" src="https://github.com/user-attachments/assets/df2e0cb9-6fe8-403c-881c-a6b60202e12e" />
+<img width="1376" height="768" alt="szsh3" src="https://github.com/user-attachments/assets/f107c919-56ec-43c4-814d-bca39df6d2bc" />
+<img width="898" height="800" alt="szsh2" src="https://github.com/user-attachments/assets/171512ed-4ed6-4427-89ec-9deed4a8e6fb" />
+<img width="648" height="1404" alt="szsh1" src="https://github.com/user-attachments/assets/0f5edffe-7c79-4d05-95a6-3bc749448979" />
+<img width="1080" height="2340" alt="szsh" src="https://github.com/user-attachments/assets/f0dffd94-1c83-440b-8b7b-0b5e9cd4722f" />
+
 ## 프로젝트 구조
 ```text
 szsh-front/
@@ -80,12 +87,3 @@ szsh-front/
 ├── public/                 # 정적 리소스
 ├── package.json
 └── README.md
-/
-
-
-<img width="1107" height="523" alt="szsh3" src="https://github.com/user-attachments/assets/df2e0cb9-6fe8-403c-881c-a6b60202e12e" />
-<img width="1376" height="768" alt="szsh3" src="https://github.com/user-attachments/assets/f107c919-56ec-43c4-814d-bca39df6d2bc" />
-<img width="898" height="800" alt="szsh2" src="https://github.com/user-attachments/assets/171512ed-4ed6-4427-89ec-9deed4a8e6fb" />
-<img width="648" height="1404" alt="szsh1" src="https://github.com/user-attachments/assets/0f5edffe-7c79-4d05-95a6-3bc749448979" />
-<img width="1080" height="2340" alt="szsh" src="https://github.com/user-attachments/assets/f0dffd94-1c83-440b-8b7b-0b5e9cd4722f" />
-
